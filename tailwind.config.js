@@ -7,16 +7,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: '#10262F',
-        tile: '#1B3A4B',
-        turquoise: '#2E6F7E',
-        sand: '#EDE6D6',
-        maroon: '#7A2E2E',
-        gold: '#C9A227',
+        royal: '#1E3A8A',
+        shawl: '#2F688F',
+        cream: '#E7DCC8',
+        mustard: '#C8923A',
+        navy: '#0F172A',
       },
       fontFamily: {
-        display: ['Fraunces', 'serif'],
-        body: ['"Work Sans"', 'sans-serif'],
+        display: ['"Playfair Display"', 'serif'],
+        body: ['Montserrat', 'sans-serif'],
       },
     },
   },
