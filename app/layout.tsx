@@ -4,9 +4,9 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Saraikistan — Saraiki Culture, People & Region',
+  title: 'Saraikistan — People, Culture, Heritage, Beyond',
   description:
-    'A home for Saraiki culture: biographies of notable Saraikis, the history and geography of the Saraiki region, traditions, and news.',
+    'A digital home for the people, culture, language and timeless beauty of the Saraiki region.',
 }
 
 export default function RootLayout({
