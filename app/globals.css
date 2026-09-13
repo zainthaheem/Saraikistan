@@ -1,19 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #EDE6D6;
-  color: #10262F;
+  background-color: #E7DCC8;
+  color: #0F172A;
 }
 
 .tile-rule {
   background-image: repeating-linear-gradient(
     90deg,
-    #2E6F7E 0px,
-    #2E6F7E 6px,
+    #C8923A 0px,
+    #C8923A 6px,
     transparent 6px,
     transparent 18px
   );
