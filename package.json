@@ -17,6 +17,7 @@
     "next-sanity": "^9.4.4",
     "@sanity/vision": "^3.57.0",
     "@sanity/image-url": "^1.0.2",
+    "@portabletext/react": "^3.1.0",
     "styled-components": "^6.1.0"
   },
   "devDependencies": {
