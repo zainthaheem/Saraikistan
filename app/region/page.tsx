@@ -20,35 +20,72 @@ export default async function Region() {
   const places = await getPlaces()
 
   return (
-    <section className="min-h-screen bg-cream text-navy">
+    <main className="min-h-screen bg-cream text-navy">
 
-      {/* Page Header */}
-      <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
+      {/* PAGE HEADER */}
+      <section>
+        <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
 
-        <p className="font-body text-sm text-shawl">
-          Where Saraiki culture comes from
-        </p>
+          <p className="font-body text-sm text-shawl">
+            Where Saraiki culture comes from
+          </p>
 
-        <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
-          Places
-        </h1>
+          <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
+            Places
+          </h1>
 
-      </div>
+        </div>
+      </section>
 
-      {/* Places Content */}
-      <div className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
 
-        {places.length === 0 ? (
+      {/* INTRO */}
+      <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12">
 
-          <div className="border-t border-mustard pt-7">
+        <div className="border-t border-mustard pt-7">
 
-            <p className="max-w-3xl font-body text-base leading-7 text-navy/55 sm:text-lg">
-              No places added yet. Add your first entry in the Studio.
+          <div className="max-w-3xl">
+
+            <p className="font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
+              Explore the cities, landscapes, historic sites and
+              cultural places that form the living geography of
+              the Saraiki region.
             </p>
 
           </div>
 
-        ) : (
+        </div>
+
+      </section>
+
+
+      {places.length === 0 ? (
+
+        /* EMPTY STATE */
+        <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
+
+          <div className="border border-navy/10 bg-cream p-8 sm:p-12">
+
+            <p className="font-body text-sm uppercase tracking-[0.14em] text-mustard">
+              Places archive
+            </p>
+
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl">
+              The map is just beginning.
+            </h2>
+
+            <p className="mt-4 max-w-2xl font-body text-base leading-7 text-navy/60 sm:text-lg">
+              No places have been added yet. Add your first place
+              through the Studio and it will appear here.
+            </p>
+
+          </div>
+
+        </section>
+
+      ) : (
+
+        /* PLACES GRID */
+        <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
@@ -60,9 +97,10 @@ export default async function Region() {
                 className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
 
-                {place.coverImage && (
-                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
+                {/* IMAGE */}
+                <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
+                  {place.coverImage ? (
                     <img
                       src={urlFor(place.coverImage)
                         .width(900)
@@ -72,10 +110,16 @@ export default async function Region() {
                       alt={place.title}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
+                  ) : (
+                    <div className="flex h-full items-center justify-center font-display text-cream/40">
+                      Saraikistan
+                    </div>
+                  )}
 
-                  </div>
-                )}
+                </div>
 
+
+                {/* CONTENT */}
                 <div className="border-t-2 border-mustard p-6">
 
                   {place.category && (
@@ -100,10 +144,10 @@ export default async function Region() {
 
           </div>
 
-        )}
+        </section>
 
-      </div>
+      )}
 
-    </section>
+    </main>
   )
 }
