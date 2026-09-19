@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PortableText } from '@portabletext/react'
@@ -12,10 +13,77 @@ async function getPlace(slug: string) {
       coverImage,
       gallery,
       videoUrl,
-      body
+      body,
+      seoTitle,
+      seoDescription,
+      seoImage
     }`,
     { slug }
   )
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const place = await getPlace(params.slug)
+
+  if (!place) {
+    return {
+      title: 'Place Not Found | Saraikistan',
+      description:
+        'The requested place could not be found on Saraikistan.',
+    }
+  }
+
+  const title =
+    place.seoTitle ||
+    `${place.title} | Saraikistan`
+
+  const description =
+    place.seoDescription ||
+    `Explore ${place.title}, its history, culture and significance in the Saraiki region.`
+
+  const image = place.seoImage
+    ? urlFor(place.seoImage).width(1200).height(630).fit('crop').url()
+    : place.coverImage
+      ? urlFor(place.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  return {
+    title,
+    description,
+
+    alternates: {
+      canonical: `https://saraikistan-ml2d.vercel.app/region/${params.slug}`,
+    },
+
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `https://saraikistan-ml2d.vercel.app/region/${params.slug}`,
+      siteName: 'Saraikistan',
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: place.title,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function PlacePage({
@@ -130,7 +198,7 @@ export default async function PlacePage({
                       .height(600)
                       .fit('crop')
                       .url()}
-                    alt=""
+                    alt={`${place.title} — photo ${i + 1}`}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
