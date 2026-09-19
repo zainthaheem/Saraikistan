@@ -11,6 +11,7 @@ const links = [
   { href: '/blog', label: 'Stories' },
   { href: '/news', label: 'News' },
   { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ]
 
 async function getSettings() {
@@ -23,7 +24,7 @@ export default async function Nav() {
   return (
     <header className="bg-navy text-cream">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
-        
+
         {/* Logo */}
         <Link
           href="/"
@@ -43,7 +44,8 @@ export default async function Nav() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-7 font-body text-xs uppercase tracking-[0.12em] sm:flex lg:gap-8">
+        <nav className="hidden items-center gap-6 font-body text-xs uppercase tracking-[0.12em] sm:flex lg:gap-7">
+
           <Link
             href="/"
             className="border-b border-mustard pb-1 text-cream transition hover:text-mustard"
@@ -60,10 +62,11 @@ export default async function Nav() {
               {link.label}
             </Link>
           ))}
+
         </nav>
 
-        {/* Search Icon */}
-        <div className="hidden sm:flex items-center">
+        {/* Desktop Search */}
+        <div className="hidden items-center sm:flex">
           <button
             type="button"
             aria-label="Search"
@@ -83,12 +86,11 @@ export default async function Nav() {
           </button>
         </div>
 
-        {/* Mobile Menu Icon */}
-        <div className="flex items-center sm:hidden">
-          <button
-            type="button"
-            aria-label="Open menu"
-            className="text-cream transition hover:text-mustard"
+        {/* Mobile Menu */}
+        <details className="relative sm:hidden">
+          <summary
+            aria-label="Open navigation menu"
+            className="flex cursor-pointer list-none items-center text-cream transition hover:text-mustard [&::-webkit-details-marker]:hidden"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -96,14 +98,44 @@ export default async function Nav() {
               fill="none"
               stroke="currentColor"
               strokeWidth="1.7"
-              className="h-6 w-6"
+              className="h-7 w-7"
             >
               <path d="M4 7h16" />
               <path d="M4 12h16" />
               <path d="M4 17h16" />
             </svg>
-          </button>
-        </div>
+          </summary>
+
+          {/* Mobile Dropdown */}
+          <div className="absolute right-0 top-12 z-50 w-64 border border-cream/20 bg-navy shadow-xl">
+            
+            <Link
+              href="/"
+              className="block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
+            >
+              Home
+            </Link>
+
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            <Link
+              href="/search"
+              className="block px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
+            >
+              Search
+            </Link>
+
+          </div>
+        </details>
+
       </div>
 
       {/* Textile / Tile Accent */}
