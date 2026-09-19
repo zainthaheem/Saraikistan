@@ -259,8 +259,8 @@ export default async function Home() {
 
                 const image = person.profileImage
                   ? urlFor(person.profileImage)
-                      .width(1200)
-                      .height(800)
+                      .width(1400)
+                      .height(1000)
                       .fit('crop')
                       .url()
                   : null
@@ -271,7 +271,7 @@ export default async function Home() {
                     href={`/celebrities/${person.slug?.current || ''}`}
                     className={
                       singleFeaturedPerson
-                        ? 'group relative block aspect-[16/9] w-full overflow-hidden rounded-[2px] bg-shawl sm:aspect-[2/1] lg:col-span-2 lg:aspect-[2.2/1]'
+                        ? 'group relative block aspect-[4/3] w-full overflow-hidden rounded-[2px] bg-shawl sm:aspect-[3/2] lg:max-w-5xl'
                         : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl'
                     }
                   >
@@ -292,12 +292,10 @@ export default async function Home() {
 
                     <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
 
-
                     {/* SMALL PLUS */}
                     <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
                       +
                     </div>
-
 
                     {/* PERSON INFO */}
                     <div
