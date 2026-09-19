@@ -16,9 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-body">
+      <body className="m-0 w-full overflow-x-hidden font-body">
         <Nav />
-        <main className="min-h-screen">{children}</main>
+
+        <main className="m-0 min-h-screen w-full max-w-none p-0">
+          {children}
+        </main>
+
         <Footer />
       </body>
     </html>
