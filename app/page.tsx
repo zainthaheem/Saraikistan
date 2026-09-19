@@ -118,16 +118,18 @@ export default async function Home() {
       {/* EXPLORE SARAIKISTAN */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
 
-        <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 
           <div>
             <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl">
               Discover
             </p>
 
-            <h2 className="mt-2 font-display text-4xl sm:text-5xl">
+            <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
               Explore Saraikistan
             </h2>
+
+            <div className="mt-4 h-[2px] w-12 bg-mustard" />
           </div>
 
           <p className="max-w-md font-body text-sm leading-6 text-navy/60">
@@ -139,14 +141,14 @@ export default async function Home() {
 
         {exploreCards?.length > 0 ? (
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
 
             {exploreCards.map((card: any) => {
 
               const image = card.image
                 ? urlFor(card.image)
                     .width(900)
-                    .height(650)
+                    .height(1100)
                     .fit('crop')
                     .url()
                 : null
@@ -160,34 +162,40 @@ export default async function Home() {
                 <Link
                   key={card._id}
                   href={card.link || '#'}
-                  className="group block overflow-hidden border border-navy/10 bg-cream transition hover:-translate-y-1 hover:shadow-lg"
+                  className="group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-navy"
                 >
 
-                  {image && (
-                    <div className="aspect-[16/10] overflow-hidden bg-shawl">
-                      <img
-                        src={image}
-                        alt={card.title}
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                    </div>
+                  {/* CARD IMAGE */}
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={card.title}
+                      className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-shawl" />
                   )}
 
-                  <div className="border-t-2 border-mustard p-7">
+                  {/* OVERLAY */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-navy/10 to-navy/95" />
 
-                    <div className="mb-10 flex h-10 w-10 items-center justify-center border border-mustard font-display text-lg text-mustard">
-                      +
-                    </div>
+                  {/* PLUS ICON */}
+                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center border border-mustard bg-navy/25 font-display text-xl text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-5 sm:top-5">
+                    +
+                  </div>
 
-                    <h3 className="font-display text-2xl">
+                  {/* CARD CONTENT */}
+                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6">
+
+                    <h3 className="font-display text-2xl leading-none text-cream sm:text-3xl">
                       {card.title}
                     </h3>
 
-                    <p className="mt-3 font-body text-sm leading-6 text-navy/65">
+                    <p className="mt-2 max-w-[95%] font-body text-xs leading-5 text-cream/80 sm:mt-3 sm:text-sm sm:leading-6">
                       {description}
                     </p>
 
-                    <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                    <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-mustard transition group-hover:tracking-[0.18em] sm:mt-5 sm:text-xs">
                       Explore →
                     </span>
 
