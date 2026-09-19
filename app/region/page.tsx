@@ -20,39 +20,90 @@ export default async function Region() {
   const places = await getPlaces()
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16">
-      <p className="font-body text-sm text-shawl">Where Saraiki culture comes from</p>
-      <h1 className="mt-2 font-display text-3xl text-navy sm:text-4xl">Places</h1>
+    <section className="min-h-screen bg-cream text-navy">
 
-      {places.length === 0 ? (
-        <p className="mt-12 font-body text-navy/50">
-          No places added yet. Add your first entry in the Studio.
+      {/* Page Header */}
+      <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
+
+        <p className="font-body text-sm text-shawl">
+          Where Saraiki culture comes from
         </p>
-      ) : (
-        <div className="mt-12 grid gap-8 sm:grid-cols-2">
-          {places.map((place: any) => (
-            <Link
-              key={place._id}
-              href={`/region/${place.slug.current}`}
-              className="block border-t-2 border-mustard pt-4"
-            >
-              {place.coverImage && (
-                <img
-                  src={urlFor(place.coverImage).width(600).height(300).url()}
-                  alt={place.title}
-                  className="mb-3 h-40 w-full object-cover"
-                />
-              )}
-              {place.category && (
-                <p className="font-body text-xs uppercase tracking-wide text-royal">
-                  {place.category.title}
-                </p>
-              )}
-              <h2 className="mt-1 font-display text-xl text-navy">{place.title}</h2>
-            </Link>
-          ))}
-        </div>
-      )}
+
+        <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
+          Places
+        </h1>
+
+      </div>
+
+      {/* Places Content */}
+      <div className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
+
+        {places.length === 0 ? (
+
+          <div className="border-t border-mustard pt-7">
+
+            <p className="max-w-3xl font-body text-base leading-7 text-navy/55 sm:text-lg">
+              No places added yet. Add your first entry in the Studio.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+            {places.map((place: any) => (
+
+              <Link
+                key={place._id}
+                href={`/region/${place.slug.current}`}
+                className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+
+                {place.coverImage && (
+                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
+
+                    <img
+                      src={urlFor(place.coverImage)
+                        .width(900)
+                        .height(506)
+                        .fit('crop')
+                        .url()}
+                      alt={place.title}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+
+                  </div>
+                )}
+
+                <div className="border-t-2 border-mustard p-6">
+
+                  {place.category && (
+                    <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                      {place.category.title}
+                    </p>
+                  )}
+
+                  <h2 className="mt-2 font-display text-2xl text-navy">
+                    {place.title}
+                  </h2>
+
+                  <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                    Explore →
+                  </span>
+
+                </div>
+
+              </Link>
+
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
+
     </section>
   )
 }
