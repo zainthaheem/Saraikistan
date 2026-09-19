@@ -25,11 +25,11 @@ export default async function Celebrities() {
       {/* Page Header */}
       <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
 
-        <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl sm:text-base">
+        <p className="font-body text-sm text-shawl">
           Notable Saraikis
         </p>
 
-        <h1 className="mt-2 font-display text-5xl leading-tight text-navy sm:text-6xl">
+        <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
           People
         </h1>
 
@@ -86,7 +86,7 @@ export default async function Celebrities() {
                       </p>
                     )}
 
-                    <h2 className="mt-2 font-display text-2xl text-navy transition group-hover:text-shawl sm:text-3xl">
+                    <h2 className="mt-2 font-display text-xl text-navy transition group-hover:text-shawl sm:text-2xl">
                       {person.name}
                     </h2>
 
