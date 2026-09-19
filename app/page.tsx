@@ -12,21 +12,25 @@ async function getHomeData() {
         siteTitle,
         tagline
       },
+
       "featuredPeople": *[_type == "person" && featured == true][0...4]{
         name,
         slug,
         profileImage,
         category->{title}
       },
+
       "exploreCards": *[
         _type == "exploreCard" &&
-        showOnHomepage == true
-      ] | order(displayOrder asc){
+        enabled == true
+      ] | order(order asc){
         _id,
         title,
-        cardPicture,
-        pageLink,
-        displayOrder
+        description,
+        image,
+        link,
+        order,
+        enabled
       }
     }
   `)
@@ -111,7 +115,7 @@ export default async function Home() {
       </section>
 
 
-      {/* EXPLORE SARAIkISTAN */}
+      {/* EXPLORE SARAIKISTAN */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
 
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -139,8 +143,8 @@ export default async function Home() {
 
             {exploreCards.map((card: any) => {
 
-              const image = card.cardPicture
-                ? urlFor(card.cardPicture)
+              const image = card.image
+                ? urlFor(card.image)
                     .width(900)
                     .height(650)
                     .fit('crop')
@@ -148,13 +152,14 @@ export default async function Home() {
                 : null
 
               const description =
+                card.description ||
                 defaultDescriptions[card.title] ||
                 'Discover more about Saraikistan.'
 
               return (
                 <Link
                   key={card._id}
-                  href={card.pageLink || '#'}
+                  href={card.link || '#'}
                   className="group block overflow-hidden border border-navy/10 bg-cream transition hover:-translate-y-1 hover:shadow-lg"
                 >
 
