@@ -5,12 +5,20 @@ import { urlFor } from '@/sanity/lib/image'
 export const revalidate = 60
 
 async function searchContent(query: string) {
-  return client.fetch(
-    `*[
+  const safeQuery = query
+    .replace(/[^a-zA-Z0-9\u0600-\u06FF\s-]/g, '')
+    .trim()
+
+  if (!safeQuery) return []
+
+  const searchPattern = `${safeQuery}*`
+
+  return client.fetch(`
+    *[
       _type in ["person", "place", "culture", "newsPost", "story"] &&
       (
-        (_type == "person" && name match $query) ||
-        (_type != "person" && title match $query)
+        (_type == "person" && name match "${searchPattern}") ||
+        (_type != "person" && title match "${searchPattern}")
       )
     ] | order(_type asc, title asc, name asc) {
       _id,
@@ -21,9 +29,8 @@ async function searchContent(query: string) {
       "category": category->{title},
       coverImage,
       profileImage
-    }`,
-    { query: `${query}*` }
-  )
+    }
+  `)
 }
 
 function getResultUrl(item: any) {
@@ -51,23 +58,23 @@ function getTypeLabel(type: string) {
   if (type === 'place') return 'Places'
   if (type === 'culture') return 'Culture'
   if (type === 'newsPost') return 'News'
+
   return 'Stories'
 }
 
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string }
+  searchParams: Promise<{ q?: string }>
 }) {
-  const query = searchParams.q?.trim() || ''
+  const params = await searchParams
+  const query = params.q?.trim() || ''
+
   const results = query ? await searchContent(query) : []
 
   return (
     <section className="min-h-screen bg-cream text-navy">
-
-      {/* Page Header */}
       <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
-
         <p className="font-body text-sm text-shawl">
           Explore Saraikistan
         </p>
@@ -75,20 +82,15 @@ export default async function SearchPage({
         <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
           Search
         </h1>
-
       </div>
 
-      {/* Search */}
       <div className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
-
         <form
           action="/search"
           method="get"
           className="border-t border-mustard pt-7"
         >
-
           <div className="flex flex-col gap-3 sm:flex-row">
-
             <input
               type="search"
               name="q"
@@ -103,44 +105,35 @@ export default async function SearchPage({
             >
               Search
             </button>
-
           </div>
-
         </form>
 
-        {/* Results */}
         {query && (
           <div className="mt-12">
-
             {results.length === 0 ? (
-
               <div className="border-t border-navy/10 pt-7">
-
                 <p className="font-body text-base leading-7 text-navy/60 sm:text-lg">
                   No results found for “{query}”.
                 </p>
-
               </div>
-
             ) : (
-
               <div className="border-t border-navy/10">
-
                 <p className="py-5 font-body text-sm text-navy/50">
-                  {results.length} result{results.length === 1 ? '' : 's'} found
+                  {results.length} result
+                  {results.length === 1 ? '' : 's'} found
                 </p>
 
                 <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
-
                   {results.map((item: any) => {
+                    const image =
+                      item._type === 'person'
+                        ? item.profileImage
+                        : item.coverImage
 
-                    const image = item._type === 'person'
-                      ? item.profileImage
-                      : item.coverImage
-
-                    const title = item._type === 'person'
-                      ? item.name
-                      : item.title
+                    const title =
+                      item._type === 'person'
+                        ? item.name
+                        : item.title
 
                     return (
                       <Link
@@ -148,10 +141,8 @@ export default async function SearchPage({
                         href={getResultUrl(item)}
                         className="group flex items-center gap-5 border-b border-navy/10 py-6 transition hover:bg-navy/[0.02]"
                       >
-
                         {image && (
                           <div className="h-20 w-20 shrink-0 overflow-hidden bg-shawl">
-
                             <img
                               src={urlFor(image)
                                 .width(200)
@@ -161,12 +152,10 @@ export default async function SearchPage({
                               alt={title}
                               className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                             />
-
                           </div>
                         )}
 
                         <div>
-
                           <p className="font-body text-xs uppercase tracking-[0.12em] text-shawl">
                             {getTypeLabel(item._type)}
                           </p>
@@ -180,24 +169,16 @@ export default async function SearchPage({
                               {item.category.title}
                             </p>
                           )}
-
                         </div>
-
                       </Link>
                     )
                   })}
-
                 </div>
-
               </div>
-
             )}
-
           </div>
         )}
-
       </div>
-
     </section>
   )
 }
