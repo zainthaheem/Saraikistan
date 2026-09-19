@@ -54,6 +54,8 @@ export default async function Home() {
         .url()
     : null
 
+  const singleFeaturedPerson = featuredPeople?.length === 1
+
   return (
     <main className="bg-cream text-navy">
 
@@ -137,7 +139,6 @@ export default async function Home() {
           </p>
 
         </div>
-
 
         {exploreCards?.length > 0 ? (
 
@@ -246,14 +247,20 @@ export default async function Home() {
             </div>
 
 
-            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+            <div
+              className={
+                singleFeaturedPerson
+                  ? 'grid grid-cols-1'
+                  : 'grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4'
+              }
+            >
 
               {featuredPeople.map((person: any) => {
 
                 const image = person.profileImage
                   ? urlFor(person.profileImage)
-                      .width(900)
-                      .height(1100)
+                      .width(1200)
+                      .height(800)
                       .fit('crop')
                       .url()
                   : null
@@ -262,14 +269,22 @@ export default async function Home() {
                   <Link
                     key={person.slug?.current || person.name}
                     href={`/celebrities/${person.slug?.current || ''}`}
-                    className="group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl"
+                    className={
+                      singleFeaturedPerson
+                        ? 'group relative block aspect-[16/9] w-full overflow-hidden rounded-[2px] bg-shawl sm:aspect-[2/1] lg:col-span-2 lg:aspect-[2.2/1]'
+                        : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl'
+                    }
                   >
 
                     {image ? (
                       <img
                         src={image}
                         alt={person.name}
-                        className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+                        className={
+                          singleFeaturedPerson
+                            ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105'
+                            : 'absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105'
+                        }
                       />
                     ) : (
                       <div className="absolute inset-0 bg-shawl" />
@@ -285,7 +300,13 @@ export default async function Home() {
 
 
                     {/* PERSON INFO */}
-                    <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6">
+                    <div
+                      className={
+                        singleFeaturedPerson
+                          ? 'absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:p-9'
+                          : 'absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6'
+                      }
+                    >
 
                       {person.category?.title && (
                         <p className="mb-2 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
@@ -293,7 +314,13 @@ export default async function Home() {
                         </p>
                       )}
 
-                      <h3 className="font-display text-2xl leading-[1.05] text-cream sm:text-3xl">
+                      <h3
+                        className={
+                          singleFeaturedPerson
+                            ? 'font-display text-3xl leading-[1.05] text-cream sm:text-4xl lg:text-5xl'
+                            : 'font-display text-2xl leading-[1.05] text-cream sm:text-3xl'
+                        }
+                      >
                         {person.name}
                       </h3>
 
