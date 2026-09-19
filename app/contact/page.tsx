@@ -43,7 +43,7 @@ export default function ContactPage() {
       </section>
 
 
-      {/* WAYS TO CONNECT */}
+      {/* DIRECT CONTACT */}
       <section className="bg-navy text-cream">
 
         <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
@@ -51,6 +51,98 @@ export default function ContactPage() {
           <div className="mb-10">
 
             <p className="font-body text-sm text-mustard">
+              Contact Saraikistan
+            </p>
+
+            <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+              Get in touch directly.
+            </h2>
+
+            <div className="mt-4 h-[2px] w-12 bg-mustard" />
+
+          </div>
+
+
+          <div className="grid gap-6 sm:grid-cols-2">
+
+            {/* EMAIL */}
+            <a
+              href="mailto:hello.saraikistan@gmail.com"
+              className="group border border-cream/15 bg-navy p-7 transition duration-300 hover:-translate-y-1 hover:bg-shawl/30 hover:shadow-xl sm:p-9"
+            >
+
+              <span className="font-display text-3xl text-mustard">
+                01
+              </span>
+
+              <h3 className="mt-6 font-display text-2xl sm:text-3xl">
+                Email
+              </h3>
+
+              <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
+                For general inquiries, collaborations, contributions,
+                media and cultural projects.
+              </p>
+
+              <p className="mt-6 break-all font-body text-sm text-cream transition group-hover:text-mustard sm:text-base">
+                hello.saraikistan@gmail.com
+              </p>
+
+              <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-mustard">
+                Send an email →
+              </span>
+
+            </a>
+
+
+            {/* WHATSAPP */}
+            <a
+              href="https://wa.me/923126789412"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group border border-cream/15 bg-navy p-7 transition duration-300 hover:-translate-y-1 hover:bg-shawl/30 hover:shadow-xl sm:p-9"
+            >
+
+              <span className="font-display text-3xl text-mustard">
+                02
+              </span>
+
+              <h3 className="mt-6 font-display text-2xl sm:text-3xl">
+                WhatsApp
+              </h3>
+
+              <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
+                Contact Saraikistan directly for quick questions,
+                collaborations, events and other inquiries.
+              </p>
+
+              <p className="mt-6 font-body text-sm text-cream transition group-hover:text-mustard sm:text-base">
+                +92 312 6789412
+              </p>
+
+              <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-mustard">
+                Open WhatsApp →
+              </span>
+
+            </a>
+
+          </div>
+
+        </div>
+
+        <div className="tile-rule" />
+
+      </section>
+
+
+      {/* WAYS TO CONNECT */}
+      <section className="bg-cream text-navy">
+
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+
+          <div className="mb-10">
+
+            <p className="font-body text-sm text-shawl">
               Get in touch
             </p>
 
@@ -63,10 +155,10 @@ export default function ContactPage() {
           </div>
 
 
-          <div className="grid gap-px overflow-hidden border border-cream/10 bg-cream/10 sm:grid-cols-2">
+          <div className="grid gap-px overflow-hidden border border-navy/10 bg-navy/10 sm:grid-cols-2">
 
             {/* GENERAL */}
-            <article className="bg-navy p-7 transition hover:bg-shawl/30 sm:p-9">
+            <article className="bg-cream p-7 transition hover:bg-navy/[0.03] sm:p-9">
 
               <span className="font-display text-3xl text-mustard">
                 01
@@ -76,7 +168,7 @@ export default function ContactPage() {
                 General Inquiries
               </h3>
 
-              <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
+              <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
                 Questions about Saraikistan, the website, our content
                 or the cultural archive are always welcome.
               </p>
@@ -85,7 +177,7 @@ export default function ContactPage() {
 
 
             {/* COLLABORATION */}
-            <article className="bg-navy p-7 transition hover:bg-shawl/30 sm:p-9">
+            <article className="bg-cream p-7 transition hover:bg-navy/[0.03] sm:p-9">
 
               <span className="font-display text-3xl text-mustard">
                 02
@@ -95,7 +187,7 @@ export default function ContactPage() {
                 Collaborations
               </h3>
 
-              <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
+              <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
                 Interested in cultural projects, research, creative work,
                 events or initiatives connected to the Saraiki region?
               </p>
@@ -104,7 +196,7 @@ export default function ContactPage() {
 
 
             {/* PROMOTION */}
-            <article className="bg-navy p-7 transition hover:bg-shawl/30 sm:p-9">
+            <article className="bg-cream p-7 transition hover:bg-navy/[0.03] sm:p-9">
 
               <span className="font-display text-3xl text-mustard">
                 03
@@ -114,7 +206,7 @@ export default function ContactPage() {
                 Promotion
               </h3>
 
-              <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
+              <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
                 Artists, musicians, writers, businesses, events and
                 cultural initiatives can contact us about relevant
                 promotional opportunities.
@@ -124,7 +216,7 @@ export default function ContactPage() {
 
 
             {/* CONTRIBUTIONS */}
-            <article className="bg-navy p-7 transition hover:bg-shawl/30 sm:p-9">
+            <article className="bg-cream p-7 transition hover:bg-navy/[0.03] sm:p-9">
 
               <span className="font-display text-3xl text-mustard">
                 04
@@ -134,7 +226,7 @@ export default function ContactPage() {
                 Media & Contributions
               </h3>
 
-              <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
+              <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
                 Share photographs, historical material, interviews,
                 research, personal stories or other material that can
                 help document Saraiki heritage.
@@ -210,12 +302,25 @@ export default function ContactPage() {
               archive, we would love to hear about it.
             </p>
 
-            <Link
-              href="/"
-              className="mt-8 inline-flex border border-cream/70 px-7 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream transition hover:border-mustard hover:bg-mustard hover:text-navy"
-            >
-              Explore Saraikistan
-            </Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+
+              <a
+                href="mailto:hello.saraikistan@gmail.com"
+                className="inline-flex border border-cream/70 px-7 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream transition hover:border-mustard hover:bg-mustard hover:text-navy"
+              >
+                Email Saraikistan
+              </a>
+
+              <a
+                href="https://wa.me/923126789412"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex border border-cream/70 px-7 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream transition hover:border-mustard hover:bg-mustard hover:text-navy"
+              >
+                WhatsApp Us
+              </a>
+
+            </div>
 
           </div>
 
