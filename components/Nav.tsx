@@ -22,9 +22,9 @@ export default async function Nav() {
   const settings = await getSettings()
 
   return (
-    <header className="relative z-50 -mb-20 text-cream">
+    <header className="absolute left-0 right-0 top-0 z-50 text-cream">
 
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-5 sm:px-8 lg:px-10">
 
         {/* Logo */}
         <Link
@@ -35,7 +35,7 @@ export default async function Nav() {
             <img
               src={urlFor(settings.logo).height(120).url()}
               alt="Saraikistan"
-              className="h-12 w-auto max-w-[210px] object-contain sm:h-14 sm:max-w-[240px] lg:h-16 lg:max-w-[270px]"
+              className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
           ) : (
             <span className="font-display text-2xl tracking-tight">
@@ -45,7 +45,7 @@ export default async function Nav() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-4 font-body text-[11px] uppercase tracking-[0.11em] sm:flex lg:gap-5 lg:text-xs">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-3 font-body text-[10px] uppercase tracking-[0.1em] sm:flex lg:gap-4 lg:text-[11px]">
 
           <Link
             href="/"
@@ -67,28 +67,26 @@ export default async function Nav() {
         </nav>
 
         {/* Desktop Search */}
-        <div className="hidden shrink-0 items-center sm:flex">
-          <button
-            type="button"
-            aria-label="Search"
-            className="ml-3 text-cream/90 transition hover:text-mustard"
+        <Link
+          href="/search"
+          aria-label="Search"
+          className="hidden shrink-0 items-center justify-center text-cream/90 transition hover:text-mustard sm:flex"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            className="h-5 w-5"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              className="h-5 w-5"
-            >
-              <circle cx="11" cy="11" r="6.5" />
-              <path d="m16 16 4.5 4.5" />
-            </svg>
-          </button>
-        </div>
+            <circle cx="11" cy="11" r="6.5" />
+            <path d="m16 16 4.5 4.5" />
+          </svg>
+        </Link>
 
         {/* Mobile Menu */}
-        <details className="relative shrink-0 sm:hidden">
+        <details className="relative ml-auto shrink-0 sm:hidden">
 
           <summary
             aria-label="Open navigation menu"
