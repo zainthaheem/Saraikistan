@@ -165,7 +165,6 @@ export default async function Home() {
                   className="group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-navy"
                 >
 
-                  {/* CARD IMAGE */}
                   {image ? (
                     <img
                       src={image}
@@ -176,15 +175,12 @@ export default async function Home() {
                     <div className="absolute inset-0 bg-shawl" />
                   )}
 
-                  {/* IMAGE GRADIENT */}
                   <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-navy/10 to-navy/95" />
 
-                  {/* SMALL PLUS ICON */}
                   <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
                     +
                   </div>
 
-                  {/* CARD CONTENT */}
                   <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6">
 
                     <h3 className="font-display text-2xl leading-none text-cream sm:text-3xl">
@@ -226,35 +222,38 @@ export default async function Home() {
 
           <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
 
-            <div className="mb-10 flex items-end justify-between gap-4">
+            <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
               <div>
                 <p className="font-body text-sm uppercase tracking-[0.18em] text-mustard">
                   People
                 </p>
 
-                <h2 className="mt-2 font-display text-4xl sm:text-5xl">
+                <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
                   Featured People
                 </h2>
+
+                <div className="mt-4 h-[2px] w-12 bg-mustard" />
               </div>
 
               <Link
                 href="/celebrities"
-                className="hidden font-body text-xs uppercase tracking-[0.12em] text-cream/70 transition hover:text-mustard sm:block"
+                className="font-body text-xs uppercase tracking-[0.12em] text-cream/65 transition hover:text-mustard"
               >
                 View all →
               </Link>
 
             </div>
 
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
+
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
 
               {featuredPeople.map((person: any) => {
 
                 const image = person.profileImage
                   ? urlFor(person.profileImage)
-                      .width(500)
-                      .height(600)
+                      .width(900)
+                      .height(1100)
                       .fit('crop')
                       .url()
                   : null
@@ -263,40 +262,53 @@ export default async function Home() {
                   <Link
                     key={person.slug?.current || person.name}
                     href={`/celebrities/${person.slug?.current || ''}`}
-                    className="group"
+                    className="group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl"
                   >
 
-                    <div className="aspect-[4/5] overflow-hidden bg-shawl">
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={person.name}
+                        className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-shawl" />
+                    )}
 
-                      {image ? (
-                        <img
-                          src={image}
-                          alt={person.name}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center font-display text-cream/50">
-                          Saraikistan
-                        </div>
-                      )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
 
+
+                    {/* SMALL PLUS */}
+                    <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
+                      +
                     </div>
 
-                    <p className="mt-4 font-display text-xl">
-                      {person.name}
-                    </p>
 
-                    {person.category?.title && (
-                      <p className="mt-1 font-body text-xs uppercase tracking-[0.12em] text-cream/55">
-                        {person.category.title}
-                      </p>
-                    )}
+                    {/* PERSON INFO */}
+                    <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6">
+
+                      {person.category?.title && (
+                        <p className="mb-2 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
+                          {person.category.title}
+                        </p>
+                      )}
+
+                      <h3 className="font-display text-2xl leading-[1.05] text-cream sm:text-3xl">
+                        {person.name}
+                      </h3>
+
+                      <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/65 transition group-hover:text-mustard group-hover:tracking-[0.18em] sm:text-xs">
+                        View profile →
+                      </span>
+
+                    </div>
 
                   </Link>
                 )
               })}
 
             </div>
+
           </div>
 
           <div className="tile-rule" />
