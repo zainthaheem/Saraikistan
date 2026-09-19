@@ -22,7 +22,8 @@ export default async function Nav() {
   const settings = await getSettings()
 
   return (
-    <header className="absolute left-0 right-0 top-0 z-50 bg-navy/80 text-cream backdrop-blur-sm">
+    <header className="absolute left-0 right-0 top-0 z-50 bg-transparent text-cream">
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
 
         {/* Logo */}
@@ -88,6 +89,7 @@ export default async function Nav() {
 
         {/* Mobile Menu */}
         <details className="relative sm:hidden">
+
           <summary
             aria-label="Open navigation menu"
             className="flex cursor-pointer list-none items-center text-cream transition hover:text-mustard [&::-webkit-details-marker]:hidden"
@@ -106,6 +108,7 @@ export default async function Nav() {
             </svg>
           </summary>
 
+          {/* Mobile Dropdown */}
           <div className="absolute right-0 top-12 z-50 w-64 border border-cream/20 bg-navy shadow-xl">
 
             <Link
@@ -133,9 +136,11 @@ export default async function Nav() {
             </Link>
 
           </div>
+
         </details>
 
       </div>
+
     </header>
   )
 }
