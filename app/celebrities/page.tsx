@@ -20,44 +20,90 @@ export default async function Celebrities() {
   const people = await getPeople()
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16">
-      <p className="font-body text-sm text-shawl">Notable Saraikis</p>
-      <h1 className="mt-2 font-display text-3xl text-navy sm:text-4xl">People</h1>
-      <p className="mt-4 max-w-2xl font-body text-navy/70">
-        Singers, poets, writers, and leaders who represent Saraiki culture.
-      </p>
+    <section className="min-h-screen bg-cream text-navy">
 
-      {people.length === 0 ? (
-        <p className="mt-12 font-body text-navy/50">
-          No people added yet. Add your first entry in the Studio.
+      {/* Page Header */}
+      <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
+
+        <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl sm:text-base">
+          Notable Saraikis
         </p>
-      ) : (
-        <div className="mt-12 grid gap-8 sm:grid-cols-2">
-          {people.map((person: any) => (
-            <Link
-              key={person._id}
-              href={`/celebrities/${person.slug.current}`}
-              className="flex items-start gap-4 border-t-2 border-mustard pt-4"
-            >
-              {person.profileImage && (
-                <img
-                  src={urlFor(person.profileImage).width(96).height(96).url()}
-                  alt={person.name}
-                  className="h-16 w-16 rounded-full object-cover"
-                />
-              )}
-              <div>
-                {person.category && (
-                  <p className="font-body text-xs uppercase tracking-wide text-royal">
-                    {person.category.title}
-                  </p>
-                )}
-                <h2 className="mt-1 font-display text-xl text-navy">{person.name}</h2>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+
+        <h1 className="mt-2 font-display text-5xl leading-tight text-navy sm:text-6xl">
+          People
+        </h1>
+
+        <p className="mt-5 max-w-3xl font-body text-base leading-7 text-navy/65 sm:text-lg">
+          Singers, poets, writers, and leaders who represent Saraiki culture.
+        </p>
+
+      </div>
+
+      {/* People Content */}
+      <div className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
+
+        {people.length === 0 ? (
+
+          <div className="border-t border-mustard pt-7">
+
+            <p className="max-w-3xl font-body text-base leading-7 text-navy/55 sm:text-lg">
+              No people added yet. Add your first entry in the Studio.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="border-t border-mustard">
+
+            <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
+
+              {people.map((person: any) => (
+
+                <Link
+                  key={person._id}
+                  href={`/celebrities/${person.slug.current}`}
+                  className="group flex items-center gap-6 border-b border-navy/10 py-7 transition hover:bg-navy/[0.02]"
+                >
+
+                  {person.profileImage && (
+                    <img
+                      src={urlFor(person.profileImage)
+                        .width(160)
+                        .height(160)
+                        .fit('crop')
+                        .url()}
+                      alt={person.name}
+                      className="h-20 w-20 shrink-0 rounded-full object-cover sm:h-24 sm:w-24"
+                    />
+                  )}
+
+                  <div>
+
+                    {person.category && (
+                      <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                        {person.category.title}
+                      </p>
+                    )}
+
+                    <h2 className="mt-2 font-display text-2xl text-navy transition group-hover:text-shawl sm:text-3xl">
+                      {person.name}
+                    </h2>
+
+                  </div>
+
+                </Link>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        )}
+
+      </div>
+
     </section>
   )
 }
