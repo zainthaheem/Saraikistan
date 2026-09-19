@@ -1,8 +1,10 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-
-export const revalidate = 60
 
 const links = [
   { href: '/culture', label: 'Culture' },
@@ -14,26 +16,53 @@ const links = [
   { href: '/contact', label: 'Contact' },
 ]
 
-async function getSettings() {
-  return client.fetch(`*[_type == "siteSettings"][0]{ logo }`)
-}
+export default function Nav() {
+  const pathname = usePathname()
+  const [logo, setLogo] = useState<any>(null)
 
-export default async function Nav() {
-  const settings = await getSettings()
+  const isHome = pathname === '/'
+
+  useEffect(() => {
+    async function loadLogo() {
+      try {
+        const settings = await client.fetch(
+          `*[_type == "siteSettings"][0]{ logo }`
+        )
+
+        if (settings?.logo) {
+          setLogo(settings.logo)
+        }
+      } catch (error) {
+        console.error('Failed to load logo:', error)
+      }
+    }
+
+    loadLogo()
+  }, [])
 
   return (
-    <header className="absolute left-0 right-0 top-0 z-50 text-cream">
-
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-5 sm:px-8 lg:px-10">
-
+    <header
+      className={
+        isHome
+          ? 'absolute left-0 right-0 top-0 z-50 text-cream'
+          : 'relative z-50 w-full bg-navy text-cream'
+      }
+    >
+      <div
+        className={
+          isHome
+            ? 'mx-auto flex max-w-7xl items-center gap-4 px-5 py-5 sm:px-8 lg:px-10'
+            : 'mx-auto flex min-h-[104px] max-w-7xl items-center gap-4 px-5 py-5 sm:min-h-[112px] sm:px-8 lg:px-10'
+        }
+      >
         {/* Logo */}
         <Link
           href="/"
           className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
-          {settings?.logo ? (
+          {logo ? (
             <img
-              src={urlFor(settings.logo).height(120).url()}
+              src={urlFor(logo).height(120).url()}
               alt="Saraikistan"
               className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
@@ -46,24 +75,36 @@ export default async function Nav() {
 
         {/* Desktop Navigation */}
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-3 font-body text-[10px] uppercase tracking-[0.1em] sm:flex lg:gap-4 lg:text-[11px]">
-
           <Link
             href="/"
-            className="whitespace-nowrap border-b border-mustard pb-1 text-cream transition hover:text-mustard"
+            className={`whitespace-nowrap border-b pb-1 transition ${
+              isHome
+                ? 'border-mustard text-cream'
+                : 'border-transparent text-cream/90 hover:border-mustard hover:text-mustard'
+            }`}
           >
             Home
           </Link>
 
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="whitespace-nowrap border-b border-transparent pb-1 text-cream/90 transition hover:border-mustard hover:text-mustard"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const active =
+              pathname === link.href ||
+              pathname.startsWith(`${link.href}/`)
 
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`whitespace-nowrap border-b pb-1 transition ${
+                  active
+                    ? 'border-mustard text-mustard'
+                    : 'border-transparent text-cream/90 hover:border-mustard hover:text-mustard'
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Desktop Search */}
@@ -87,7 +128,6 @@ export default async function Nav() {
 
         {/* Mobile Menu */}
         <details className="relative ml-auto shrink-0 sm:hidden">
-
           <summary
             aria-label="Open navigation menu"
             className="flex cursor-pointer list-none items-center text-cream transition hover:text-mustard [&::-webkit-details-marker]:hidden"
@@ -108,23 +148,36 @@ export default async function Nav() {
 
           {/* Mobile Dropdown */}
           <div className="absolute right-0 top-12 z-50 w-64 border border-cream/20 bg-navy shadow-xl">
-
             <Link
               href="/"
-              className="block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
+              className={`block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] ${
+                isHome
+                  ? 'text-mustard'
+                  : 'text-cream hover:bg-shawl hover:text-mustard'
+              }`}
             >
               Home
             </Link>
 
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const active =
+                pathname === link.href ||
+                pathname.startsWith(`${link.href}/`)
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] ${
+                    active
+                      ? 'text-mustard'
+                      : 'text-cream hover:bg-shawl hover:text-mustard'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
 
             <Link
               href="/search"
@@ -132,13 +185,9 @@ export default async function Nav() {
             >
               Search
             </Link>
-
           </div>
-
         </details>
-
       </div>
-
     </header>
   )
 }
