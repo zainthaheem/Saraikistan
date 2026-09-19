@@ -176,11 +176,11 @@ export default async function Home() {
                     <div className="absolute inset-0 bg-shawl" />
                   )}
 
-                  {/* OVERLAY */}
+                  {/* IMAGE GRADIENT */}
                   <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-navy/10 to-navy/95" />
 
-                  {/* PLUS ICON */}
-                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center border border-mustard bg-navy/25 font-display text-xl text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-5 sm:top-5">
+                  {/* SMALL PLUS ICON */}
+                  <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
                     +
                   </div>
 
