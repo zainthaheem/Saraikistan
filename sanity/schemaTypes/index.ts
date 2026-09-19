@@ -6,6 +6,7 @@ import {culture} from './culture'
 import {newsPost} from './newsPost'
 import {story} from './story'
 import {siteSettings} from './siteSettings'
+import {exploreCard} from './exploreCard'
 
 export const schemaTypes = [
   category,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   newsPost,
   story,
   siteSettings,
+  exploreCard,
 ]
