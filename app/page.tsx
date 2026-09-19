@@ -17,24 +17,44 @@ async function getHomeData() {
         slug,
         profileImage,
         category->{title}
+      },
+      "exploreCards": *[
+        _type == "exploreCard" &&
+        showOnHomepage == true
+      ] | order(displayOrder asc){
+        _id,
+        title,
+        cardPicture,
+        pageLink,
+        displayOrder
       }
     }
   `)
 }
 
+const defaultDescriptions: Record<string, string> = {
+  Culture: 'Traditions, language, food, music and more.',
+  Places: 'Cities, landscapes and historical places.',
+  People: 'Poets, writers, scholars, singers and more.',
+  Stories: 'Cultural stories, history, interviews and more.',
+}
+
 export default async function Home() {
-  const { settings, featuredPeople } = await getHomeData()
+  const { settings, featuredPeople, exploreCards } = await getHomeData()
 
   const heroImage = settings?.headerImage
-    ? urlFor(settings.headerImage).width(1800).height(1000).fit('crop').url()
+    ? urlFor(settings.headerImage)
+        .width(1800)
+        .height(1000)
+        .fit('crop')
+        .url()
     : null
 
   return (
-    <main className="m-0 w-full bg-cream p-0 text-navy">
+    <main className="bg-cream text-navy">
 
       {/* HERO */}
-      <section className="relative m-0 min-h-[680px] w-full overflow-hidden bg-navy sm:min-h-[720px]">
-
+      <section className="relative min-h-[680px] overflow-hidden bg-navy sm:min-h-[720px]">
         {heroImage && (
           <img
             src={heroImage}
@@ -43,14 +63,11 @@ export default async function Home() {
           />
         )}
 
-        {/* Image overlay */}
         <div className="absolute inset-0 bg-navy/55" />
 
-        {/* Subtle gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
 
         <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-end px-6 pb-16 pt-32 sm:min-h-[720px] sm:px-10 sm:pb-20 lg:px-12">
-
           <div className="max-w-3xl text-cream">
 
             <p className="font-body text-sm uppercase tracking-[0.2em] text-cream/80 sm:text-base">
@@ -72,7 +89,6 @@ export default async function Home() {
             </p>
 
             <div className="mt-9 flex flex-col gap-3 font-body text-sm sm:flex-row">
-
               <Link
                 href="/celebrities"
                 className="bg-mustard px-7 py-4 text-center text-cream transition hover:bg-mustard/90"
@@ -86,19 +102,16 @@ export default async function Home() {
               >
                 Explore the region
               </Link>
-
             </div>
 
           </div>
         </div>
 
-        {/* Textile accent */}
         <div className="absolute bottom-0 left-0 right-0 h-3 bg-[repeating-linear-gradient(90deg,#C8923A_0px,#C8923A_14px,transparent_14px,transparent_28px)]" />
-
       </section>
 
 
-      {/* EXPLORE SARAikistan */}
+      {/* EXPLORE SARAIkISTAN */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
 
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -114,63 +127,82 @@ export default async function Home() {
           </div>
 
           <p className="max-w-md font-body text-sm leading-6 text-navy/60">
-            Explore the people, places, culture and stories that make
-            the Saraiki region unique.
+            Explore the people, places, culture and stories that make the Saraiki region unique.
           </p>
 
         </div>
 
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {exploreCards?.length > 0 ? (
 
-          {[
-            {
-              href: '/culture',
-              title: 'Culture',
-              body: 'Traditions, language, food, music and more.',
-            },
-            {
-              href: '/region',
-              title: 'Places',
-              body: 'Cities, landscapes and historical places.',
-            },
-            {
-              href: '/celebrities',
-              title: 'People',
-              body: 'Poets, writers, scholars, singers and more.',
-            },
-            {
-              href: '/blog',
-              title: 'Stories',
-              body: 'Cultural stories, history, interviews and more.',
-            },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group border border-navy/10 bg-cream p-7 transition hover:-translate-y-1 hover:shadow-lg"
-            >
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 
-              <div className="mb-10 flex h-10 w-10 items-center justify-center border border-mustard font-display text-lg text-mustard">
-                +
-              </div>
+            {exploreCards.map((card: any) => {
 
-              <h3 className="font-display text-2xl">
-                {item.title}
-              </h3>
+              const image = card.cardPicture
+                ? urlFor(card.cardPicture)
+                    .width(900)
+                    .height(650)
+                    .fit('crop')
+                    .url()
+                : null
 
-              <p className="mt-3 font-body text-sm leading-6 text-navy/65">
-                {item.body}
-              </p>
+              const description =
+                defaultDescriptions[card.title] ||
+                'Discover more about Saraikistan.'
 
-              <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-                Explore →
-              </span>
+              return (
+                <Link
+                  key={card._id}
+                  href={card.pageLink || '#'}
+                  className="group block overflow-hidden border border-navy/10 bg-cream transition hover:-translate-y-1 hover:shadow-lg"
+                >
 
-            </Link>
-          ))}
+                  {image && (
+                    <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                      <img
+                        src={image}
+                        alt={card.title}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
 
-        </div>
+                  <div className="border-t-2 border-mustard p-7">
+
+                    <div className="mb-10 flex h-10 w-10 items-center justify-center border border-mustard font-display text-lg text-mustard">
+                      +
+                    </div>
+
+                    <h3 className="font-display text-2xl">
+                      {card.title}
+                    </h3>
+
+                    <p className="mt-3 font-body text-sm leading-6 text-navy/65">
+                      {description}
+                    </p>
+
+                    <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                      Explore →
+                    </span>
+
+                  </div>
+
+                </Link>
+              )
+            })}
+
+          </div>
+
+        ) : (
+
+          <div className="border-t border-mustard pt-7">
+            <p className="max-w-3xl font-body text-base leading-7 text-navy/55 sm:text-lg">
+              Add Explore Cards from the Studio to display them here.
+            </p>
+          </div>
+
+        )}
 
       </section>
 
@@ -201,7 +233,6 @@ export default async function Home() {
               </Link>
 
             </div>
-
 
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
 
@@ -253,7 +284,6 @@ export default async function Home() {
               })}
 
             </div>
-
           </div>
 
           <div className="tile-rule" />
@@ -262,13 +292,12 @@ export default async function Home() {
       )}
 
 
-      {/* FEATURED STORY / CULTURAL MESSAGE */}
+      {/* PURPOSE */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-24 lg:px-12">
 
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
 
           <div>
-
             <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl">
               Our purpose
             </p>
@@ -278,15 +307,14 @@ export default async function Home() {
               <br />
               Saraiki culture.
             </h2>
-
           </div>
 
           <div>
 
             <p className="font-body text-lg leading-8 text-navy/65">
-              Saraikistan brings together the people, places,
-              language, traditions and stories of the Saraiki region
-              in one growing cultural archive.
+              Saraikistan brings together the people, places, language,
+              traditions and stories of the Saraiki region in one growing
+              cultural archive.
             </p>
 
             <Link
