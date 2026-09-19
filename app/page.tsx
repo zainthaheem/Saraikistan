@@ -30,10 +30,10 @@ export default async function Home() {
     : null
 
   return (
-    <main className="bg-cream text-navy">
+    <main className="m-0 w-full bg-cream p-0 text-navy">
 
       {/* HERO */}
-      <section className="relative min-h-[680px] overflow-hidden bg-navy sm:min-h-[720px]">
+      <section className="relative m-0 min-h-[680px] w-full overflow-hidden bg-navy sm:min-h-[720px]">
 
         {heroImage && (
           <img
