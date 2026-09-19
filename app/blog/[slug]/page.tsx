@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -15,11 +16,78 @@ async function getStory(slug: string) {
       gallery,
       videoUrl,
       body,
+      seoTitle,
+      seoDescription,
+      seoImage,
       "relatedPersonName": relatedPerson->name,
       "relatedPersonSlug": relatedPerson->slug.current
     }`,
     { slug }
   )
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const story = await getStory(params.slug)
+
+  if (!story) {
+    return {
+      title: 'Story Not Found | Saraikistan',
+      description:
+        'The requested story could not be found on Saraikistan.',
+    }
+  }
+
+  const title =
+    story.seoTitle ||
+    `${story.title} | Saraikistan`
+
+  const description =
+    story.seoDescription ||
+    `Read ${story.title} on Saraikistan — stories, history, people and culture from the Saraiki region.`
+
+  const image = story.seoImage
+    ? urlFor(story.seoImage).width(1200).height(630).fit('crop').url()
+    : story.coverImage
+      ? urlFor(story.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  return {
+    title,
+    description,
+
+    alternates: {
+      canonical: `https://saraikistan-ml2d.vercel.app/blog/${params.slug}`,
+    },
+
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: `https://saraikistan-ml2d.vercel.app/blog/${params.slug}`,
+      siteName: 'Saraikistan',
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: story.title,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function StoryPage({
@@ -148,7 +216,7 @@ export default async function StoryPage({
                       .height(600)
                       .fit('crop')
                       .url()}
-                    alt=""
+                    alt={`${story.title} — photo ${i + 1}`}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
