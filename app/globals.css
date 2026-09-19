@@ -4,9 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
 body {
-  background-color: #E7DCC8;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-width: 100%;
+  max-width: none;
+  background-color: #0F172A;
   color: #0F172A;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .tile-rule {
