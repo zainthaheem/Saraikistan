@@ -23,13 +23,13 @@ export default async function Culture() {
     <section className="min-h-screen bg-cream text-navy">
 
       {/* Page Header */}
-      <div className="mx-auto max-w-7xl px-6 pb-12 pt-28 sm:px-10 sm:pb-16 sm:pt-32 lg:px-12">
+      <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
 
-        <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl">
+        <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl sm:text-base">
           Traditions that hold it together
         </p>
 
-        <h1 className="mt-3 font-display text-5xl leading-tight text-navy sm:text-6xl">
+        <h1 className="mt-2 font-display text-5xl leading-tight text-navy sm:text-6xl">
           Culture
         </h1>
 
@@ -40,9 +40,9 @@ export default async function Culture() {
 
         {items.length === 0 ? (
 
-          <div className="border-t border-mustard pt-8">
+          <div className="border-t border-mustard pt-7">
 
-            <p className="font-body text-base leading-7 text-navy/55 sm:text-lg">
+            <p className="max-w-3xl font-body text-base leading-7 text-navy/55 sm:text-lg">
               No culture entries added yet. Add your first entry in the Studio.
             </p>
 
