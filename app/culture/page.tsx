@@ -20,39 +20,90 @@ export default async function Culture() {
   const items = await getCulture()
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16">
-      <p className="font-body text-sm text-shawl">Traditions that hold it together</p>
-      <h1 className="mt-2 font-display text-3xl text-navy sm:text-4xl">Culture</h1>
+    <section className="min-h-screen bg-cream text-navy">
 
-      {items.length === 0 ? (
-        <p className="mt-12 font-body text-navy/50">
-          No culture entries added yet. Add your first entry in the Studio.
+      {/* Page Header */}
+      <div className="mx-auto max-w-7xl px-6 pb-12 pt-28 sm:px-10 sm:pb-16 sm:pt-32 lg:px-12">
+
+        <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl">
+          Traditions that hold it together
         </p>
-      ) : (
-        <div className="mt-12 grid gap-8 sm:grid-cols-2">
-          {items.map((item: any) => (
-            <Link
-              key={item._id}
-              href={`/culture/${item.slug.current}`}
-              className="block border-t-2 border-mustard pt-4"
-            >
-              {item.coverImage && (
-                <img
-                  src={urlFor(item.coverImage).width(600).height(300).url()}
-                  alt={item.title}
-                  className="mb-3 h-40 w-full object-cover"
-                />
-              )}
-              {item.category && (
-                <p className="font-body text-xs uppercase tracking-wide text-royal">
-                  {item.category.title}
-                </p>
-              )}
-              <h2 className="mt-1 font-display text-xl text-navy">{item.title}</h2>
-            </Link>
-          ))}
-        </div>
-      )}
+
+        <h1 className="mt-3 font-display text-5xl leading-tight text-navy sm:text-6xl">
+          Culture
+        </h1>
+
+      </div>
+
+      {/* Culture Content */}
+      <div className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
+
+        {items.length === 0 ? (
+
+          <div className="border-t border-mustard pt-8">
+
+            <p className="font-body text-base leading-7 text-navy/55 sm:text-lg">
+              No culture entries added yet. Add your first entry in the Studio.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+            {items.map((item: any) => (
+
+              <Link
+                key={item._id}
+                href={`/culture/${item.slug.current}`}
+                className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+
+                {item.coverImage && (
+                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
+
+                    <img
+                      src={urlFor(item.coverImage)
+                        .width(900)
+                        .height(506)
+                        .fit('crop')
+                        .url()}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+
+                  </div>
+                )}
+
+                <div className="border-t-2 border-mustard p-6">
+
+                  {item.category && (
+                    <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                      {item.category.title}
+                    </p>
+                  )}
+
+                  <h2 className="mt-2 font-display text-2xl text-navy">
+                    {item.title}
+                  </h2>
+
+                  <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                    Explore →
+                  </span>
+
+                </div>
+
+              </Link>
+
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
+
     </section>
   )
 }
