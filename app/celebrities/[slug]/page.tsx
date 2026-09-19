@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PortableText } from '@portabletext/react'
@@ -13,10 +14,79 @@ async function getPerson(slug: string) {
       coverImage,
       gallery,
       bio,
-      socialLinks
+      socialLinks,
+      seoTitle,
+      seoDescription,
+      seoImage
     }`,
     { slug }
   )
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const person = await getPerson(params.slug)
+
+  if (!person) {
+    return {
+      title: 'Person Not Found | Saraikistan',
+      description:
+        'The requested person could not be found on Saraikistan.',
+    }
+  }
+
+  const title =
+    person.seoTitle ||
+    `${person.name} | Saraikistan`
+
+  const description =
+    person.seoDescription ||
+    `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`
+
+  const image = person.seoImage
+    ? urlFor(person.seoImage).width(1200).height(630).fit('crop').url()
+    : person.coverImage
+      ? urlFor(person.coverImage).width(1200).height(630).fit('crop').url()
+      : person.profileImage
+        ? urlFor(person.profileImage).width(1200).height(630).fit('crop').url()
+        : undefined
+
+  return {
+    title,
+    description,
+
+    alternates: {
+      canonical: `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
+    },
+
+    openGraph: {
+      title,
+      description,
+      type: 'profile',
+      url: `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
+      siteName: 'Saraikistan',
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: person.name,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function PersonPage({
@@ -155,7 +225,7 @@ export default async function PersonPage({
                       .height(600)
                       .fit('crop')
                       .url()}
-                    alt=""
+                    alt={`${person.name} — photo ${i + 1}`}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
