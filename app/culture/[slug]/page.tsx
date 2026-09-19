@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PortableText } from '@portabletext/react'
@@ -12,10 +13,77 @@ async function getCultureItem(slug: string) {
       coverImage,
       gallery,
       videoUrl,
-      body
+      body,
+      seoTitle,
+      seoDescription,
+      seoImage
     }`,
     { slug }
   )
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const item = await getCultureItem(params.slug)
+
+  if (!item) {
+    return {
+      title: 'Culture | Saraikistan',
+      description:
+        'Explore Saraiki culture, traditions, language, music and heritage on Saraikistan.',
+    }
+  }
+
+  const title =
+    item.seoTitle ||
+    `${item.title} | Saraikistan`
+
+  const description =
+    item.seoDescription ||
+    `Explore ${item.title}, a part of the cultural traditions and heritage of the Saraiki region.`
+
+  const image = item.seoImage
+    ? urlFor(item.seoImage).width(1200).height(630).fit('crop').url()
+    : item.coverImage
+      ? urlFor(item.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  return {
+    title,
+    description,
+
+    alternates: {
+      canonical: `https://saraikistan-ml2d.vercel.app/culture/${params.slug}`,
+    },
+
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: `https://saraikistan-ml2d.vercel.app/culture/${params.slug}`,
+      siteName: 'Saraikistan',
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: item.title,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function CulturePage({
@@ -129,7 +197,7 @@ export default async function CulturePage({
                       .height(600)
                       .fit('crop')
                       .url()}
-                    alt=""
+                    alt={`${item.title} — photo ${i + 1}`}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
