@@ -41,18 +41,18 @@ export default async function Footer() {
       <div className="tile-rule" />
 
       <section>
-        <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
-          <div className="grid gap-9 sm:grid-cols-[1.35fr_1fr] sm:gap-12">
-            <div>
+        <div className="mx-auto max-w-7xl px-6 py-8 sm:px-10 sm:py-10 lg:px-12">
+          <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between sm:gap-12">
+            <div className="max-w-xl">
               {settings?.logo ? (
                 <Link href="/" className="inline-block">
                   <img
                     src={urlFor(settings.logo)
-                      .height(80)
+                      .height(70)
                       .fit('max')
                       .url()}
                     alt="Saraikistan"
-                    className="h-11 w-auto max-w-[200px] object-contain sm:h-12"
+                    className="h-10 w-auto max-w-[180px] object-contain sm:h-11"
                   />
                 </Link>
               ) : (
@@ -64,30 +64,30 @@ export default async function Footer() {
                 </Link>
               )}
 
-              <p className="mt-4 max-w-lg font-body text-sm leading-6 text-cream/65">
+              <p className="mt-3 max-w-md font-body text-xs leading-5 text-cream/60 sm:text-sm sm:leading-6">
                 {settings?.tagline ||
-                  'People · Culture · Heritage · Beyond — a digital home for the people, culture, language and timeless beauty of the Saraiki region.'}
+                  'People · Culture · Heritage · Beyond — a digital home for the Saraiki region.'}
               </p>
 
               <Link
                 href="/about"
-                className="mt-5 inline-block border-b border-mustard pb-1 font-body text-[11px] uppercase tracking-[0.14em] text-cream transition hover:text-mustard"
+                className="mt-4 inline-block border-b border-mustard pb-1 font-body text-[10px] uppercase tracking-[0.14em] text-cream transition hover:text-mustard"
               >
                 Discover Saraikistan →
               </Link>
             </div>
 
-            <div>
-              <p className="font-body text-[11px] uppercase tracking-[0.18em] text-mustard">
+            <div className="sm:min-w-[260px]">
+              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
                 Explore
               </p>
 
-              <nav className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
+              <nav className="mt-3 grid grid-cols-2 gap-x-8 gap-y-2">
                 {footerLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="font-body text-sm text-cream/70 transition hover:text-mustard"
+                    className="font-body text-xs text-cream/65 transition hover:text-mustard sm:text-sm"
                   >
                     {link.label}
                   </Link>
@@ -96,21 +96,19 @@ export default async function Footer() {
             </div>
           </div>
 
-          <div className="mt-9 border-t border-cream/15 pt-5">
-            <div className="flex flex-col gap-2 font-body text-[11px] text-cream/40 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-7 border-t border-cream/10 pt-4">
+            <div className="flex flex-col gap-1 font-body text-[10px] text-cream/35 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
               <p>
                 © {new Date().getFullYear()} Saraikistan. All rights reserved.
               </p>
 
-              <p>
-                A cultural archive of the Saraiki region.
-              </p>
+              <p>A cultural archive of the Saraiki region.</p>
             </div>
           </div>
         </div>
 
         {footerImage && (
-          <div className="h-20 w-full overflow-hidden sm:h-24">
+          <div className="h-16 w-full overflow-hidden sm:h-20">
             <img
               src={footerImage}
               alt=""
