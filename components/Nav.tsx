@@ -22,9 +22,9 @@ export default async function Nav() {
   const settings = await getSettings()
 
   return (
-    <header className="absolute left-0 right-0 top-0 z-50 bg-transparent text-cream">
+    <header className="relative z-50 -mb-20 text-cream">
 
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
 
         {/* Logo */}
         <Link
