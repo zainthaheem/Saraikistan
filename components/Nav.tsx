@@ -33,9 +33,9 @@ export default async function Nav() {
         >
           {settings?.logo ? (
             <img
-              src={urlFor(settings.logo).height(80).url()}
+              src={urlFor(settings.logo).height(100).url()}
               alt="Saraikistan"
-              className="h-11 w-auto object-contain sm:h-12"
+              className="h-12 w-auto object-contain sm:h-14 lg:h-16"
             />
           ) : (
             <span className="font-display text-2xl tracking-tight">
@@ -45,7 +45,7 @@ export default async function Nav() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-6 font-body text-xs uppercase tracking-[0.12em] sm:flex lg:gap-7">
+        <nav className="hidden items-center gap-5 font-body text-xs uppercase tracking-[0.12em] sm:flex lg:gap-6">
 
           <Link
             href="/"
