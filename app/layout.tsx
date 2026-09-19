@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: 'Saraikistan — People, Culture, Heritage, Beyond',
   description:
     'A digital home for the people, culture, language and timeless beauty of the Saraiki region.',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
