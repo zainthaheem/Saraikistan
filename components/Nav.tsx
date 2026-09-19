@@ -29,13 +29,13 @@ export default async function Nav() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center transition-opacity hover:opacity-90"
+          className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
           {settings?.logo ? (
             <img
-              src={urlFor(settings.logo).height(100).url()}
+              src={urlFor(settings.logo).height(120).url()}
               alt="Saraikistan"
-              className="h-12 w-auto object-contain sm:h-14 lg:h-16"
+              className="h-12 w-auto max-w-[210px] object-contain sm:h-14 sm:max-w-[240px] lg:h-16 lg:max-w-[270px]"
             />
           ) : (
             <span className="font-display text-2xl tracking-tight">
@@ -45,11 +45,11 @@ export default async function Nav() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-5 font-body text-xs uppercase tracking-[0.12em] sm:flex lg:gap-6">
+        <nav className="hidden items-center gap-4 font-body text-[11px] uppercase tracking-[0.11em] sm:flex lg:gap-5 lg:text-xs">
 
           <Link
             href="/"
-            className="border-b border-mustard pb-1 text-cream transition hover:text-mustard"
+            className="whitespace-nowrap border-b border-mustard pb-1 text-cream transition hover:text-mustard"
           >
             Home
           </Link>
@@ -58,7 +58,7 @@ export default async function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className="border-b border-transparent pb-1 text-cream/90 transition hover:border-mustard hover:text-mustard"
+              className="whitespace-nowrap border-b border-transparent pb-1 text-cream/90 transition hover:border-mustard hover:text-mustard"
             >
               {link.label}
             </Link>
@@ -67,11 +67,11 @@ export default async function Nav() {
         </nav>
 
         {/* Desktop Search */}
-        <div className="hidden items-center sm:flex">
+        <div className="hidden shrink-0 items-center sm:flex">
           <button
             type="button"
             aria-label="Search"
-            className="text-cream/90 transition hover:text-mustard"
+            className="ml-3 text-cream/90 transition hover:text-mustard"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +88,7 @@ export default async function Nav() {
         </div>
 
         {/* Mobile Menu */}
-        <details className="relative sm:hidden">
+        <details className="relative shrink-0 sm:hidden">
 
           <summary
             aria-label="Open navigation menu"
