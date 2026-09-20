@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PortableText } from '@portabletext/react'
@@ -13,10 +14,77 @@ async function getNewsPost(slug: string) {
       coverImage,
       gallery,
       videoUrl,
-      body
+      body,
+      seoTitle,
+      seoDescription,
+      seoImage
     }`,
     { slug }
   )
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const post = await getNewsPost(params.slug)
+
+  if (!post) {
+    return {
+      title: 'News Article Not Found | Saraikistan',
+      description:
+        'The requested news article could not be found on Saraikistan.',
+    }
+  }
+
+  const title =
+    post.seoTitle ||
+    `${post.title} | Saraikistan`
+
+  const description =
+    post.seoDescription ||
+    `Read the latest news and developments from the Saraiki region on Saraikistan.`
+
+  const image = post.seoImage
+    ? urlFor(post.seoImage).width(1200).height(630).fit('crop').url()
+    : post.coverImage
+      ? urlFor(post.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  return {
+    title,
+    description,
+
+    alternates: {
+      canonical: `https://saraikistan-ml2d.vercel.app/news/${params.slug}`,
+    },
+
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: `https://saraikistan-ml2d.vercel.app/news/${params.slug}`,
+      siteName: 'Saraikistan',
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function NewsPostPage({
@@ -136,7 +204,7 @@ export default async function NewsPostPage({
                       .height(600)
                       .fit('crop')
                       .url()}
-                    alt=""
+                    alt={`${post.title} — photo ${i + 1}`}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
