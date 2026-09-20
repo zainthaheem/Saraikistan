@@ -33,6 +33,15 @@ export const place = defineType({
     }),
 
     defineField({
+      name: 'imageCredits',
+      title: 'Image Credits',
+      type: 'text',
+      rows: 8,
+      description:
+        'Credit and license information for cover and gallery images. Include photographer, source and license details where applicable.',
+    }),
+
+    defineField({
       name: 'gallery',
       title: 'More Pictures',
       type: 'array',
