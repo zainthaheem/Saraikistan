@@ -95,5 +95,15 @@ export const person = defineType({
       description:
         'Image used when this page is shared on social media.',
     }),
+
+    // IMAGE CREDITS
+    defineField({
+      name: 'imageCredits',
+      title: 'Image Credits',
+      type: 'text',
+      rows: 8,
+      description:
+        'Credit and license information for profile and gallery images. Include photographer, Wikimedia Commons source and license details.',
+    }),
   ],
 })
