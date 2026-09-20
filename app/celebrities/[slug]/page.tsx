@@ -240,13 +240,21 @@ export default async function PersonPage({
         {/* Image Credits */}
         {person.imageCredits && (
           <div className="mt-14 border-t border-navy/10 pt-6">
-            <p className="font-body text-xs uppercase tracking-[0.12em] text-shawl">
-              Image Credits
-            </p>
+            <details className="group max-w-3xl">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
+                <span>Image Credits</span>
 
-            <p className="mt-3 max-w-3xl whitespace-pre-line break-words font-body text-xs leading-6 text-navy/55">
-              {person.imageCredits}
-            </p>
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-navy/15 text-lg leading-none text-shawl transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
+                  +
+                </span>
+              </summary>
+
+              <div className="mt-5 border-l-2 border-mustard/60 pl-4">
+                <p className="whitespace-pre-line break-words font-body text-xs leading-6 text-navy/55">
+                  {person.imageCredits}
+                </p>
+              </div>
+            </details>
           </div>
         )}
 
