@@ -244,7 +244,7 @@ export default async function PersonPage({
               Image Credits
             </p>
 
-            <p className="mt-3 max-w-3xl whitespace-pre-line font-body text-xs leading-6 text-navy/55">
+            <p className="mt-3 max-w-3xl whitespace-pre-line break-words font-body text-xs leading-6 text-navy/55">
               {person.imageCredits}
             </p>
           </div>
