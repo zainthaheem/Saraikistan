@@ -17,7 +17,8 @@ async function getPerson(slug: string) {
       socialLinks,
       seoTitle,
       seoDescription,
-      seoImage
+      seoImage,
+      imageCredits
     }`,
     { slug }
   )
@@ -233,6 +234,19 @@ export default async function PersonPage({
 
             </div>
 
+          </div>
+        )}
+
+        {/* Image Credits */}
+        {person.imageCredits && (
+          <div className="mt-14 border-t border-navy/10 pt-6">
+            <p className="font-body text-xs uppercase tracking-[0.12em] text-shawl">
+              Image Credits
+            </p>
+
+            <p className="mt-3 max-w-3xl whitespace-pre-line font-body text-xs leading-6 text-navy/55">
+              {person.imageCredits}
+            </p>
           </div>
         )}
 
