@@ -6,9 +6,13 @@ import {PortableText} from '@portabletext/react'
 export default function LanguageSwitcher({
   english,
   urdu,
+  englishLabel = 'Biography',
+  urduLabel = 'سوانح',
 }: {
   english: any
   urdu?: any
+  englishLabel?: string
+  urduLabel?: string
 }) {
   const [language, setLanguage] = useState<'en' | 'ur'>('en')
 
@@ -47,11 +51,11 @@ export default function LanguageSwitcher({
         </div>
       )}
 
-      {/* Biography */}
+      {/* Content */}
       {language === 'ur' && hasUrdu ? (
         <div dir="rtl" lang="ur">
           <p className="font-body text-sm text-shawl">
-            سوانح
+            {urduLabel}
           </p>
 
           <div className="prose prose-sm mt-4 max-w-none font-body leading-8 text-navy/75 sm:prose-base">
@@ -61,7 +65,7 @@ export default function LanguageSwitcher({
       ) : (
         <div dir="ltr" lang="en">
           <p className="font-body text-sm text-shawl">
-            Biography
+            {englishLabel}
           </p>
 
           <div className="prose prose-sm mt-4 max-w-none font-body leading-7 text-navy/75 sm:prose-base">
