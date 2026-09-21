@@ -11,6 +11,7 @@ async function getPlace(slug: string) {
       title,
       "category": category->{title},
       coverImage,
+      imageCredits,
       gallery,
       videoUrl,
       body,
@@ -209,8 +210,20 @@ export default async function PlacePage({
           </div>
         )}
 
-      </div>
+        {/* Image Credits */}
+        {place.imageCredits && (
+          <div className="mt-14 border-t border-navy/10 pt-6">
+            <p className="font-body text-xs uppercase tracking-[0.12em] text-shawl">
+              Image Credits
+            </p>
 
+            <p className="mt-3 max-w-3xl whitespace-pre-line font-body text-sm leading-6 text-navy/55">
+              {place.imageCredits}
+            </p>
+          </div>
+        )}
+
+      </div>
     </section>
   )
 }
