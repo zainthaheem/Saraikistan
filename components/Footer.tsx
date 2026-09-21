@@ -39,17 +39,18 @@ export default async function Footer() {
   return (
     <footer className="bg-navy text-cream">
 
+      {/* TOP DECORATIVE RULE */}
       <div className="tile-rule" />
 
       <section className="relative overflow-hidden">
 
-        {/* FOOTER CONTENT */}
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-8 sm:px-10 sm:py-10 lg:px-12">
+        {/* MAIN FOOTER */}
+        <div className="relative z-10 mx-auto max-w-7xl px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-11">
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr] lg:gap-12">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
 
             {/* BRAND */}
-            <div className="max-w-md">
+            <div className="max-w-lg">
 
               {settings?.logo ? (
                 <Link href="/" className="inline-block">
@@ -86,7 +87,7 @@ export default async function Footer() {
                 Explore
               </p>
 
-              <nav className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2">
+              <nav className="mt-3 grid grid-cols-2 gap-x-7 gap-y-2">
 
                 {footerLinks.map((link) => (
                   <Link
@@ -162,9 +163,9 @@ export default async function Footer() {
         </div>
 
 
-        {/* INTEGRATED FOOTER IMAGE */}
+        {/* INTEGRATED TEXTILE FOOTER IMAGE */}
         {footerImage && (
-          <div className="relative h-16 w-full overflow-hidden sm:h-20">
+          <div className="relative h-14 w-full overflow-hidden sm:h-16 lg:h-20">
 
             <img
               src={footerImage}
@@ -173,7 +174,7 @@ export default async function Footer() {
               className="absolute inset-0 h-full w-full object-cover object-bottom"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy/20 to-transparent" />
 
           </div>
         )}
