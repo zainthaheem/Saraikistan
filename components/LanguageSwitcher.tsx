@@ -27,25 +27,25 @@ export default function LanguageSwitcher({
       ),
 
       h1: ({children}: any) => (
-        <h1 className="mb-7 mt-8 border-l-[3px] border-mustard pl-4 font-display text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.015em] text-navy sm:mb-9 sm:mt-10 sm:pl-5 sm:text-3xl">
+        <h1 className="mb-6 mt-8 border-l-[3px] border-mustard pl-4 font-display text-[1.75rem] font-medium leading-[1.35] tracking-normal text-navy sm:mb-7 sm:mt-9 sm:pl-5 sm:text-[2rem]">
           {children}
         </h1>
       ),
 
       h2: ({children}: any) => (
-        <h2 className="mb-5 mt-10 border-b border-mustard/60 pb-3 font-display text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.01em] text-navy sm:mb-6 sm:mt-13 sm:text-[1.8rem]">
+        <h2 className="mb-4 mt-9 border-b border-mustard/50 pb-2 font-display text-[1.4rem] font-medium leading-[1.45] tracking-normal text-navy sm:mb-5 sm:mt-11 sm:text-[1.65rem]">
           {children}
         </h2>
       ),
 
       h3: ({children}: any) => (
-        <h3 className="mb-4 mt-8 font-display text-[1.2rem] font-semibold leading-[1.25] text-navy sm:mb-5 sm:mt-10 sm:text-[1.45rem]">
+        <h3 className="mb-3 mt-7 font-display text-[1.15rem] font-medium leading-[1.5] tracking-normal text-navy sm:mb-4 sm:mt-9 sm:text-[1.3rem]">
           {children}
         </h3>
       ),
 
       h4: ({children}: any) => (
-        <h4 className="mb-3 mt-7 border-l-2 border-mustard/70 pl-3 font-display text-[1.05rem] font-semibold leading-[1.3] text-shawl sm:mt-8 sm:text-lg">
+        <h4 className="mb-3 mt-6 border-l-2 border-mustard/70 pl-3 font-display text-[1rem] font-medium leading-[1.5] text-shawl sm:mt-8 sm:text-[1.1rem]">
           {children}
         </h4>
       ),
@@ -53,13 +53,13 @@ export default function LanguageSwitcher({
 
     list: {
       bullet: ({children}: any) => (
-        <ul className="mb-6 mt-2 list-disc list-outside space-y-1.5 pl-6 font-body text-[15px] leading-7 text-navy/75 marker:text-mustard marker:text-[0.8em] sm:mb-7 sm:space-y-2 sm:pl-7 sm:text-base sm:leading-8">
+        <ul className="mb-5 mt-2 list-disc list-outside space-y-1 pl-6 font-body text-[15px] leading-7 text-navy/75 marker:text-mustard marker:text-[0.75em] sm:mb-6 sm:space-y-1.5 sm:pl-7 sm:text-base sm:leading-8">
           {children}
         </ul>
       ),
 
       number: ({children}: any) => (
-        <ol className="mb-6 mt-2 list-decimal list-outside space-y-1.5 pl-7 font-body text-[15px] leading-7 text-navy/75 marker:font-semibold marker:text-shawl sm:mb-7 sm:space-y-2 sm:pl-8 sm:text-base sm:leading-8">
+        <ol className="mb-5 mt-2 list-decimal list-outside space-y-1 pl-7 font-body text-[15px] leading-7 text-navy/75 marker:font-semibold marker:text-shawl sm:mb-6 sm:space-y-1.5 sm:pl-8 sm:text-base sm:leading-8">
           {children}
         </ol>
       ),
@@ -95,7 +95,7 @@ export default function LanguageSwitcher({
   }
 
   return (
-    <div className="mt-10 max-w-3xl">
+    <div className="mt-9 max-w-3xl">
       {/* Language Switcher */}
       {hasUrdu && (
         <div className="mb-7 flex items-center gap-1 border-b border-navy/10 pb-3 font-body text-xs">
@@ -140,16 +140,53 @@ export default function LanguageSwitcher({
               font-body
               text-navy/75
               [&_h1]:text-right
+              [&_h1]:!text-[1.75rem]
+              [&_h1]:!leading-[1.55]
+              [&_h1]:!font-medium
+              [&_h1]:!tracking-normal
+              [&_h1]:!mb-6
+              [&_h1]:!mt-7
+
               [&_h2]:text-right
+              [&_h2]:!text-[1.4rem]
+              [&_h2]:!leading-[1.6]
+              [&_h2]:!font-medium
+              [&_h2]:!tracking-normal
+              [&_h2]:!mb-4
+              [&_h2]:!mt-9
+
               [&_h3]:text-right
+              [&_h3]:!text-[1.15rem]
+              [&_h3]:!leading-[1.7]
+              [&_h3]:!font-medium
+              [&_h3]:!tracking-normal
+              [&_h3]:!mb-3
+              [&_h3]:!mt-7
+
               [&_h4]:text-right
+              [&_h4]:!text-[1rem]
+              [&_h4]:!leading-[1.7]
+              [&_h4]:!font-medium
+              [&_h4]:!mb-3
+              [&_h4]:!mt-6
+
               [&_p]:text-right
+              [&_p]:!text-[15px]
+              [&_p]:!leading-[2.15]
+              [&_p]:!mb-5
+
               [&_ul]:pr-7
               [&_ul]:pl-0
               [&_ul]:list-disc
+              [&_ul]:!leading-[2.1]
+              [&_ul]:!mb-5
+
               [&_ol]:pr-8
               [&_ol]:pl-0
               [&_ol]:list-decimal
+              [&_ol]:!leading-[2.1]
+              [&_ol]:!mb-5
+
               [&_li]:pr-1
               [&_li]:pl-0
             "
