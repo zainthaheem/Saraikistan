@@ -53,6 +53,13 @@ export const culture = defineType({
     }),
 
     defineField({
+      name: 'bodyUrdu',
+      title: 'Content (Urdu)',
+      type: 'array',
+      of: [{type: 'block'}],
+    }),
+
+    defineField({
       name: 'featured',
       title: 'Featured on Homepage',
       type: 'boolean',
