@@ -163,10 +163,16 @@ export default async function NewsPostPage({
       ? { isBasedOn: post.source }
       : {}),
     inLanguage: 'en',
-    author: {
-      '@type': post.author ? 'Person' : 'Organization',
-      name: post.author || 'Saraikistan',
-    },
+    author: post.author
+      ? {
+          '@type': 'Person',
+          name: post.author,
+        }
+      : {
+          '@type': 'Organization',
+          name: 'Saraikistan',
+          url: 'https://saraikistan-ml2d.vercel.app',
+        },
     publisher: {
       '@type': 'Organization',
       name: 'Saraikistan',
