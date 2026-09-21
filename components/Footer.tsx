@@ -31,76 +31,90 @@ export default async function Footer() {
   const footerImage = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(1800)
-        .height(400)
+        .height(500)
         .fit('crop')
         .url()
     : null
 
   return (
     <footer className="bg-navy text-cream">
+
       <div className="tile-rule" />
 
-      <section>
-        <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14 lg:px-12">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr] lg:gap-16">
+      <section className="relative overflow-hidden">
+
+        {/* FOOTER CONTENT */}
+        <div className="relative z-10 mx-auto max-w-7xl px-6 py-8 sm:px-10 sm:py-10 lg:px-12">
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr] lg:gap-12">
 
             {/* BRAND */}
-            <div className="max-w-xl">
+            <div className="max-w-md">
+
               {settings?.logo ? (
                 <Link href="/" className="inline-block">
                   <img
                     src={urlFor(settings.logo)
-                      .height(90)
+                      .height(75)
                       .fit('max')
                       .url()}
                     alt="Saraikistan"
-                    className="h-11 w-auto max-w-[200px] object-contain sm:h-12"
+                    className="h-9 w-auto max-w-[175px] object-contain sm:h-10"
                   />
                 </Link>
               ) : (
                 <Link
                   href="/"
-                  className="font-display text-2xl tracking-tight"
+                  className="font-display text-xl tracking-tight"
                 >
                   {settings?.siteTitle || 'Saraikistan'}
                 </Link>
               )}
 
-              <p className="mt-4 max-w-md font-body text-sm leading-6 text-cream/60">
+              <p className="mt-3 max-w-md font-body text-xs leading-5 text-cream/55 sm:text-sm sm:leading-6">
                 {settings?.tagline ||
                   'People · Culture · Heritage · Beyond — a digital home for the Saraiki region.'}
               </p>
+
             </div>
+
 
             {/* EXPLORE */}
             <div>
+
               <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
                 Explore
               </p>
 
-              <nav className="mt-4 grid grid-cols-2 gap-x-8 gap-y-3">
+              <nav className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2">
+
                 {footerLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="font-body text-sm text-cream/60 transition hover:text-mustard"
+                    className="font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
                   >
                     {link.label}
                   </Link>
                 ))}
+
               </nav>
+
             </div>
 
-            {/* CONTACT */}
+
+            {/* CONNECT */}
             <div>
+
               <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
                 Connect
               </p>
 
-              <div className="mt-4 space-y-3">
+              <div className="mt-3 space-y-2">
+
                 <a
                   href="mailto:hello.saraikistan@gmail.com"
-                  className="block font-body text-sm text-cream/60 transition hover:text-mustard"
+                  className="block font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
                 >
                   hello.saraikistan@gmail.com
                 </a>
@@ -109,24 +123,30 @@ export default async function Footer() {
                   href="https://wa.me/923126789412"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block font-body text-sm text-cream/60 transition hover:text-mustard"
+                  className="block font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
                 >
                   +92 312 6789412
                 </a>
 
                 <Link
                   href="/contact"
-                  className="inline-block pt-2 font-body text-[10px] uppercase tracking-[0.14em] text-cream/60 transition hover:text-mustard"
+                  className="inline-block pt-1 font-body text-[10px] uppercase tracking-[0.12em] text-cream/55 transition hover:text-mustard"
                 >
                   Contact Saraikistan →
                 </Link>
+
               </div>
+
             </div>
+
           </div>
 
+
           {/* COPYRIGHT */}
-          <div className="mt-10 border-t border-cream/10 pt-5">
-            <div className="flex flex-col gap-2 font-body text-[10px] text-cream/35 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
+          <div className="mt-7 border-t border-cream/10 pt-4">
+
+            <div className="flex flex-col gap-1 font-body text-[10px] text-cream/30 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
+
               <p>
                 © {new Date().getFullYear()} Saraikistan. All rights reserved.
               </p>
@@ -134,22 +154,32 @@ export default async function Footer() {
               <p>
                 A cultural archive of the Saraiki region.
               </p>
+
             </div>
+
           </div>
+
         </div>
 
-        {/* FOOTER IMAGE */}
+
+        {/* INTEGRATED FOOTER IMAGE */}
         {footerImage && (
-          <div className="h-20 w-full overflow-hidden sm:h-24">
+          <div className="relative h-16 w-full overflow-hidden sm:h-20">
+
             <img
               src={footerImage}
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover object-bottom"
+              className="absolute inset-0 h-full w-full object-cover object-bottom"
             />
+
+            <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy/30 to-transparent" />
+
           </div>
         )}
+
       </section>
+
     </footer>
   )
 }
