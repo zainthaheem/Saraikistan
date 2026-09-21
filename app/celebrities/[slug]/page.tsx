@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { PortableText } from '@portabletext/react'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
 
@@ -14,6 +14,7 @@ async function getPerson(slug: string) {
       coverImage,
       gallery,
       bio,
+      bioUrdu,
       socialLinks,
       seoTitle,
       seoDescription,
@@ -220,19 +221,12 @@ export default async function PersonPage({
           </div>
         )}
 
-        {/* Biography */}
+        {/* Biography + Language Switcher */}
         {person.bio && (
-          <div className="mt-10 max-w-3xl">
-
-            <p className="font-body text-sm text-shawl">
-              Biography
-            </p>
-
-            <div className="prose prose-sm mt-4 max-w-none font-body leading-7 text-navy/75 sm:prose-base">
-              <PortableText value={person.bio} />
-            </div>
-
-          </div>
+          <LanguageSwitcher
+            english={person.bio}
+            urdu={person.bioUrdu}
+          />
         )}
 
         {/* Gallery */}
