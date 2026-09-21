@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
 
 export const person = defineType({
   name: 'person',
@@ -51,6 +52,9 @@ export const person = defineType({
       title: 'Biography — English',
       type: 'array',
       of: [{type: 'block'}],
+      components: {
+        input: MarkdownPortableTextInput,
+      },
     }),
 
     defineField({
@@ -60,6 +64,9 @@ export const person = defineType({
       of: [{type: 'block'}],
       description:
         'Urdu translation of the biography. Write naturally in Urdu; do not use automatic machine translation.',
+      components: {
+        input: MarkdownPortableTextInput,
+      },
     }),
 
     defineField({
