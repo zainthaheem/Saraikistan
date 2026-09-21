@@ -12,6 +12,7 @@ const links = [
   { href: '/celebrities', label: 'People' },
   { href: '/blog', label: 'Stories' },
   { href: '/news', label: 'News' },
+  { href: '/translator', label: 'Translator' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ]
