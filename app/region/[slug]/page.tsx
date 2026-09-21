@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { PortableText } from '@portabletext/react'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
 
@@ -15,6 +15,7 @@ async function getPlace(slug: string) {
       gallery,
       videoUrl,
       body,
+      bodyUrdu,
       seoTitle,
       seoDescription,
       seoImage
@@ -192,19 +193,14 @@ export default async function PlacePage({
           </div>
         )}
 
-        {/* Body */}
+        {/* Body + Language Switcher */}
         {place.body && (
-          <div className="mt-10 max-w-3xl">
-
-            <p className="font-body text-sm text-shawl">
-              About this place
-            </p>
-
-            <div className="prose prose-sm mt-4 max-w-none font-body leading-7 text-navy/75 sm:prose-base">
-              <PortableText value={place.body} />
-            </div>
-
-          </div>
+          <LanguageSwitcher
+            english={place.body}
+            urdu={place.bodyUrdu}
+            englishLabel="About this place"
+            urduLabel="اس جگہ کے بارے میں"
+          />
         )}
 
         {/* Gallery */}
