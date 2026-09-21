@@ -48,9 +48,18 @@ export const person = defineType({
 
     defineField({
       name: 'bio',
-      title: 'Biography',
+      title: 'Biography — English',
       type: 'array',
       of: [{type: 'block'}],
+    }),
+
+    defineField({
+      name: 'bioUrdu',
+      title: 'Biography — اردو',
+      type: 'array',
+      of: [{type: 'block'}],
+      description:
+        'Urdu translation of the biography. Write naturally in Urdu; do not use automatic machine translation.',
     }),
 
     defineField({
@@ -67,23 +76,43 @@ export const person = defineType({
       initialValue: false,
     }),
 
-    // SEO SETTINGS
+    // SEO SETTINGS — ENGLISH
     defineField({
       name: 'seoTitle',
-      title: 'SEO Title',
+      title: 'SEO Title — English',
       type: 'string',
       description:
-        'Title shown in search engine results. Keep it around 50–60 characters.',
+        'Title shown in English search engine results. Keep it around 50–60 characters.',
       validation: (Rule) => Rule.max(60),
     }),
 
     defineField({
       name: 'seoDescription',
-      title: 'SEO Description',
+      title: 'SEO Description — English',
       type: 'text',
       rows: 3,
       description:
-        'Short description shown in search engine results. Keep it around 140–160 characters.',
+        'Short English description shown in search engine results. Keep it around 140–160 characters.',
+      validation: (Rule) => Rule.max(160),
+    }),
+
+    // SEO SETTINGS — URDU
+    defineField({
+      name: 'seoTitleUrdu',
+      title: 'SEO Title — اردو',
+      type: 'string',
+      description:
+        'اردو صفحے کے لیے سرچ انجن ٹائٹل۔',
+      validation: (Rule) => Rule.max(60),
+    }),
+
+    defineField({
+      name: 'seoDescriptionUrdu',
+      title: 'SEO Description — اردو',
+      type: 'text',
+      rows: 3,
+      description:
+        'اردو صفحے کے لیے مختصر سرچ انجن تفصیل۔',
       validation: (Rule) => Rule.max(160),
     }),
 
