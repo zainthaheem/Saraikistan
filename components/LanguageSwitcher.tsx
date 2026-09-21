@@ -27,25 +27,25 @@ export default function LanguageSwitcher({
       ),
 
       h1: ({children}: any) => (
-        <h1 className="mb-8 mt-8 border-l-[3px] border-mustard pl-4 font-display text-[2rem] font-semibold leading-[1.12] tracking-[-0.02em] text-navy sm:mb-10 sm:mt-10 sm:pl-5 sm:text-4xl">
+        <h1 className="mb-7 mt-8 border-l-[3px] border-mustard pl-4 font-display text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.015em] text-navy sm:mb-9 sm:mt-10 sm:pl-5 sm:text-3xl">
           {children}
         </h1>
       ),
 
       h2: ({children}: any) => (
-        <h2 className="mb-5 mt-11 border-b border-mustard/60 pb-3 font-display text-[1.75rem] font-semibold leading-[1.15] tracking-[-0.015em] text-navy sm:mb-6 sm:mt-14 sm:text-3xl">
+        <h2 className="mb-5 mt-10 border-b border-mustard/60 pb-3 font-display text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.01em] text-navy sm:mb-6 sm:mt-13 sm:text-[1.8rem]">
           {children}
         </h2>
       ),
 
       h3: ({children}: any) => (
-        <h3 className="mb-4 mt-9 font-display text-[1.35rem] font-semibold leading-[1.2] text-navy sm:mb-5 sm:mt-11 sm:text-2xl">
+        <h3 className="mb-4 mt-8 font-display text-[1.2rem] font-semibold leading-[1.25] text-navy sm:mb-5 sm:mt-10 sm:text-[1.45rem]">
           {children}
         </h3>
       ),
 
       h4: ({children}: any) => (
-        <h4 className="mb-3 mt-7 border-l-2 border-mustard/70 pl-3 font-display text-lg font-semibold leading-[1.25] text-shawl sm:mt-9 sm:text-xl">
+        <h4 className="mb-3 mt-7 border-l-2 border-mustard/70 pl-3 font-display text-[1.05rem] font-semibold leading-[1.3] text-shawl sm:mt-8 sm:text-lg">
           {children}
         </h4>
       ),
@@ -139,20 +139,17 @@ export default function LanguageSwitcher({
               mt-5
               font-body
               text-navy/75
-
               [&_h1]:text-right
               [&_h2]:text-right
               [&_h3]:text-right
               [&_h4]:text-right
               [&_p]:text-right
-
               [&_ul]:pr-7
               [&_ul]:pl-0
               [&_ul]:list-disc
               [&_ol]:pr-8
               [&_ol]:pl-0
               [&_ol]:list-decimal
-
               [&_li]:pr-1
               [&_li]:pl-0
             "
