@@ -32,10 +32,51 @@ export const newsPost = defineType({
     }),
 
     defineField({
+      name: 'author',
+      title: 'Author / Reporter',
+      type: 'string',
+      description:
+        'Name of the person who wrote or reported this news article.',
+    }),
+
+    defineField({
+      name: 'source',
+      title: 'Source',
+      type: 'string',
+      description:
+        'Original source of the information, such as Saraikistan, a news organization, government department or official statement.',
+    }),
+
+    defineField({
+      name: 'newsType',
+      title: 'News Type',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Original Reporting', value: 'original-reporting'},
+          {title: 'Press Release', value: 'press-release'},
+          {title: 'Source Report', value: 'source-report'},
+          {title: 'Editorial / Analysis', value: 'editorial-analysis'},
+          {title: 'Community Submission', value: 'community-submission'},
+        ],
+        layout: 'dropdown',
+      },
+    }),
+
+    defineField({
       name: 'coverImage',
       title: 'Cover Picture',
       type: 'image',
       options: {hotspot: true},
+    }),
+
+    defineField({
+      name: 'imageCredits',
+      title: 'Image Credits',
+      type: 'text',
+      rows: 8,
+      description:
+        'Credit and license information for cover and gallery images. Include photographer, source and license details where applicable.',
     }),
 
     defineField({
