@@ -20,7 +20,7 @@ async function getHomeData() {
         category->{title}
       },
 
-      "featuredStories": *[_type == "story"] | order(featured desc, publishedAt desc)[0...3]{
+      "featuredStories": *[_type == "story"] | order(featured desc, publishedAt desc)[0...2]{
         _id,
         title,
         slug,
@@ -29,7 +29,7 @@ async function getHomeData() {
         coverImage
       },
 
-      "latestNews": *[_type == "newsPost"] | order(publishedAt desc)[0...3]{
+      "latestNews": *[_type == "newsPost"] | order(publishedAt desc)[0...2]{
         _id,
         title,
         slug,
@@ -290,7 +290,6 @@ export default async function Home() {
 
             </div>
 
-
             <div
               className={
                 singleFeaturedPerson
@@ -413,15 +412,14 @@ export default async function Home() {
 
           </div>
 
-
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-2">
 
             {featuredStories.map((story: any) => {
 
               const image = story.coverImage
                 ? urlFor(story.coverImage)
-                    .width(900)
-                    .height(600)
+                    .width(1000)
+                    .height(625)
                     .fit('crop')
                     .url()
                 : null
@@ -514,15 +512,14 @@ export default async function Home() {
 
             </div>
 
-
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-2">
 
               {latestNews.map((item: any) => {
 
                 const image = item.coverImage
                   ? urlFor(item.coverImage)
-                      .width(900)
-                      .height(600)
+                      .width(1000)
+                      .height(625)
                       .fit('crop')
                       .url()
                   : null
@@ -635,52 +632,6 @@ export default async function Home() {
           </div>
 
         </div>
-
-      </section>
-
-
-      {/* CLOSING BANNER */}
-      <section className="bg-navy text-cream">
-
-        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
-
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
-
-            <div>
-
-              <p className="font-body text-sm text-mustard">
-                Saraikistan
-              </p>
-
-              <h2 className="mt-4 max-w-2xl font-display text-4xl leading-tight sm:text-5xl">
-                People. Culture.
-                <br />
-                Heritage. Beyond.
-              </h2>
-
-            </div>
-
-            <div>
-
-              <p className="max-w-xl font-body text-base leading-7 text-cream/65 sm:text-lg sm:leading-8">
-                Explore the people, places, traditions, stories and
-                contemporary life of the Saraiki region.
-              </p>
-
-              <Link
-                href="/about"
-                className="mt-7 inline-block border border-cream/50 px-6 py-3 font-body text-xs uppercase tracking-[0.12em] text-cream transition hover:border-mustard hover:bg-mustard hover:text-navy"
-              >
-                About Saraikistan →
-              </Link>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="tile-rule" />
 
       </section>
 
