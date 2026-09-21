@@ -70,6 +70,10 @@ export async function generateMetadata(): Promise<Metadata> {
     creator: 'Saraikistan',
     publisher: 'Saraikistan',
 
+    verification: {
+      google: 'NjAgnLZ3JG6G2QHd4t2PhirONbwdU2ags6jPpdl5Yp4',
+    },
+
     alternates: {
       canonical: 'https://saraikistan-ml2d.vercel.app',
     },
@@ -123,11 +127,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="m-0 w-full overflow-x-hidden font-body">
         <Nav />
-
         <main className="m-0 min-h-screen w-full max-w-none p-0">
           {children}
         </main>
-
         <Footer />
       </body>
     </html>
