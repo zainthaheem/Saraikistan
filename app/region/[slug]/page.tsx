@@ -108,8 +108,43 @@ export default async function PlacePage({
     )
   }
 
+  const placeUrl = `https://saraikistan-ml2d.vercel.app/region/${params.slug}`
+
+  const placeImage = place.seoImage
+    ? urlFor(place.seoImage).width(1200).height(630).fit('crop').url()
+    : place.coverImage
+      ? urlFor(place.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  const placeSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Place',
+    '@id': `${placeUrl}#place`,
+    name: place.title,
+    url: placeUrl,
+    description:
+      place.seoDescription ||
+      `Explore ${place.title}, its history, culture and significance in the Saraiki region.`,
+    ...(placeImage ? { image: placeImage } : {}),
+    ...(place.category?.title
+      ? { additionalType: place.category.title }
+      : {}),
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': placeUrl,
+    },
+  }
+
   return (
     <section className="min-h-screen bg-cream text-navy">
+
+      {/* Place Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(placeSchema).replace(/</g, '\\u003c'),
+        }}
+      />
 
       {/* Cover Image */}
       {place.coverImage && (
