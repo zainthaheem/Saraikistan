@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-cream text-navy">
@@ -33,7 +31,7 @@ export default function ContactPage() {
               Saraikistan is a growing digital archive of the people,
               culture, language, history and stories of the Saraiki region.
               We welcome meaningful ideas, collaborations and contributions
-              that help document and celebrate this heritage.
+              that help document and share this heritage.
             </p>
 
           </div>
@@ -80,8 +78,8 @@ export default function ContactPage() {
               </h3>
 
               <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
-                For general inquiries, collaborations, contributions,
-                media and cultural projects.
+                For general inquiries, collaborations, cultural projects,
+                media inquiries, news submissions and contributions.
               </p>
 
               <p className="mt-6 break-all font-body text-sm text-cream transition group-hover:text-mustard sm:text-base">
@@ -112,8 +110,8 @@ export default function ContactPage() {
               </h3>
 
               <p className="mt-4 font-body text-sm leading-6 text-cream/65 sm:text-base sm:leading-7">
-                Contact Saraikistan directly for quick questions,
-                collaborations, events and other inquiries.
+                For quick questions, collaborations, events and
+                other inquiries.
               </p>
 
               <p className="mt-6 font-body text-sm text-cream transition group-hover:text-mustard sm:text-base">
@@ -169,8 +167,8 @@ export default function ContactPage() {
               </h3>
 
               <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
-                Questions about Saraikistan, the website, our content
-                or the cultural archive are always welcome.
+                Questions about Saraikistan, the website, its content
+                or the cultural archive are welcome.
               </p>
 
             </article>
@@ -207,15 +205,15 @@ export default function ContactPage() {
               </h3>
 
               <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
-                Artists, musicians, writers, businesses, events and
-                cultural initiatives can contact us about relevant
+                Artists, musicians, writers, cultural organizations,
+                events and relevant initiatives can contact us about
                 promotional opportunities.
               </p>
 
             </article>
 
 
-            {/* CONTRIBUTIONS */}
+            {/* NEWS & CONTRIBUTIONS */}
             <article className="bg-cream p-7 transition hover:bg-navy/[0.03] sm:p-9">
 
               <span className="font-display text-3xl text-mustard">
@@ -223,13 +221,13 @@ export default function ContactPage() {
               </span>
 
               <h3 className="mt-6 font-display text-2xl sm:text-3xl">
-                Media & Contributions
+                News & Contributions
               </h3>
 
               <p className="mt-4 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
                 Share photographs, historical material, interviews,
-                research, personal stories or other material that can
-                help document Saraiki heritage.
+                research, news, personal stories or other material that
+                can help document Saraiki heritage.
               </p>
 
             </article>
@@ -293,13 +291,14 @@ export default function ContactPage() {
             </p>
 
             <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
-              Have a story worth telling?
+              Have something worth sharing?
             </h2>
 
             <p className="mt-6 font-body text-base leading-7 text-cream/70 sm:text-lg sm:leading-8">
-              Saraikistan grows through the stories and knowledge of its
-              people. If you have something that belongs in this cultural
-              archive, we would love to hear about it.
+              Saraikistan grows through the stories, knowledge and
+              contributions of its people. If you have material that could
+              become part of this cultural archive, we would love to hear
+              from you.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
