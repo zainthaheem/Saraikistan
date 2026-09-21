@@ -107,8 +107,54 @@ export default async function CulturePage({
     )
   }
 
+  const itemUrl = `https://saraikistan-ml2d.vercel.app/culture/${params.slug}`
+
+  const itemImage = item.seoImage
+    ? urlFor(item.seoImage).width(1200).height(630).fit('crop').url()
+    : item.coverImage
+      ? urlFor(item.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  const cultureSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${itemUrl}#article`,
+    headline: item.title,
+    description:
+      item.seoDescription ||
+      `Explore ${item.title}, a part of the cultural traditions and heritage of the Saraiki region.`,
+    url: itemUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': itemUrl,
+    },
+    ...(itemImage ? { image: itemImage } : {}),
+    ...(item.category?.title
+      ? { articleSection: item.category.title }
+      : {}),
+    inLanguage: 'en',
+    author: {
+      '@type': 'Organization',
+      name: 'Saraikistan',
+      url: 'https://saraikistan-ml2d.vercel.app',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Saraikistan',
+      url: 'https://saraikistan-ml2d.vercel.app',
+    },
+  }
+
   return (
     <section className="min-h-screen bg-cream text-navy">
+
+      {/* Culture Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(cultureSchema).replace(/</g, '\\u003c'),
+        }}
+      />
 
       {/* Cover Image */}
       {item.coverImage && (
