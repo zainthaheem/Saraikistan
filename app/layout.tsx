@@ -118,18 +118,65 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const settings = await getSiteSettings()
+
+  const siteTitle = settings?.siteTitle || 'Saraikistan'
+
+  const description =
+    settings?.tagline ||
+    'A digital home for the people, culture, language, heritage and stories of the Saraiki region.'
+
+  const socialImage = settings?.headerImage
+    ? urlFor(settings.headerImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .url()
+    : undefined
+
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteTitle,
+    alternateName: 'Saraikistan',
+    url: 'https://saraikistan-ml2d.vercel.app',
+    description,
+    publisher: {
+      '@type': 'Organization',
+      name: siteTitle,
+      url: 'https://saraikistan-ml2d.vercel.app',
+      logo: socialImage
+        ? {
+            '@type': 'ImageObject',
+            url: socialImage,
+          }
+        : undefined,
+    },
+  }
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+      </head>
+
       <body className="m-0 w-full overflow-x-hidden font-body">
         <Nav />
+
         <main className="m-0 min-h-screen w-full max-w-none p-0">
           {children}
         </main>
+
         <Footer />
       </body>
     </html>
