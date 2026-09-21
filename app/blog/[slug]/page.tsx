@@ -112,8 +112,66 @@ export default async function StoryPage({
     )
   }
 
+  const storyUrl = `https://saraikistan-ml2d.vercel.app/blog/${params.slug}`
+
+  const articleImage = story.seoImage
+    ? urlFor(story.seoImage).width(1200).height(630).fit('crop').url()
+    : story.coverImage
+      ? urlFor(story.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${storyUrl}#article`,
+    headline: story.title,
+    description:
+      story.seoDescription ||
+      `Read ${story.title} on Saraikistan — stories, history, people and culture from the Saraiki region.`,
+    url: storyUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': storyUrl,
+    },
+    ...(story.publishedAt
+      ? { datePublished: story.publishedAt }
+      : {}),
+    ...(articleImage ? { image: articleImage } : {}),
+    ...(story.category?.title
+      ? { articleSection: story.category.title }
+      : {}),
+    inLanguage: 'en',
+    author: {
+      '@type': 'Organization',
+      name: 'Saraikistan',
+      url: 'https://saraikistan-ml2d.vercel.app',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Saraikistan',
+      url: 'https://saraikistan-ml2d.vercel.app',
+    },
+    ...(story.relatedPersonName && story.relatedPersonSlug
+      ? {
+          about: {
+            '@type': 'Person',
+            name: story.relatedPersonName,
+            url: `https://saraikistan-ml2d.vercel.app/celebrities/${story.relatedPersonSlug}`,
+          },
+        }
+      : {}),
+  }
+
   return (
     <section className="min-h-screen bg-cream text-navy">
+
+      {/* Article Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleSchema).replace(/</g, '\\u003c'),
+        }}
+      />
 
       {/* Cover Image */}
       {story.coverImage && (
