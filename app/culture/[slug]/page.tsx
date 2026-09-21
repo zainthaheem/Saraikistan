@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { PortableText } from '@portabletext/react'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
 
@@ -14,6 +14,7 @@ async function getCultureItem(slug: string) {
       gallery,
       videoUrl,
       body,
+      bodyUrdu,
       seoTitle,
       seoDescription,
       seoImage
@@ -128,9 +129,9 @@ export default async function CulturePage({
       '@type': 'WebPage',
       '@id': itemUrl,
     },
-    ...(itemImage ? { image: itemImage } : {}),
+    ...(itemImage ? {image: itemImage} : {}),
     ...(item.category?.title
-      ? { articleSection: item.category.title }
+      ? {articleSection: item.category.title}
       : {}),
     inLanguage: 'en',
     author: {
@@ -201,19 +202,14 @@ export default async function CulturePage({
           </div>
         )}
 
-        {/* Body */}
+        {/* Bilingual Content */}
         {item.body && (
-          <div className="mt-10 max-w-3xl">
-
-            <p className="font-body text-sm text-shawl">
-              About this tradition
-            </p>
-
-            <div className="prose prose-sm mt-4 max-w-none font-body leading-7 text-navy/75 sm:prose-base">
-              <PortableText value={item.body} />
-            </div>
-
-          </div>
+          <LanguageSwitcher
+            english={item.body}
+            urdu={item.bodyUrdu}
+            englishLabel="About this tradition"
+            urduLabel="اس روایت کے بارے میں"
+          />
         )}
 
         {/* Gallery */}
