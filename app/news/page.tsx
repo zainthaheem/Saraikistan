@@ -12,6 +12,9 @@ async function getNews() {
       slug,
       "category": category->{title},
       publishedAt,
+      author,
+      source,
+      newsType,
       summary,
       coverImage
     }`
@@ -24,6 +27,18 @@ function formatDate(date: string) {
     month: 'short',
     year: 'numeric',
   })
+}
+
+function formatNewsType(type: string) {
+  const labels: Record<string, string> = {
+    'original-reporting': 'Original Reporting',
+    'press-release': 'Press Release',
+    'source-report': 'Source Report',
+    'editorial-analysis': 'Editorial / Analysis',
+    'community-submission': 'Community Submission',
+  }
+
+  return labels[type] || type
 }
 
 export default async function News() {
@@ -59,8 +74,8 @@ export default async function News() {
           <div className="max-w-3xl">
 
             <p className="font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
-              Latest updates, announcements and stories from across
-              the Saraiki region.
+              Latest updates, announcements and developments from
+              across the Saraiki region.
             </p>
 
           </div>
@@ -98,7 +113,7 @@ export default async function News() {
 
         <>
 
-          {/* FEATURED STORY */}
+          {/* FEATURED NEWS */}
           <section className="mx-auto max-w-7xl px-6 pb-16 sm:px-10 sm:pb-20 lg:px-12">
 
             <Link
@@ -149,6 +164,13 @@ export default async function News() {
                     </p>
                   )}
 
+                  {/* AUTHOR */}
+                  {featured.author && (
+                    <p className="mt-2 font-body text-xs text-cream/55">
+                      By {featured.author}
+                    </p>
+                  )}
+
                   {/* TITLE */}
                   <h2 className="mt-5 font-display text-3xl leading-tight sm:text-4xl lg:text-5xl">
                     {featured.title}
@@ -161,9 +183,22 @@ export default async function News() {
                     </p>
                   )}
 
+                  {/* SOURCE / TYPE */}
+                  <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-body text-[10px] uppercase tracking-[0.12em] text-cream/45">
+                    {featured.source && (
+                      <span>Source · {featured.source}</span>
+                    )}
+
+                    {featured.newsType && (
+                      <span>
+                        {formatNewsType(featured.newsType)}
+                      </span>
+                    )}
+                  </div>
+
                   {/* LINK */}
                   <span className="mt-8 inline-block font-body text-xs uppercase tracking-[0.14em] text-mustard">
-                    Read story →
+                    Read news →
                   </span>
 
                 </div>
@@ -182,21 +217,17 @@ export default async function News() {
 
               <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
 
-                <div className="mb-10 flex items-end justify-between gap-5">
+                <div className="mb-10">
 
-                  <div>
+                  <p className="font-body text-sm text-shawl">
+                    Latest updates
+                  </p>
 
-                    <p className="font-body text-sm text-shawl">
-                      Latest stories
-                    </p>
+                  <h2 className="mt-2 font-display text-4xl sm:text-5xl">
+                    More News
+                  </h2>
 
-                    <h2 className="mt-2 font-display text-4xl sm:text-5xl">
-                      More News
-                    </h2>
-
-                    <div className="mt-4 h-[2px] w-12 bg-mustard" />
-
-                  </div>
+                  <div className="mt-4 h-[2px] w-12 bg-mustard" />
 
                 </div>
 
@@ -255,6 +286,13 @@ export default async function News() {
                             </p>
                           )}
 
+                          {/* AUTHOR */}
+                          {item.author && (
+                            <p className="mt-2 font-body text-[11px] text-navy/50">
+                              By {item.author}
+                            </p>
+                          )}
+
                           {/* TITLE */}
                           <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
                             {item.title}
@@ -266,6 +304,19 @@ export default async function News() {
                               {item.summary}
                             </p>
                           )}
+
+                          {/* SOURCE / TYPE */}
+                          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 font-body text-[9px] uppercase tracking-[0.1em] text-navy/40">
+                            {item.source && (
+                              <span>Source · {item.source}</span>
+                            )}
+
+                            {item.newsType && (
+                              <span>
+                                {formatNewsType(item.newsType)}
+                              </span>
+                            )}
+                          </div>
 
                           {/* LINK */}
                           <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
