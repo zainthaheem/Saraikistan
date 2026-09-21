@@ -212,15 +212,21 @@ export default async function PlacePage({
 
         {/* Image Credits */}
         {place.imageCredits && (
-          <div className="mt-14 border-t border-navy/10 pt-6">
-            <p className="font-body text-xs uppercase tracking-[0.12em] text-shawl">
-              Image Credits
-            </p>
+          <details className="group mt-14 border-t border-navy/10 pt-5">
+            <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
+              <span>Image Credits</span>
 
-            <p className="mt-3 max-w-3xl whitespace-pre-line font-body text-sm leading-6 text-navy/55">
-              {place.imageCredits}
-            </p>
-          </div>
+              <span className="flex h-7 w-7 items-center justify-center border border-navy/15 text-lg leading-none transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
+                +
+              </span>
+            </summary>
+
+            <div className="mt-5 max-w-3xl border-l-2 border-mustard pl-5">
+              <p className="whitespace-pre-line font-body text-sm leading-6 text-navy/60">
+                {place.imageCredits}
+              </p>
+            </div>
+          </details>
         )}
 
       </div>
