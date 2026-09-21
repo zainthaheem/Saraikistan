@@ -20,6 +20,26 @@ async function getHomeData() {
         category->{title}
       },
 
+      "featuredStories": *[_type == "story"] | order(featured desc, publishedAt desc)[0...3]{
+        _id,
+        title,
+        slug,
+        summary,
+        publishedAt,
+        coverImage
+      },
+
+      "latestNews": *[_type == "newsPost"] | order(publishedAt desc)[0...3]{
+        _id,
+        title,
+        slug,
+        "category": category->{title},
+        publishedAt,
+        author,
+        summary,
+        coverImage
+      },
+
       "exploreCards": *[
         _type == "exploreCard" &&
         enabled == true
@@ -43,8 +63,22 @@ const defaultDescriptions: Record<string, string> = {
   Stories: 'Cultural stories, history, interviews and more.',
 }
 
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
 export default async function Home() {
-  const { settings, featuredPeople, exploreCards } = await getHomeData()
+  const {
+    settings,
+    featuredPeople,
+    featuredStories,
+    latestNews,
+    exploreCards,
+  } = await getHomeData()
 
   const heroImage = settings?.headerImage
     ? urlFor(settings.headerImage)
@@ -61,6 +95,7 @@ export default async function Home() {
 
       {/* HERO */}
       <section className="relative min-h-[680px] overflow-hidden bg-navy sm:min-h-[720px]">
+
         {heroImage && (
           <img
             src={heroImage}
@@ -74,10 +109,11 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
 
         <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-end px-6 pb-16 pt-32 sm:min-h-[720px] sm:px-10 sm:pb-20 lg:px-12">
+
           <div className="max-w-3xl text-cream">
 
-            <p className="font-body text-sm uppercase tracking-[0.2em] text-cream/80 sm:text-base">
-              The Saraiki belt, told by its own people
+            <p className="font-body text-sm text-cream/80 sm:text-base">
+              A digital home for the Saraiki region
             </p>
 
             <h1 className="mt-5 font-display text-5xl leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
@@ -89,17 +125,17 @@ export default async function Home() {
             </h1>
 
             <p className="mt-7 max-w-2xl font-body text-base leading-7 text-cream/85 sm:text-lg sm:leading-8">
-              Biographies of the singers, poets, writers and leaders
-              who carry Saraiki culture forward, the history of the
-              region they come from, and the traditions that hold it together.
+              Discover the people, places, culture, language, heritage and
+              stories that shape the Saraiki region.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 font-body text-sm sm:flex-row">
+
               <Link
-                href="/celebrities"
+                href="/culture"
                 className="bg-mustard px-7 py-4 text-center text-cream transition hover:bg-mustard/90"
               >
-                Meet notable Saraikis
+                Explore the culture
               </Link>
 
               <Link
@@ -108,12 +144,15 @@ export default async function Home() {
               >
                 Explore the region
               </Link>
+
             </div>
 
           </div>
+
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-3 bg-[repeating-linear-gradient(90deg,#C8923A_0px,#C8923A_14px,transparent_14px,transparent_28px)]" />
+
       </section>
 
 
@@ -123,7 +162,8 @@ export default async function Home() {
         <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 
           <div>
-            <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl">
+
+            <p className="font-body text-sm text-shawl">
               Discover
             </p>
 
@@ -132,10 +172,12 @@ export default async function Home() {
             </h2>
 
             <div className="mt-4 h-[2px] w-12 bg-mustard" />
+
           </div>
 
           <p className="max-w-md font-body text-sm leading-6 text-navy/60">
-            Explore the people, places, culture and stories that make the Saraiki region unique.
+            Explore the people, places, culture and stories that make the
+            Saraiki region unique.
           </p>
 
         </div>
@@ -226,7 +268,8 @@ export default async function Home() {
             <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
               <div>
-                <p className="font-body text-sm uppercase tracking-[0.18em] text-mustard">
+
+                <p className="font-body text-sm text-mustard">
                   People
                 </p>
 
@@ -235,6 +278,7 @@ export default async function Home() {
                 </h2>
 
                 <div className="mt-4 h-[2px] w-12 bg-mustard" />
+
               </div>
 
               <Link
@@ -292,12 +336,10 @@ export default async function Home() {
 
                     <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
 
-                    {/* SMALL PLUS */}
                     <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
                       +
                     </div>
 
-                    {/* PERSON INFO */}
                     <div
                       className={
                         singleFeaturedPerson
@@ -342,13 +384,228 @@ export default async function Home() {
       )}
 
 
+      {/* STORIES */}
+      {featuredStories?.length > 0 && (
+        <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+
+          <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+
+            <div>
+
+              <p className="font-body text-sm text-shawl">
+                Long-form
+              </p>
+
+              <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+                Stories
+              </h2>
+
+              <div className="mt-4 h-[2px] w-12 bg-mustard" />
+
+            </div>
+
+            <Link
+              href="/blog"
+              className="font-body text-xs uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard"
+            >
+              View all →
+            </Link>
+
+          </div>
+
+
+          <div className="grid gap-6 lg:grid-cols-3">
+
+            {featuredStories.map((story: any) => {
+
+              const image = story.coverImage
+                ? urlFor(story.coverImage)
+                    .width(900)
+                    .height(600)
+                    .fit('crop')
+                    .url()
+                : null
+
+              return (
+                <Link
+                  key={story._id}
+                  href={`/blog/${story.slug.current}`}
+                  className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
+
+                  <div className="aspect-[16/10] overflow-hidden bg-shawl">
+
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={story.title}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center font-display text-cream/40">
+                        Saraikistan
+                      </div>
+                    )}
+
+                  </div>
+
+                  <div className="border-t-2 border-mustard p-6">
+
+                    {story.publishedAt && (
+                      <p className="font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
+                        {formatDate(story.publishedAt)}
+                      </p>
+                    )}
+
+                    <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                      {story.title}
+                    </h3>
+
+                    {story.summary && (
+                      <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                        {story.summary}
+                      </p>
+                    )}
+
+                    <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                      Read story →
+                    </span>
+
+                  </div>
+
+                </Link>
+              )
+            })}
+
+          </div>
+
+        </section>
+      )}
+
+
+      {/* LATEST NEWS */}
+      {latestNews?.length > 0 && (
+        <section className="border-t border-navy/10">
+
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+
+            <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+
+              <div>
+
+                <p className="font-body text-sm text-shawl">
+                  Latest updates
+                </p>
+
+                <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+                  News
+                </h2>
+
+                <div className="mt-4 h-[2px] w-12 bg-mustard" />
+
+              </div>
+
+              <Link
+                href="/news"
+                className="font-body text-xs uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard"
+              >
+                View all →
+              </Link>
+
+            </div>
+
+
+            <div className="grid gap-6 lg:grid-cols-3">
+
+              {latestNews.map((item: any) => {
+
+                const image = item.coverImage
+                  ? urlFor(item.coverImage)
+                      .width(900)
+                      .height(600)
+                      .fit('crop')
+                      .url()
+                  : null
+
+                return (
+                  <Link
+                    key={item._id}
+                    href={`/news/${item.slug.current}`}
+                    className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  >
+
+                    <div className="aspect-[16/10] overflow-hidden bg-shawl">
+
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={item.title}
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center font-display text-cream/40">
+                          Saraikistan
+                        </div>
+                      )}
+
+                    </div>
+
+                    <div className="border-t-2 border-mustard p-6">
+
+                      {item.category?.title && (
+                        <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
+                          {item.category.title}
+                        </p>
+                      )}
+
+                      {item.publishedAt && (
+                        <p className="mt-2 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
+                          {formatDate(item.publishedAt)}
+                        </p>
+                      )}
+
+                      <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                        {item.title}
+                      </h3>
+
+                      {item.summary && (
+                        <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                          {item.summary}
+                        </p>
+                      )}
+
+                      {item.author && (
+                        <p className="mt-4 font-body text-xs text-navy/45">
+                          By {item.author}
+                        </p>
+                      )}
+
+                      <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                        Read news →
+                      </span>
+
+                    </div>
+
+                  </Link>
+                )
+              })}
+
+            </div>
+
+          </div>
+
+        </section>
+      )}
+
+
       {/* PURPOSE */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-24 lg:px-12">
 
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
 
           <div>
-            <p className="font-body text-sm uppercase tracking-[0.18em] text-shawl">
+
+            <p className="font-body text-sm text-shawl">
               Our purpose
             </p>
 
@@ -357,6 +614,7 @@ export default async function Home() {
               <br />
               Saraiki culture.
             </h2>
+
           </div>
 
           <div>
@@ -377,6 +635,52 @@ export default async function Home() {
           </div>
 
         </div>
+
+      </section>
+
+
+      {/* CLOSING BANNER */}
+      <section className="bg-navy text-cream">
+
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
+
+            <div>
+
+              <p className="font-body text-sm text-mustard">
+                Saraikistan
+              </p>
+
+              <h2 className="mt-4 max-w-2xl font-display text-4xl leading-tight sm:text-5xl">
+                People. Culture.
+                <br />
+                Heritage. Beyond.
+              </h2>
+
+            </div>
+
+            <div>
+
+              <p className="max-w-xl font-body text-base leading-7 text-cream/65 sm:text-lg sm:leading-8">
+                Explore the people, places, traditions, stories and
+                contemporary life of the Saraiki region.
+              </p>
+
+              <Link
+                href="/about"
+                className="mt-7 inline-block border border-cream/50 px-6 py-3 font-body text-xs uppercase tracking-[0.12em] text-cream transition hover:border-mustard hover:bg-mustard hover:text-navy"
+              >
+                About Saraikistan →
+              </Link>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="tile-rule" />
 
       </section>
 
