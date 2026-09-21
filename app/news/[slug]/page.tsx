@@ -11,7 +11,11 @@ async function getNewsPost(slug: string) {
       title,
       "category": category->{title},
       publishedAt,
+      author,
+      source,
+      newsType,
       coverImage,
+      imageCredits,
       gallery,
       videoUrl,
       body,
@@ -21,6 +25,18 @@ async function getNewsPost(slug: string) {
     }`,
     { slug }
   )
+}
+
+function formatNewsType(type: string) {
+  const labels: Record<string, string> = {
+    'original-reporting': 'Original Reporting',
+    'press-release': 'Press Release',
+    'source-report': 'Source Report',
+    'editorial-analysis': 'Editorial / Analysis',
+    'community-submission': 'Community Submission',
+  }
+
+  return labels[type] || type
 }
 
 export async function generateMetadata({
@@ -142,9 +158,38 @@ export default async function NewsPostPage({
             {post.title}
           </h1>
 
-          {post.publishedAt && (
-            <p className="mt-4 font-body text-sm text-navy/50">
-              {new Date(post.publishedAt).toLocaleDateString()}
+          {/* ARTICLE META */}
+          <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 font-body text-xs text-navy/50">
+
+            {post.publishedAt && (
+              <span>
+                Published ·{' '}
+                {new Date(post.publishedAt).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </span>
+            )}
+
+            {post.author && (
+              <span>
+                By {post.author}
+              </span>
+            )}
+
+            {post.newsType && (
+              <span>
+                {formatNewsType(post.newsType)}
+              </span>
+            )}
+
+          </div>
+
+          {/* SOURCE */}
+          {post.source && (
+            <p className="mt-3 font-body text-xs text-navy/45">
+              Source · {post.source}
             </p>
           )}
 
@@ -213,6 +258,33 @@ export default async function NewsPostPage({
             </div>
 
           </div>
+        )}
+
+        {/* Image Credits */}
+        {post.imageCredits && (
+          <details className="group mt-14 border-t border-navy/10 pt-5">
+
+            <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
+
+              <span>
+                Image Credits
+              </span>
+
+              <span className="flex h-7 w-7 items-center justify-center border border-navy/15 text-lg leading-none transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
+                +
+              </span>
+
+            </summary>
+
+            <div className="mt-5 max-w-3xl border-l-2 border-mustard pl-5">
+
+              <p className="whitespace-pre-line font-body text-sm leading-6 text-navy/60">
+                {post.imageCredits}
+              </p>
+
+            </div>
+
+          </details>
         )}
 
       </div>
