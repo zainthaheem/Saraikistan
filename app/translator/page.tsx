@@ -1,18 +1,70 @@
 'use client'
 
-import {useState} from 'react'
+import { useState } from 'react'
 
 export default function TranslatorPage() {
   const [sourceLanguage, setSourceLanguage] = useState('English')
   const [targetLanguage, setTargetLanguage] = useState('Saraiki')
   const [text, setText] = useState('')
   const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const isRTL = (language: string) =>
+    language === 'Saraiki' || language === 'اردو'
 
   const swapLanguages = () => {
     setSourceLanguage(targetLanguage)
     setTargetLanguage(sourceLanguage)
     setText(result)
     setResult(text)
+    setError('')
+  }
+
+  const translateText = async () => {
+    if (!text.trim()) {
+      setError('Please enter some text to translate.')
+      setResult('')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+    setResult('')
+
+    try {
+      const response = await fetch('/api/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          sourceLanguage,
+          targetLanguage,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error || 'Translation failed. Please try again.'
+        )
+      }
+
+      setResult(data.translation || '')
+    } catch (error) {
+      console.error('Translation error:', error)
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Unable to translate at this time.'
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -37,7 +89,10 @@ export default function TranslatorPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
             <select
               value={sourceLanguage}
-              onChange={(e) => setSourceLanguage(e.target.value)}
+              onChange={(e) => {
+                setSourceLanguage(e.target.value)
+                setError('')
+              }}
               className="border border-navy/15 bg-white px-5 py-3 font-body text-sm text-navy outline-none focus:border-mustard"
             >
               <option>English</option>
@@ -57,7 +112,10 @@ export default function TranslatorPage() {
 
             <select
               value={targetLanguage}
-              onChange={(e) => setTargetLanguage(e.target.value)}
+              onChange={(e) => {
+                setTargetLanguage(e.target.value)
+                setError('')
+              }}
               className="border border-navy/15 bg-white px-5 py-3 font-body text-sm text-navy outline-none focus:border-mustard"
             >
               <option>Saraiki</option>
@@ -78,8 +136,12 @@ export default function TranslatorPage() {
 
             <textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value)
+                setError('')
+              }}
               placeholder="Type or paste your text here..."
+              dir={isRTL(sourceLanguage) ? 'rtl' : 'ltr'}
               className="min-h-[300px] w-full resize-none bg-transparent px-5 py-5 font-body text-base leading-7 text-navy outline-none placeholder:text-navy/35"
               maxLength={5000}
             />
@@ -97,14 +159,16 @@ export default function TranslatorPage() {
             </div>
 
             <div
-              dir={
-                targetLanguage === 'Saraiki' || targetLanguage === 'اردو'
-                  ? 'rtl'
-                  : 'ltr'
-              }
+              dir={isRTL(targetLanguage) ? 'rtl' : 'ltr'}
               className="min-h-[350px] px-5 py-5 font-body text-base leading-8 text-navy"
             >
-              {result || (
+              {loading ? (
+                <span className="text-shawl">
+                  Translating...
+                </span>
+              ) : result ? (
+                result
+              ) : (
                 <span className="text-navy/35">
                   Your translation will appear here.
                 </span>
@@ -113,17 +177,20 @@ export default function TranslatorPage() {
           </div>
         </div>
 
+        {error && (
+          <div className="mt-5 border border-red-300 bg-red-50 px-5 py-4 font-body text-sm leading-6 text-red-700">
+            {error}
+          </div>
+        )}
+
         <div className="mt-6 flex justify-center">
           <button
             type="button"
-            onClick={() =>
-              setResult(
-                'Translation engine will be connected here in the next step.'
-              )
-            }
-            className="border border-mustard bg-mustard px-8 py-3 font-body text-sm text-white transition hover:bg-navy hover:text-cream"
+            onClick={translateText}
+            disabled={loading}
+            className="border border-mustard bg-mustard px-8 py-3 font-body text-sm text-white transition hover:bg-navy hover:text-cream disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Translate
+            {loading ? 'Translating...' : 'Translate'}
           </button>
         </div>
 
