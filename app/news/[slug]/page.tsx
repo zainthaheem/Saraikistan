@@ -124,8 +124,69 @@ export default async function NewsPostPage({
     )
   }
 
+  const postUrl =
+    `https://saraikistan-ml2d.vercel.app/news/${params.slug}`
+
+  const articleImage = post.seoImage
+    ? urlFor(post.seoImage).width(1200).height(630).fit('crop').url()
+    : post.coverImage
+      ? urlFor(post.coverImage).width(1200).height(630).fit('crop').url()
+      : undefined
+
+  const newsArticleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    '@id': `${postUrl}#newsarticle`,
+    headline: post.title,
+    description:
+      post.seoDescription ||
+      `Read the latest news and developments from the Saraiki region on Saraikistan.`,
+    url: postUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': postUrl,
+    },
+    ...(post.publishedAt
+      ? {
+          datePublished: post.publishedAt,
+          dateModified: post.publishedAt,
+        }
+      : {}),
+    ...(articleImage ? { image: articleImage } : {}),
+    ...(post.category?.title
+      ? { articleSection: post.category.title }
+      : {}),
+    ...(post.newsType
+      ? { genre: formatNewsType(post.newsType) }
+      : {}),
+    ...(post.source
+      ? { isBasedOn: post.source }
+      : {}),
+    inLanguage: 'en',
+    author: {
+      '@type': post.author ? 'Person' : 'Organization',
+      name: post.author || 'Saraikistan',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Saraikistan',
+      url: 'https://saraikistan-ml2d.vercel.app',
+    },
+  }
+
   return (
     <section className="min-h-screen bg-cream text-navy">
+
+      {/* NewsArticle Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(newsArticleSchema).replace(
+            /</g,
+            '\\u003c'
+          ),
+        }}
+      />
 
       {/* Cover Image */}
       {post.coverImage && (
