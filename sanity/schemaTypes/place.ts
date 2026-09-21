@@ -56,7 +56,14 @@ export const place = defineType({
 
     defineField({
       name: 'body',
-      title: 'Content',
+      title: 'Content (English)',
+      type: 'array',
+      of: [{type: 'block'}],
+    }),
+
+    defineField({
+      name: 'bodyUrdu',
+      title: 'Content (Urdu)',
       type: 'array',
       of: [{type: 'block'}],
     }),
