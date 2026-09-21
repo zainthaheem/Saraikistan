@@ -111,36 +111,38 @@ export default async function PersonPage({
     )
   }
 
-  const personImage = person.profileImage
+  const profileImage = person.profileImage
     ? urlFor(person.profileImage).width(800).height(800).fit('crop').url()
-    : person.coverImage
-      ? urlFor(person.coverImage).width(1200).height(630).fit('crop').url()
-      : undefined
+    : undefined
 
-  const sameAs = Array.isArray(person.socialLinks)
-    ? person.socialLinks
-        .map((link: any) => link?.url)
-        .filter(Boolean)
-    : []
+  const coverImage = person.coverImage
+    ? urlFor(person.coverImage).width(1800).height(700).fit('crop').url()
+    : undefined
+
+  const socialLinks =
+    person.socialLinks?.map((link: any) => link.url).filter(Boolean) || []
 
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: person.name,
     url: `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
-    image: personImage,
-    description: `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`,
-    sameAs,
-    affiliation: {
-      '@type': 'Organization',
-      name: 'Saraikistan',
-      url: 'https://saraikistan-ml2d.vercel.app',
+    image: profileImage || coverImage,
+    description:
+      person.seoDescription ||
+      `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`,
+    jobTitle: person.category?.title || undefined,
+    sameAs: socialLinks.length > 0 ? socialLinks : undefined,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
     },
   }
 
   return (
     <section className="min-h-screen bg-cream text-navy">
 
+      {/* Person Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
