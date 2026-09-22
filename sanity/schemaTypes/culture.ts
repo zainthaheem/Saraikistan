@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
 
 export const culture = defineType({
   name: 'culture',
@@ -50,6 +51,9 @@ export const culture = defineType({
       title: 'Content',
       type: 'array',
       of: [{type: 'block'}],
+      components: {
+        input: MarkdownPortableTextInput,
+      },
     }),
 
     defineField({
@@ -57,6 +61,9 @@ export const culture = defineType({
       title: 'Content (Urdu)',
       type: 'array',
       of: [{type: 'block'}],
+      components: {
+        input: MarkdownPortableTextInput,
+      },
     }),
 
     defineField({
