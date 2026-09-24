@@ -1,8 +1,32 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Saraiki Culture | Traditions, Heritage & Identity',
+  description:
+    'Explore Saraiki culture, traditions, language, music, poetry, crafts, Sufi heritage and the living cultural identity of the Saraiki region.',
+  alternates: {
+    canonical: 'https://saraikistan-ml2d.vercel.app/culture',
+  },
+  openGraph: {
+    title: 'Saraiki Culture | Traditions, Heritage & Identity',
+    description:
+      'Explore Saraiki culture, traditions, language, music, poetry, crafts, Sufi heritage and the living cultural identity of the Saraiki region.',
+    type: 'website',
+    url: 'https://saraikistan-ml2d.vercel.app/culture',
+    siteName: 'Saraikistan',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Saraiki Culture | Traditions, Heritage & Identity',
+    description:
+      'Explore Saraiki culture, traditions, language, music, poetry, crafts, Sufi heritage and the living cultural identity of the Saraiki region.',
+  },
+}
 
 async function getCulture() {
   return client.fetch(
