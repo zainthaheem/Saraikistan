@@ -1,10 +1,23 @@
 import type { Metadata } from 'next'
+import { Playfair_Display, Montserrat } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import ScrollToTop from '@/components/ScrollToTop'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-playfair',
+})
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-montserrat',
+})
 
 export const revalidate = 60
 
@@ -161,7 +174,10 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${playfair.variable} ${montserrat.variable}`}
+    >
       <head>
         <script
           type="application/ld+json"
