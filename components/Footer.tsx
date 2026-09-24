@@ -18,6 +18,7 @@ const footerLinks = [
 async function getFooterData() {
   return client.fetch(`
     *[_type == "siteSettings"][0]{
+      footerImage,
       logo,
       siteTitle,
       tagline
@@ -27,6 +28,26 @@ async function getFooterData() {
 
 export default async function Footer() {
   const settings = await getFooterData()
+
+  const footerImageDesktop = settings?.footerImage
+    ? urlFor(settings.footerImage)
+        .width(1600)
+        .height(444)
+        .fit('crop')
+        .quality(82)
+        .format('webp')
+        .url()
+    : null
+
+  const footerImageMobile = settings?.footerImage
+    ? urlFor(settings.footerImage)
+        .width(800)
+        .height(222)
+        .fit('crop')
+        .quality(82)
+        .format('webp')
+        .url()
+    : null
 
   const logoUrl = settings?.logo
     ? urlFor(settings.logo)
@@ -43,11 +64,10 @@ export default async function Footer() {
       {/* TOP DECORATIVE RULE */}
       <div className="tile-rule" />
 
-      {/* FOOTER CONTENT */}
-      <div className="mx-auto max-w-7xl px-6 py-9 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+      {/* MAIN FOOTER CONTENT */}
+      <div className="mx-auto max-w-7xl px-6 pb-5 pt-8 sm:px-10 sm:pb-6 sm:pt-9 lg:px-12 lg:pb-7 lg:pt-10">
 
-        {/* MAIN FOOTER GRID */}
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
+        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
 
           {/* BRAND */}
           <div className="max-w-lg">
@@ -76,7 +96,7 @@ export default async function Footer() {
               </Link>
             )}
 
-            <p className="mt-4 max-w-md font-body text-sm leading-6 text-cream/55">
+            <p className="mt-3 max-w-md font-body text-sm leading-6 text-cream/55">
               {settings?.tagline ||
                 'People · Culture · Heritage · Beyond — a digital home for the Saraiki region.'}
             </p>
@@ -92,7 +112,7 @@ export default async function Footer() {
 
             <nav
               aria-label="Footer navigation"
-              className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3"
+              className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5"
             >
               {footerLinks.map((link) => (
                 <Link
@@ -114,7 +134,7 @@ export default async function Footer() {
               Connect
             </p>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-3 space-y-2.5">
 
               <a
                 href="mailto:hello.saraikistan@gmail.com"
@@ -146,9 +166,9 @@ export default async function Footer() {
         </div>
 
         {/* COPYRIGHT */}
-        <div className="mt-8 border-t border-cream/10 pt-5 sm:mt-10">
+        <div className="mt-7 border-t border-cream/10 pt-4 sm:mt-8 sm:pt-5">
 
-          <div className="flex flex-col gap-2 font-body text-xs leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1.5 font-body text-xs leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between">
 
             <p>
               © {new Date().getFullYear()} Saraikistan. All rights reserved.
@@ -164,18 +184,27 @@ export default async function Footer() {
 
       </div>
 
-      {/* BOTTOM TEXTILE ACCENT */}
-      <div
-        aria-hidden="true"
-        className="h-[10px] w-full border-t border-mustard/50"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(90deg, #C8923A 0px, #C8923A 5px, transparent 5px, transparent 22px)',
-          backgroundSize: '22px 3px',
-          backgroundPosition: 'bottom',
-          backgroundRepeat: 'repeat-x',
-        }}
-      />
+      {/* ORIGINAL CULTURAL TEXTILE IMAGE */}
+      {footerImageDesktop && footerImageMobile && (
+        <div className="relative h-12 w-full overflow-hidden border-t border-mustard/40 sm:h-14 lg:h-[68px]">
+
+          <img
+            src={footerImageDesktop}
+            srcSet={`${footerImageMobile} 800w, ${footerImageDesktop} 1600w`}
+            sizes="100vw"
+            alt=""
+            aria-hidden="true"
+            width={1600}
+            height={444}
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover object-bottom"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-transparent to-navy/20" />
+
+        </div>
+      )}
 
     </footer>
   )
