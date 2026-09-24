@@ -14,8 +14,8 @@ module.exports = {
         navy: '#0F172A',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'serif'],
-        body: ['Montserrat', 'sans-serif'],
+        display: ['var(--font-playfair)', 'serif'],
+        body: ['var(--font-montserrat)', 'sans-serif'],
       },
     },
   },
