@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -111,57 +112,82 @@ export default async function Region() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
-            {places.map((place: any) => (
+            {places.map((place: any) => {
 
-              <Link
-                key={place._id}
-                href={`/region/${place.slug.current}`}
-                className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
+              const imageMobile = place.coverImage
+                ? urlFor(place.coverImage)
+                    .width(500)
+                    .height(281)
+                    .fit('crop')
+                    .quality(80)
+                    .format('webp')
+                    .url()
+                : null
 
-                {/* IMAGE */}
-                <div className="aspect-[16/9] overflow-hidden bg-shawl">
+              const imageDesktop = place.coverImage
+                ? urlFor(place.coverImage)
+                    .width(900)
+                    .height(506)
+                    .fit('crop')
+                    .quality(82)
+                    .format('webp')
+                    .url()
+                : null
 
-                  {place.coverImage ? (
-                    <img
-                      src={urlFor(place.coverImage)
-                        .width(900)
-                        .height(506)
-                        .fit('crop')
-                        .url()}
-                      alt={place.title}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center font-display text-cream/40">
-                      Saraikistan
-                    </div>
-                  )}
+              return (
 
-                </div>
+                <Link
+                  key={place._id}
+                  href={`/region/${place.slug.current}`}
+                  className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
 
-                {/* CONTENT */}
-                <div className="border-t-2 border-mustard p-6">
+                  {/* IMAGE */}
+                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
-                  {place.category && (
-                    <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
-                      {place.category.title}
-                    </p>
-                  )}
+                    {imageDesktop && imageMobile ? (
+                      <img
+                        src={imageDesktop}
+                        srcSet={`${imageMobile} 500w, ${imageDesktop} 900w`}
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        alt={place.title}
+                        width={900}
+                        height={506}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center font-display text-cream/40">
+                        Saraikistan
+                      </div>
+                    )}
 
-                  <h2 className="mt-2 font-display text-2xl text-navy">
-                    {place.title}
-                  </h2>
+                  </div>
 
-                  <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-                    Explore →
-                  </span>
+                  {/* CONTENT */}
+                  <div className="border-t-2 border-mustard p-6">
 
-                </div>
+                    {place.category && (
+                      <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                        {place.category.title}
+                      </p>
+                    )}
 
-              </Link>
+                    <h2 className="mt-2 font-display text-2xl text-navy">
+                      {place.title}
+                    </h2>
 
-            ))}
+                    <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                      Explore →
+                    </span>
+
+                  </div>
+
+                </Link>
+
+              )
+            })}
 
           </div>
 
