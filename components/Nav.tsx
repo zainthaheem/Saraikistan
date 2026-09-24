@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
@@ -19,6 +19,8 @@ const links = [
 export default function Nav() {
   const pathname = usePathname()
   const [logo, setLogo] = useState<any>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   const isHome = pathname === '/'
 
@@ -40,6 +42,52 @@ export default function Nav() {
     loadLogo()
   }, [])
 
+  // Close mobile menu whenever the page changes
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setMobileMenuOpen(false)
+      }
+    }
+
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [mobileMenuOpen])
+
+  // Close mobile menu when pressing Escape
+  useEffect(() => {
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false)
+      }
+    }
+
+    if (mobileMenuOpen) {
+      document.addEventListener('keydown', handleEscape)
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [mobileMenuOpen])
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+  }
+
   return (
     <header
       className={
@@ -58,6 +106,7 @@ export default function Nav() {
         {/* Logo */}
         <Link
           href="/"
+          onClick={closeMobileMenu}
           className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
           {logo ? (
@@ -127,10 +176,20 @@ export default function Nav() {
         </Link>
 
         {/* Mobile Menu */}
-        <details className="relative ml-auto shrink-0 sm:hidden">
-          <summary
-            aria-label="Open navigation menu"
-            className="flex cursor-pointer list-none items-center text-cream transition hover:text-mustard [&::-webkit-details-marker]:hidden"
+        <div
+          ref={mobileMenuRef}
+          className="relative ml-auto shrink-0 sm:hidden"
+        >
+          <button
+            type="button"
+            aria-label={
+              mobileMenuOpen
+                ? 'Close navigation menu'
+                : 'Open navigation menu'
+            }
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className="flex cursor-pointer items-center text-cream transition hover:text-mustard"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -140,53 +199,67 @@ export default function Nav() {
               strokeWidth="1.7"
               className="h-7 w-7"
             >
-              <path d="M4 7h16" />
-              <path d="M4 12h16" />
-              <path d="M4 17h16" />
+              {mobileMenuOpen ? (
+                <>
+                  <path d="M6 6l12 12" />
+                  <path d="M18 6L6 18" />
+                </>
+              ) : (
+                <>
+                  <path d="M4 7h16" />
+                  <path d="M4 12h16" />
+                  <path d="M4 17h16" />
+                </>
+              )}
             </svg>
-          </summary>
+          </button>
 
           {/* Mobile Dropdown */}
-          <div className="absolute right-0 top-12 z-50 w-64 border border-cream/20 bg-navy shadow-xl">
-            <Link
-              href="/"
-              className={`block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] ${
-                isHome
-                  ? 'text-mustard'
-                  : 'text-cream hover:bg-shawl hover:text-mustard'
-              }`}
-            >
-              Home
-            </Link>
+          {mobileMenuOpen && (
+            <div className="absolute right-0 top-12 z-50 w-64 border border-cream/20 bg-navy shadow-xl">
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                className={`block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] ${
+                  isHome
+                    ? 'text-mustard'
+                    : 'text-cream hover:bg-shawl hover:text-mustard'
+                }`}
+              >
+                Home
+              </Link>
 
-            {links.map((link) => {
-              const active =
-                pathname === link.href ||
-                pathname.startsWith(`${link.href}/`)
+              {links.map((link) => {
+                const active =
+                  pathname === link.href ||
+                  pathname.startsWith(`${link.href}/`)
 
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] ${
-                    active
-                      ? 'text-mustard'
-                      : 'text-cream hover:bg-shawl hover:text-mustard'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              )
-            })}
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMobileMenu}
+                    className={`block border-b border-cream/10 px-6 py-4 font-body text-sm uppercase tracking-[0.12em] ${
+                      active
+                        ? 'text-mustard'
+                        : 'text-cream hover:bg-shawl hover:text-mustard'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
 
-            <Link
-              href="/search"
-              className="block px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
-            >
-              Search
-            </Link>
-          </div>
-        </details>
+              <Link
+                href="/search"
+                onClick={closeMobileMenu}
+                className="block px-6 py-4 font-body text-sm uppercase tracking-[0.12em] text-cream hover:bg-shawl hover:text-mustard"
+              >
+                Search
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   )
