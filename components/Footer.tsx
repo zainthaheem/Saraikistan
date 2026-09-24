@@ -28,11 +28,32 @@ async function getFooterData() {
 export default async function Footer() {
   const settings = await getFooterData()
 
-  const footerImage = settings?.footerImage
+  const footerImageDesktop = settings?.footerImage
     ? urlFor(settings.footerImage)
-        .width(1800)
-        .height(500)
+        .width(1600)
+        .height(444)
         .fit('crop')
+        .quality(80)
+        .format('webp')
+        .url()
+    : null
+
+  const footerImageMobile = settings?.footerImage
+    ? urlFor(settings.footerImage)
+        .width(800)
+        .height(222)
+        .fit('crop')
+        .quality(80)
+        .format('webp')
+        .url()
+    : null
+
+  const logoUrl = settings?.logo
+    ? urlFor(settings.logo)
+        .height(75)
+        .fit('max')
+        .quality(90)
+        .format('webp')
         .url()
     : null
 
@@ -52,14 +73,15 @@ export default async function Footer() {
             {/* BRAND */}
             <div className="max-w-lg">
 
-              {settings?.logo ? (
+              {logoUrl ? (
                 <Link href="/" className="inline-block">
                   <img
-                    src={urlFor(settings.logo)
-                      .height(75)
-                      .fit('max')
-                      .url()}
+                    src={logoUrl}
                     alt="Saraikistan"
+                    width={175}
+                    height={75}
+                    loading="lazy"
+                    decoding="async"
                     className="h-9 w-auto max-w-[175px] object-contain sm:h-10"
                   />
                 </Link>
@@ -164,13 +186,19 @@ export default async function Footer() {
 
 
         {/* INTEGRATED TEXTILE FOOTER IMAGE */}
-        {footerImage && (
+        {footerImageDesktop && footerImageMobile && (
           <div className="relative h-14 w-full overflow-hidden sm:h-16 lg:h-20">
 
             <img
-              src={footerImage}
+              src={footerImageDesktop}
+              srcSet={`${footerImageMobile} 800w, ${footerImageDesktop} 1600w`}
+              sizes="100vw"
               alt=""
               aria-hidden="true"
+              width={1600}
+              height={444}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-bottom"
             />
 
