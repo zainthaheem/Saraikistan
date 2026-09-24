@@ -1,3 +1,4 @@
+
 'use client'
 
 import Link from 'next/link'
@@ -28,7 +29,19 @@ export default function Nav() {
     async function loadLogo() {
       try {
         const settings = await client.fetch(
-          `*[_type == "siteSettings"][0]{ logo }`
+          `*[_type == "siteSettings"][0]{
+            logo {
+              ...,
+              asset->{
+                metadata {
+                  dimensions {
+                    width,
+                    height
+                  }
+                }
+              }
+            }
+          }`
         )
 
         if (settings?.logo) {
@@ -88,6 +101,25 @@ export default function Nav() {
     setMobileMenuOpen(false)
   }
 
+  const logoWidth = logo?.asset?.metadata?.dimensions?.width || 600
+  const logoHeight = logo?.asset?.metadata?.dimensions?.height || 200
+
+  const logoSmall = logo
+    ? urlFor(logo)
+        .width(400)
+        .quality(90)
+        .format('webp')
+        .url()
+    : ''
+
+  const logoLarge = logo
+    ? urlFor(logo)
+        .width(600)
+        .quality(90)
+        .format('webp')
+        .url()
+    : ''
+
   return (
     <header
       className={
@@ -111,11 +143,14 @@ export default function Nav() {
         >
           {logo ? (
             <img
-              src={urlFor(logo)
-                .width(800)
-                .quality(95)
-                .url()}
+              src={logoLarge}
+              srcSet={`${logoSmall} 400w, ${logoLarge} 600w`}
+              sizes="(min-width: 1024px) 245px, (min-width: 640px) 225px, 190px"
               alt="Saraikistan"
+              width={logoWidth}
+              height={logoHeight}
+              decoding="async"
+              fetchPriority="high"
               className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
           ) : (
