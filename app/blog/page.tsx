@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -55,6 +56,27 @@ export default async function Blog() {
 
   const featured = stories[0]
   const remaining = stories.slice(1)
+
+  // Optimized featured story image
+  const featuredImageDesktop = featured?.coverImage
+    ? urlFor(featured.coverImage)
+        .width(1200)
+        .height(750)
+        .fit('crop')
+        .quality(80)
+        .format('webp')
+        .url()
+    : null
+
+  const featuredImageMobile = featured?.coverImage
+    ? urlFor(featured.coverImage)
+        .width(640)
+        .height(400)
+        .fit('crop')
+        .quality(80)
+        .format('webp')
+        .url()
+    : null
 
   return (
     <main className="min-h-screen bg-cream text-navy">
@@ -133,15 +155,18 @@ export default async function Blog() {
                 {/* IMAGE */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
 
-                  {featured.coverImage ? (
+                  {featuredImageDesktop && featuredImageMobile ? (
                     <img
-                      src={urlFor(featured.coverImage)
-                        .width(1200)
-                        .height(800)
-                        .fit('crop')
-                        .url()}
+                      src={featuredImageDesktop}
+                      srcSet={`${featuredImageMobile} 640w, ${featuredImageDesktop} 1200w`}
+                      sizes="(min-width: 1024px) 50vw, calc(100vw - 48px)"
                       alt={featured.title}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                      width={1200}
+                      height={750}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full min-h-[300px] items-center justify-center bg-shawl font-display text-cream/40">
@@ -220,11 +245,23 @@ export default async function Blog() {
 
                   {remaining.map((post: any) => {
 
-                    const image = post.coverImage
+                    const imageMobile = post.coverImage
                       ? urlFor(post.coverImage)
-                          .width(900)
-                          .height(600)
+                          .width(500)
+                          .height(313)
                           .fit('crop')
+                          .quality(78)
+                          .format('webp')
+                          .url()
+                      : null
+
+                    const imageDesktop = post.coverImage
+                      ? urlFor(post.coverImage)
+                          .width(800)
+                          .height(500)
+                          .fit('crop')
+                          .quality(80)
+                          .format('webp')
                           .url()
                       : null
 
@@ -236,13 +273,19 @@ export default async function Blog() {
                       >
 
                         {/* IMAGE */}
-                        <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                        <div className="relative aspect-[16/10] overflow-hidden bg-shawl">
 
-                          {image ? (
+                          {imageMobile && imageDesktop ? (
                             <img
-                              src={image}
+                              src={imageDesktop}
+                              srcSet={`${imageMobile} 500w, ${imageDesktop} 800w`}
+                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, calc(100vw - 48px)"
                               alt={post.title}
-                              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                              width={800}
+                              height={500}
+                              loading="lazy"
+                              decoding="async"
+                              className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
                             />
                           ) : (
                             <div className="flex h-full items-center justify-center font-display text-cream/40">
