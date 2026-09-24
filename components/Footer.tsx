@@ -18,7 +18,6 @@ const footerLinks = [
 async function getFooterData() {
   return client.fetch(`
     *[_type == "siteSettings"][0]{
-      footerImage,
       logo,
       siteTitle,
       tagline
@@ -29,29 +28,9 @@ async function getFooterData() {
 export default async function Footer() {
   const settings = await getFooterData()
 
-  const footerImageDesktop = settings?.footerImage
-    ? urlFor(settings.footerImage)
-        .width(1600)
-        .height(200)
-        .fit('crop')
-        .quality(82)
-        .format('webp')
-        .url()
-    : null
-
-  const footerImageMobile = settings?.footerImage
-    ? urlFor(settings.footerImage)
-        .width(800)
-        .height(100)
-        .fit('crop')
-        .quality(82)
-        .format('webp')
-        .url()
-    : null
-
   const logoUrl = settings?.logo
     ? urlFor(settings.logo)
-        .height(100)
+        .height(120)
         .fit('max')
         .quality(90)
         .format('webp')
@@ -59,130 +38,106 @@ export default async function Footer() {
     : null
 
   return (
-    <footer className="bg-navy text-cream">
+    <footer className="relative overflow-hidden bg-navy text-cream">
 
       {/* TOP DECORATIVE RULE */}
       <div className="tile-rule" />
 
       {/* FOOTER CONTENT */}
-      <section className="relative overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6 py-9 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
 
-        <div className="relative z-10 mx-auto max-w-7xl px-6 pt-7 pb-4 sm:px-10 sm:pt-9 sm:pb-5 lg:px-12 lg:pt-10 lg:pb-5">
+        {/* MAIN FOOTER GRID */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
 
-          {/* MAIN COLUMNS */}
-          <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
+          {/* BRAND */}
+          <div className="max-w-lg">
 
-            {/* BRAND */}
-            <div className="max-w-lg">
-
-              {logoUrl ? (
-                <Link
-                  href="/"
-                  className="inline-block"
-                  aria-label="Saraikistan Home"
-                >
-                  <img
-                    src={logoUrl}
-                    alt="Saraikistan"
-                    width={175}
-                    height={100}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-9 w-auto max-w-[175px] object-contain sm:h-10"
-                  />
-                </Link>
-              ) : (
-                <Link
-                  href="/"
-                  className="font-display text-xl tracking-tight"
-                >
-                  {settings?.siteTitle || 'Saraikistan'}
-                </Link>
-              )}
-
-              <p className="mt-3 max-w-md font-body text-xs leading-5 text-cream/55 sm:text-sm sm:leading-6">
-                {settings?.tagline ||
-                  'People · Culture · Heritage · Beyond — a digital home for the Saraiki region.'}
-              </p>
-
-            </div>
-
-            {/* EXPLORE */}
-            <div>
-
-              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
-                Explore
-              </p>
-
-              <nav
-                aria-label="Footer navigation"
-                className="mt-3 grid grid-cols-2 gap-x-7 gap-y-2"
+            {logoUrl ? (
+              <Link
+                href="/"
+                className="inline-block transition-opacity hover:opacity-90"
               >
+                <img
+                  src={logoUrl}
+                  alt="Saraikistan"
+                  width={240}
+                  height={120}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-10 w-auto max-w-[220px] object-contain sm:h-12"
+                />
+              </Link>
+            ) : (
+              <Link
+                href="/"
+                className="font-display text-xl tracking-tight"
+              >
+                {settings?.siteTitle || 'Saraikistan'}
+              </Link>
+            )}
 
-                {footerLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-
-              </nav>
-
-            </div>
-
-            {/* CONNECT */}
-            <div>
-
-              <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
-                Connect
-              </p>
-
-              <div className="mt-3 space-y-2">
-
-                <a
-                  href="mailto:hello.saraikistan@gmail.com"
-                  className="block break-words font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
-                >
-                  hello.saraikistan@gmail.com
-                </a>
-
-                <a
-                  href="https://wa.me/923126789412"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
-                >
-                  +92 312 6789412
-                </a>
-
-                <Link
-                  href="/contact"
-                  className="inline-block pt-1 font-body text-[10px] uppercase tracking-[0.12em] text-cream/55 transition hover:text-mustard"
-                >
-                  Contact Saraikistan →
-                </Link>
-
-              </div>
-
-            </div>
+            <p className="mt-4 max-w-md font-body text-sm leading-6 text-cream/55">
+              {settings?.tagline ||
+                'People · Culture · Heritage · Beyond — a digital home for the Saraiki region.'}
+            </p>
 
           </div>
 
-          {/* COPYRIGHT */}
-          <div className="mt-6 border-t border-cream/10 pt-3 sm:mt-7 sm:pt-4">
+          {/* EXPLORE */}
+          <div>
 
-            <div className="flex flex-col gap-1 font-body text-[10px] leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
+            <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
+              Explore
+            </p>
 
-              <p>
-                © {new Date().getFullYear()} Saraikistan. All rights reserved.
-              </p>
+            <nav
+              aria-label="Footer navigation"
+              className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3"
+            >
+              {footerLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="font-body text-sm text-cream/60 transition-colors duration-200 hover:text-mustard"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
-              <p>
-                A cultural archive of the Saraiki region.
-              </p>
+          </div>
+
+          {/* CONNECT */}
+          <div>
+
+            <p className="font-body text-[10px] uppercase tracking-[0.18em] text-mustard">
+              Connect
+            </p>
+
+            <div className="mt-4 space-y-3">
+
+              <a
+                href="mailto:hello.saraikistan@gmail.com"
+                className="block break-words font-body text-sm text-cream/60 transition-colors duration-200 hover:text-mustard"
+              >
+                hello.saraikistan@gmail.com
+              </a>
+
+              <a
+                href="https://wa.me/923126789412"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block font-body text-sm text-cream/60 transition-colors duration-200 hover:text-mustard"
+              >
+                +92 312 6789412
+              </a>
+
+              <Link
+                href="/contact"
+                className="inline-block pt-1 font-body text-[10px] uppercase tracking-[0.12em] text-cream/60 transition-colors duration-200 hover:text-mustard"
+              >
+                Contact Saraikistan →
+              </Link>
 
             </div>
 
@@ -190,29 +145,37 @@ export default async function Footer() {
 
         </div>
 
-        {/* COMPACT TEXTILE BORDER */}
-        {footerImageDesktop && footerImageMobile && (
-          <div className="relative h-10 w-full overflow-hidden sm:h-12 lg:h-14">
+        {/* COPYRIGHT */}
+        <div className="mt-8 border-t border-cream/10 pt-5 sm:mt-10">
 
-            <img
-              src={footerImageMobile}
-              srcSet={`${footerImageMobile} 800w, ${footerImageDesktop} 1600w`}
-              sizes="100vw"
-              alt=""
-              aria-hidden="true"
-              width={1600}
-              height={200}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover object-bottom"
-            />
+          <div className="flex flex-col gap-2 font-body text-xs leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between">
 
-            <div className="absolute inset-0 bg-gradient-to-b from-navy/20 to-transparent" />
+            <p>
+              © {new Date().getFullYear()} Saraikistan. All rights reserved.
+            </p>
+
+            <p>
+              A cultural archive of the Saraiki region.
+            </p>
 
           </div>
-        )}
 
-      </section>
+        </div>
+
+      </div>
+
+      {/* BOTTOM TEXTILE ACCENT */}
+      <div
+        aria-hidden="true"
+        className="h-[10px] w-full border-t border-mustard/50"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(90deg, #C8923A 0px, #C8923A 5px, transparent 5px, transparent 22px)',
+          backgroundSize: '22px 3px',
+          backgroundPosition: 'bottom',
+          backgroundRepeat: 'repeat-x',
+        }}
+      />
 
     </footer>
   )
