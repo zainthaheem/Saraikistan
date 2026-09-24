@@ -1,3 +1,4 @@
+
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -31,9 +32,9 @@ export default async function Footer() {
   const footerImageDesktop = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(1600)
-        .height(444)
+        .height(200)
         .fit('crop')
-        .quality(80)
+        .quality(82)
         .format('webp')
         .url()
     : null
@@ -41,16 +42,16 @@ export default async function Footer() {
   const footerImageMobile = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(800)
-        .height(222)
+        .height(100)
         .fit('crop')
-        .quality(80)
+        .quality(82)
         .format('webp')
         .url()
     : null
 
   const logoUrl = settings?.logo
     ? urlFor(settings.logo)
-        .height(75)
+        .height(100)
         .fit('max')
         .quality(90)
         .format('webp')
@@ -63,23 +64,28 @@ export default async function Footer() {
       {/* TOP DECORATIVE RULE */}
       <div className="tile-rule" />
 
+      {/* FOOTER CONTENT */}
       <section className="relative overflow-hidden">
 
-        {/* MAIN FOOTER */}
-        <div className="relative z-10 mx-auto max-w-7xl px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-11">
+        <div className="relative z-10 mx-auto max-w-7xl px-6 pt-7 pb-4 sm:px-10 sm:pt-9 sm:pb-5 lg:px-12 lg:pt-10 lg:pb-5">
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
+          {/* MAIN COLUMNS */}
+          <div className="grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
 
             {/* BRAND */}
             <div className="max-w-lg">
 
               {logoUrl ? (
-                <Link href="/" className="inline-block">
+                <Link
+                  href="/"
+                  className="inline-block"
+                  aria-label="Saraikistan Home"
+                >
                   <img
                     src={logoUrl}
                     alt="Saraikistan"
                     width={175}
-                    height={75}
+                    height={100}
                     loading="lazy"
                     decoding="async"
                     className="h-9 w-auto max-w-[175px] object-contain sm:h-10"
@@ -108,7 +114,10 @@ export default async function Footer() {
                 Explore
               </p>
 
-              <nav className="mt-3 grid grid-cols-2 gap-x-7 gap-y-2">
+              <nav
+                aria-label="Footer navigation"
+                className="mt-3 grid grid-cols-2 gap-x-7 gap-y-2"
+              >
 
                 {footerLinks.map((link) => (
                   <Link
@@ -135,7 +144,7 @@ export default async function Footer() {
 
                 <a
                   href="mailto:hello.saraikistan@gmail.com"
-                  className="block font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
+                  className="block break-words font-body text-xs text-cream/55 transition hover:text-mustard sm:text-sm"
                 >
                   hello.saraikistan@gmail.com
                 </a>
@@ -163,9 +172,9 @@ export default async function Footer() {
           </div>
 
           {/* COPYRIGHT */}
-          <div className="mt-7 border-t border-cream/10 pt-4">
+          <div className="mt-6 border-t border-cream/10 pt-3 sm:mt-7 sm:pt-4">
 
-            <div className="flex flex-col gap-1 font-body text-[10px] text-cream/30 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
+            <div className="flex flex-col gap-1 font-body text-[10px] leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between sm:text-xs">
 
               <p>
                 © {new Date().getFullYear()} Saraikistan. All rights reserved.
@@ -181,24 +190,24 @@ export default async function Footer() {
 
         </div>
 
-        {/* INTEGRATED TEXTILE FOOTER IMAGE */}
+        {/* COMPACT TEXTILE BORDER */}
         {footerImageDesktop && footerImageMobile && (
-          <div className="relative h-28 w-full overflow-hidden sm:h-36 lg:h-44">
+          <div className="relative h-10 w-full overflow-hidden sm:h-12 lg:h-14">
 
             <img
-              src={footerImageDesktop}
+              src={footerImageMobile}
               srcSet={`${footerImageMobile} 800w, ${footerImageDesktop} 1600w`}
               sizes="100vw"
               alt=""
               aria-hidden="true"
               width={1600}
-              height={444}
+              height={200}
               loading="lazy"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-bottom"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-navy/20 to-transparent" />
 
           </div>
         )}
