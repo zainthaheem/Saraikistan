@@ -1,8 +1,32 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Saraiki News | Latest Updates & Developments',
+  description:
+    'Follow the latest news, updates, announcements and developments from across the Saraiki region.',
+  alternates: {
+    canonical: 'https://saraikistan-ml2d.vercel.app/news',
+  },
+  openGraph: {
+    title: 'Saraiki News | Latest Updates & Developments',
+    description:
+      'Follow the latest news, updates, announcements and developments from across the Saraiki region.',
+    type: 'website',
+    url: 'https://saraikistan-ml2d.vercel.app/news',
+    siteName: 'Saraikistan',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Saraiki News | Latest Updates & Developments',
+    description:
+      'Follow the latest news, updates, announcements and developments from across the Saraiki region.',
+  },
+}
 
 async function getNews() {
   return client.fetch(
@@ -65,7 +89,6 @@ export default async function News() {
         </div>
       </section>
 
-
       {/* NEWS INTRO */}
       <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12">
 
@@ -83,7 +106,6 @@ export default async function News() {
         </div>
 
       </section>
-
 
       {news.length === 0 ? (
 
@@ -145,7 +167,6 @@ export default async function News() {
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent lg:bg-gradient-to-r" />
 
                 </div>
-
 
                 {/* FEATURED CONTENT */}
                 <div className="flex flex-col justify-center p-7 text-cream sm:p-10 lg:p-14">
@@ -209,7 +230,6 @@ export default async function News() {
 
           </section>
 
-
           {/* MORE NEWS */}
           {remaining.length > 0 && (
 
@@ -230,7 +250,6 @@ export default async function News() {
                   <div className="mt-4 h-[2px] w-12 bg-mustard" />
 
                 </div>
-
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
@@ -267,7 +286,6 @@ export default async function News() {
                           )}
 
                         </div>
-
 
                         {/* CONTENT */}
                         <div className="border-t-2 border-mustard p-6">
@@ -336,7 +354,6 @@ export default async function News() {
             </section>
 
           )}
-
 
           {/* CLOSING BANNER */}
           <section className="bg-navy text-cream">
