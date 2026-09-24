@@ -57,11 +57,12 @@ export default async function Blog() {
   const featured = stories[0]
   const remaining = stories.slice(1)
 
-  // Optimized featured story image
+  // Optimized responsive images for the featured story.
+  // The smaller version is served on mobile devices.
   const featuredImageDesktop = featured?.coverImage
     ? urlFor(featured.coverImage)
         .width(1200)
-        .height(750)
+        .height(800)
         .fit('crop')
         .quality(80)
         .format('webp')
@@ -70,8 +71,8 @@ export default async function Blog() {
 
   const featuredImageMobile = featured?.coverImage
     ? urlFor(featured.coverImage)
-        .width(640)
-        .height(400)
+        .width(700)
+        .height(467)
         .fit('crop')
         .quality(80)
         .format('webp')
@@ -152,21 +153,21 @@ export default async function Blog() {
 
               <div className="grid lg:grid-cols-2">
 
-                {/* IMAGE */}
+                {/* OPTIMIZED FEATURED IMAGE */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
 
                   {featuredImageDesktop && featuredImageMobile ? (
                     <img
-                      src={featuredImageDesktop}
-                      srcSet={`${featuredImageMobile} 640w, ${featuredImageDesktop} 1200w`}
-                      sizes="(min-width: 1024px) 50vw, calc(100vw - 48px)"
+                      src={featuredImageMobile}
+                      srcSet={`${featuredImageMobile} 700w, ${featuredImageDesktop} 1200w`}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
                       alt={featured.title}
                       width={1200}
-                      height={750}
+                      height={800}
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
-                      className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full min-h-[300px] items-center justify-center bg-shawl font-display text-cream/40">
@@ -245,20 +246,21 @@ export default async function Blog() {
 
                   {remaining.map((post: any) => {
 
-                    const imageMobile = post.coverImage
+                    // Responsive WebP images for story cards.
+                    const imageDesktop = post.coverImage
                       ? urlFor(post.coverImage)
-                          .width(500)
-                          .height(313)
+                          .width(900)
+                          .height(600)
                           .fit('crop')
-                          .quality(78)
+                          .quality(80)
                           .format('webp')
                           .url()
                       : null
 
-                    const imageDesktop = post.coverImage
+                    const imageMobile = post.coverImage
                       ? urlFor(post.coverImage)
-                          .width(800)
-                          .height(500)
+                          .width(500)
+                          .height(333)
                           .fit('crop')
                           .quality(80)
                           .format('webp')
@@ -272,20 +274,20 @@ export default async function Blog() {
                         className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                       >
 
-                        {/* IMAGE */}
-                        <div className="relative aspect-[16/10] overflow-hidden bg-shawl">
+                        {/* OPTIMIZED CARD IMAGE */}
+                        <div className="aspect-[16/10] overflow-hidden bg-shawl">
 
-                          {imageMobile && imageDesktop ? (
+                          {imageDesktop && imageMobile ? (
                             <img
-                              src={imageDesktop}
-                              srcSet={`${imageMobile} 500w, ${imageDesktop} 800w`}
-                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, calc(100vw - 48px)"
+                              src={imageMobile}
+                              srcSet={`${imageMobile} 500w, ${imageDesktop} 900w`}
+                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                               alt={post.title}
-                              width={800}
-                              height={500}
+                              width={900}
+                              height={600}
                               loading="lazy"
                               decoding="async"
-                              className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                             />
                           ) : (
                             <div className="flex h-full items-center justify-center font-display text-cream/40">
