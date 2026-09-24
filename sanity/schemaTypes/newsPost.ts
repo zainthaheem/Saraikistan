@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
 
 export const newsPost = defineType({
   name: 'newsPost',
@@ -103,6 +104,19 @@ export const newsPost = defineType({
       title: 'Content',
       type: 'array',
       of: [{type: 'block'}],
+      components: {
+        input: MarkdownPortableTextInput,
+      },
+    }),
+
+    defineField({
+      name: 'bodyUrdu',
+      title: 'Content (Urdu)',
+      type: 'array',
+      of: [{type: 'block'}],
+      components: {
+        input: MarkdownPortableTextInput,
+      },
     }),
 
     defineField({
