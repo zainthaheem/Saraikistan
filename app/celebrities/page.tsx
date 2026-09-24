@@ -1,8 +1,32 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Saraiki People | Singers, Poets, Writers & Scholars',
+  description:
+    'Discover notable Saraiki singers, poets, writers, scholars and other people who represent the culture and living heritage of the Saraiki region.',
+  alternates: {
+    canonical: 'https://saraikistan-ml2d.vercel.app/celebrities',
+  },
+  openGraph: {
+    title: 'Saraiki People | Singers, Poets, Writers & Scholars',
+    description:
+      'Discover notable Saraiki singers, poets, writers, scholars and other people who represent the culture and living heritage of the Saraiki region.',
+    type: 'website',
+    url: 'https://saraikistan-ml2d.vercel.app/celebrities',
+    siteName: 'Saraikistan',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Saraiki People | Singers, Poets, Writers & Scholars',
+    description:
+      'Discover notable Saraiki singers, poets, writers, scholars and other people who represent the culture and living heritage of the Saraiki region.',
+  },
+}
 
 async function getPeople() {
   return client.fetch(
