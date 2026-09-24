@@ -1,4 +1,3 @@
-
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -29,13 +28,12 @@ async function getFooterData() {
 export default async function Footer() {
   const settings = await getFooterData()
 
-  // Optimized footer background images
   const footerImageDesktop = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(1600)
-        .height(230)
+        .height(444)
         .fit('crop')
-        .quality(72)
+        .quality(80)
         .format('webp')
         .url()
     : null
@@ -43,14 +41,13 @@ export default async function Footer() {
   const footerImageMobile = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(800)
-        .height(115)
+        .height(222)
         .fit('crop')
-        .quality(72)
+        .quality(80)
         .format('webp')
         .url()
     : null
 
-  // Keep the logo sharp
   const logoUrl = settings?.logo
     ? urlFor(settings.logo)
         .height(75)
@@ -184,9 +181,9 @@ export default async function Footer() {
 
         </div>
 
-        {/* OPTIMIZED TEXTILE FOOTER IMAGE */}
+        {/* INTEGRATED TEXTILE FOOTER IMAGE */}
         {footerImageDesktop && footerImageMobile && (
-          <div className="relative h-14 w-full overflow-hidden sm:h-16 lg:h-20">
+          <div className="relative h-28 w-full overflow-hidden sm:h-36 lg:h-44">
 
             <img
               src={footerImageDesktop}
@@ -195,7 +192,7 @@ export default async function Footer() {
               alt=""
               aria-hidden="true"
               width={1600}
-              height={230}
+              height={444}
               loading="lazy"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-bottom"
