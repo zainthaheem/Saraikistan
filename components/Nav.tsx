@@ -111,7 +111,10 @@ export default function Nav() {
         >
           {logo ? (
             <img
-              src={urlFor(logo).height(120).url()}
+              src={urlFor(logo)
+                .width(800)
+                .quality(95)
+                .url()}
               alt="Saraikistan"
               className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
