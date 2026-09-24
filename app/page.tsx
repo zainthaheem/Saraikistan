@@ -85,17 +85,17 @@ export default async function Home() {
         .width(1800)
         .height(1000)
         .fit('crop')
-        .quality(82)
+        .quality(78)
         .format('webp')
         .url()
     : null
 
   const heroImageMobile = settings?.headerImage
     ? urlFor(settings.headerImage)
-        .width(1000)
-        .height(556)
+        .width(800)
+        .height(444)
         .fit('crop')
-        .quality(82)
+        .quality(78)
         .format('webp')
         .url()
     : null
@@ -113,7 +113,7 @@ export default async function Home() {
             src={heroImage}
             srcSet={
               heroImageMobile
-                ? `${heroImageMobile} 1000w, ${heroImage} 1800w`
+                ? `${heroImageMobile} 800w, ${heroImage} 1800w`
                 : undefined
             }
             sizes="100vw"
@@ -215,17 +215,17 @@ export default async function Home() {
                     .width(900)
                     .height(1125)
                     .fit('crop')
-                    .quality(82)
+                    .quality(78)
                     .format('webp')
                     .url()
                 : null
 
               const imageMobile = card.image
                 ? urlFor(card.image)
-                    .width(500)
-                    .height(625)
+                    .width(400)
+                    .height(500)
                     .fit('crop')
-                    .quality(82)
+                    .quality(78)
                     .format('webp')
                     .url()
                 : null
@@ -247,7 +247,7 @@ export default async function Home() {
                       src={image}
                       srcSet={
                         imageMobile
-                          ? `${imageMobile} 500w, ${image} 900w`
+                          ? `${imageMobile} 400w, ${image} 900w`
                           : undefined
                       }
                       sizes="(min-width: 1024px) 25vw, 50vw"
@@ -301,9 +301,7 @@ export default async function Home() {
         )}
 
       </section>
-
-
-      {/* FEATURED PEOPLE */}
+            {/* FEATURED PEOPLE */}
       {featuredPeople?.length > 0 && (
         <section className="bg-navy text-cream">
 
@@ -349,17 +347,17 @@ export default async function Home() {
                       .width(1400)
                       .height(1750)
                       .fit('crop')
-                      .quality(82)
+                      .quality(78)
                       .format('webp')
                       .url()
                   : null
 
                 const imageMobile = person.profileImage
                   ? urlFor(person.profileImage)
-                      .width(600)
-                      .height(750)
+                      .width(500)
+                      .height(625)
                       .fit('crop')
-                      .quality(82)
+                      .quality(78)
                       .format('webp')
                       .url()
                   : null
@@ -380,7 +378,7 @@ export default async function Home() {
                         src={image}
                         srcSet={
                           imageMobile
-                            ? `${imageMobile} 600w, ${image} 1400w`
+                            ? `${imageMobile} 500w, ${image} 1400w`
                             : undefined
                         }
                         sizes={
@@ -487,7 +485,7 @@ export default async function Home() {
                     .width(1000)
                     .height(625)
                     .fit('crop')
-                    .quality(82)
+                    .quality(78)
                     .format('webp')
                     .url()
                 : null
@@ -497,7 +495,7 @@ export default async function Home() {
                     .width(640)
                     .height(400)
                     .fit('crop')
-                    .quality(82)
+                    .quality(78)
                     .format('webp')
                     .url()
                 : null
@@ -609,7 +607,7 @@ export default async function Home() {
                       .width(1000)
                       .height(625)
                       .fit('crop')
-                      .quality(82)
+                      .quality(78)
                       .format('webp')
                       .url()
                   : null
@@ -619,7 +617,7 @@ export default async function Home() {
                       .width(640)
                       .height(400)
                       .fit('crop')
-                      .quality(82)
+                      .quality(78)
                       .format('webp')
                       .url()
                   : null
