@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PortableText } from '@portabletext/react'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
 
@@ -17,20 +18,21 @@ async function getStory(slug: string) {
       gallery,
       videoUrl,
       body,
+      bodyUrdu,
       seoTitle,
       seoDescription,
       seoImage,
       "relatedPersonName": relatedPerson->name,
       "relatedPersonSlug": relatedPerson->slug.current
     }`,
-    { slug }
+    {slug}
   )
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string }
+  params: {slug: string}
 }): Promise<Metadata> {
   const story = await getStory(params.slug)
 
@@ -94,7 +96,7 @@ export async function generateMetadata({
 export default async function StoryPage({
   params,
 }: {
-  params: { slug: string }
+  params: {slug: string}
 }) {
   const story = await getStory(params.slug)
 
@@ -134,11 +136,11 @@ export default async function StoryPage({
       '@id': storyUrl,
     },
     ...(story.publishedAt
-      ? { datePublished: story.publishedAt }
+      ? {datePublished: story.publishedAt}
       : {}),
-    ...(articleImage ? { image: articleImage } : {}),
+    ...(articleImage ? {image: articleImage} : {}),
     ...(story.category?.title
-      ? { articleSection: story.category.title }
+      ? {articleSection: story.category.title}
       : {}),
     inLanguage: 'en',
     author: {
@@ -234,16 +236,13 @@ export default async function StoryPage({
         )}
 
         {/* Story Body */}
-        {story.body && (
+        {(story.body || story.bodyUrdu) && (
           <div className="mt-10 max-w-3xl">
 
-            <p className="font-body text-sm text-shawl">
-              Story
-            </p>
-
-            <div className="prose prose-sm mt-4 max-w-none font-body leading-7 text-navy/75 sm:prose-base">
-              <PortableText value={story.body} />
-            </div>
+            <LanguageSwitcher
+              english={story.body}
+              urdu={story.bodyUrdu}
+            />
 
           </div>
         )}
