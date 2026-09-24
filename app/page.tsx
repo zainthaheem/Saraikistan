@@ -85,6 +85,18 @@ export default async function Home() {
         .width(1800)
         .height(1000)
         .fit('crop')
+        .quality(82)
+        .format('webp')
+        .url()
+    : null
+
+  const heroImageMobile = settings?.headerImage
+    ? urlFor(settings.headerImage)
+        .width(1000)
+        .height(556)
+        .fit('crop')
+        .quality(82)
+        .format('webp')
         .url()
     : null
 
@@ -99,7 +111,17 @@ export default async function Home() {
         {heroImage && (
           <img
             src={heroImage}
+            srcSet={
+              heroImageMobile
+                ? `${heroImageMobile} 1000w, ${heroImage} 1800w`
+                : undefined
+            }
+            sizes="100vw"
             alt="Saraikistan landscape"
+            width={1800}
+            height={1000}
+            fetchPriority="high"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}
@@ -191,8 +213,20 @@ export default async function Home() {
               const image = card.image
                 ? urlFor(card.image)
                     .width(900)
-                    .height(1100)
+                    .height(1125)
                     .fit('crop')
+                    .quality(82)
+                    .format('webp')
+                    .url()
+                : null
+
+              const imageMobile = card.image
+                ? urlFor(card.image)
+                    .width(500)
+                    .height(625)
+                    .fit('crop')
+                    .quality(82)
+                    .format('webp')
                     .url()
                 : null
 
@@ -211,7 +245,17 @@ export default async function Home() {
                   {image ? (
                     <img
                       src={image}
+                      srcSet={
+                        imageMobile
+                          ? `${imageMobile} 500w, ${image} 900w`
+                          : undefined
+                      }
+                      sizes="(min-width: 1024px) 25vw, 50vw"
                       alt={card.title}
+                      width={900}
+                      height={1125}
+                      loading="lazy"
+                      decoding="async"
                       className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
                     />
                   ) : (
@@ -303,8 +347,20 @@ export default async function Home() {
                 const image = person.profileImage
                   ? urlFor(person.profileImage)
                       .width(1400)
-                      .height(1000)
+                      .height(1750)
                       .fit('crop')
+                      .quality(82)
+                      .format('webp')
+                      .url()
+                  : null
+
+                const imageMobile = person.profileImage
+                  ? urlFor(person.profileImage)
+                      .width(600)
+                      .height(750)
+                      .fit('crop')
+                      .quality(82)
+                      .format('webp')
                       .url()
                   : null
 
@@ -322,7 +378,21 @@ export default async function Home() {
                     {image ? (
                       <img
                         src={image}
+                        srcSet={
+                          imageMobile
+                            ? `${imageMobile} 600w, ${image} 1400w`
+                            : undefined
+                        }
+                        sizes={
+                          singleFeaturedPerson
+                            ? '(min-width: 1024px) 1024px, 100vw'
+                            : '(min-width: 1024px) 25vw, 50vw'
+                        }
                         alt={person.name}
+                        width={1400}
+                        height={1750}
+                        loading="lazy"
+                        decoding="async"
                         className={
                           singleFeaturedPerson
                             ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105'
@@ -334,10 +404,6 @@ export default async function Home() {
                     )}
 
                     <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
-
-                    <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
-                      +
-                    </div>
 
                     <div
                       className={
@@ -421,6 +487,18 @@ export default async function Home() {
                     .width(1000)
                     .height(625)
                     .fit('crop')
+                    .quality(82)
+                    .format('webp')
+                    .url()
+                : null
+
+              const imageMobile = story.coverImage
+                ? urlFor(story.coverImage)
+                    .width(640)
+                    .height(400)
+                    .fit('crop')
+                    .quality(82)
+                    .format('webp')
                     .url()
                 : null
 
@@ -436,7 +514,17 @@ export default async function Home() {
                     {image ? (
                       <img
                         src={image}
+                        srcSet={
+                          imageMobile
+                            ? `${imageMobile} 640w, ${image} 1000w`
+                            : undefined
+                        }
+                        sizes="(min-width: 1024px) 50vw, 100vw"
                         alt={story.title}
+                        width={1000}
+                        height={625}
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                       />
                     ) : (
@@ -521,6 +609,18 @@ export default async function Home() {
                       .width(1000)
                       .height(625)
                       .fit('crop')
+                      .quality(82)
+                      .format('webp')
+                      .url()
+                  : null
+
+                const imageMobile = item.coverImage
+                  ? urlFor(item.coverImage)
+                      .width(640)
+                      .height(400)
+                      .fit('crop')
+                      .quality(82)
+                      .format('webp')
                       .url()
                   : null
 
@@ -536,7 +636,17 @@ export default async function Home() {
                       {image ? (
                         <img
                           src={image}
+                          srcSet={
+                            imageMobile
+                              ? `${imageMobile} 640w, ${image} 1000w`
+                              : undefined
+                          }
+                          sizes="(min-width: 1024px) 50vw, 100vw"
                           alt={item.title}
+                          width={1000}
+                          height={625}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                         />
                       ) : (
