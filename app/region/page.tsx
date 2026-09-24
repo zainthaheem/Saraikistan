@@ -1,8 +1,32 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Saraiki Region | Places, Cities & Heritage',
+  description:
+    'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
+  alternates: {
+    canonical: 'https://saraikistan-ml2d.vercel.app/region',
+  },
+  openGraph: {
+    title: 'Saraiki Region | Places, Cities & Heritage',
+    description:
+      'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
+    type: 'website',
+    url: 'https://saraikistan-ml2d.vercel.app/region',
+    siteName: 'Saraikistan',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Saraiki Region | Places, Cities & Heritage',
+    description:
+      'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
+  },
+}
 
 async function getPlaces() {
   return client.fetch(
@@ -37,7 +61,6 @@ export default async function Region() {
         </div>
       </section>
 
-
       {/* INTRO */}
       <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12">
 
@@ -56,7 +79,6 @@ export default async function Region() {
         </div>
 
       </section>
-
 
       {places.length === 0 ? (
 
@@ -117,7 +139,6 @@ export default async function Region() {
                   )}
 
                 </div>
-
 
                 {/* CONTENT */}
                 <div className="border-t-2 border-mustard p-6">
