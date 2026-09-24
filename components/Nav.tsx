@@ -1,3 +1,4 @@
+
 'use client'
 
 import Link from 'next/link'
@@ -112,10 +113,13 @@ export default function Nav() {
           {logo ? (
             <img
               src={urlFor(logo)
-                .width(800)
-                .quality(95)
+                .width(600)
+                .quality(90)
+                .format('webp')
                 .url()}
               alt="Saraikistan"
+              width={600}
+              height={120}
               className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
           ) : (
