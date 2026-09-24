@@ -1,3 +1,4 @@
+
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -28,12 +29,13 @@ async function getFooterData() {
 export default async function Footer() {
   const settings = await getFooterData()
 
+  // Optimized footer background images
   const footerImageDesktop = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(1600)
-        .height(444)
+        .height(230)
         .fit('crop')
-        .quality(80)
+        .quality(72)
         .format('webp')
         .url()
     : null
@@ -41,13 +43,14 @@ export default async function Footer() {
   const footerImageMobile = settings?.footerImage
     ? urlFor(settings.footerImage)
         .width(800)
-        .height(222)
+        .height(115)
         .fit('crop')
-        .quality(80)
+        .quality(72)
         .format('webp')
         .url()
     : null
 
+  // Keep the logo sharp
   const logoUrl = settings?.logo
     ? urlFor(settings.logo)
         .height(75)
@@ -101,7 +104,6 @@ export default async function Footer() {
 
             </div>
 
-
             {/* EXPLORE */}
             <div>
 
@@ -124,7 +126,6 @@ export default async function Footer() {
               </nav>
 
             </div>
-
 
             {/* CONNECT */}
             <div>
@@ -164,7 +165,6 @@ export default async function Footer() {
 
           </div>
 
-
           {/* COPYRIGHT */}
           <div className="mt-7 border-t border-cream/10 pt-4">
 
@@ -184,8 +184,7 @@ export default async function Footer() {
 
         </div>
 
-
-        {/* INTEGRATED TEXTILE FOOTER IMAGE */}
+        {/* OPTIMIZED TEXTILE FOOTER IMAGE */}
         {footerImageDesktop && footerImageMobile && (
           <div className="relative h-14 w-full overflow-hidden sm:h-16 lg:h-20">
 
@@ -196,7 +195,7 @@ export default async function Footer() {
               alt=""
               aria-hidden="true"
               width={1600}
-              height={444}
+              height={230}
               loading="lazy"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-bottom"
