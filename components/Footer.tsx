@@ -29,26 +29,25 @@ async function getFooterData() {
 export default async function Footer() {
   const settings = await getFooterData()
 
+  // Optimized original textile image for desktop
   const footerImageDesktop = settings?.footerImage
     ? urlFor(settings.footerImage)
-        .width(1600)
-        .height(444)
-        .fit('crop')
-        .quality(82)
+        .width(1200)
+        .quality(80)
         .format('webp')
         .url()
     : null
 
+  // Smaller textile image for mobile
   const footerImageMobile = settings?.footerImage
     ? urlFor(settings.footerImage)
-        .width(800)
-        .height(222)
-        .fit('crop')
-        .quality(82)
+        .width(500)
+        .quality(80)
         .format('webp')
         .url()
     : null
 
+  // Keep the logo sharp
   const logoUrl = settings?.logo
     ? urlFor(settings.logo)
         .height(120)
@@ -65,9 +64,9 @@ export default async function Footer() {
       <div className="tile-rule" />
 
       {/* MAIN FOOTER CONTENT */}
-      <div className="mx-auto max-w-7xl px-6 pb-5 pt-8 sm:px-10 sm:pb-6 sm:pt-9 lg:px-12 lg:pb-7 lg:pt-10">
+      <div className="mx-auto max-w-7xl px-6 pb-4 pt-7 sm:px-10 sm:pb-5 sm:pt-8 lg:px-12 lg:pb-5 lg:pt-9">
 
-        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr] lg:gap-16">
 
           {/* BRAND */}
           <div className="max-w-lg">
@@ -112,7 +111,7 @@ export default async function Footer() {
 
             <nav
               aria-label="Footer navigation"
-              className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5"
+              className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2"
             >
               {footerLinks.map((link) => (
                 <Link
@@ -134,7 +133,7 @@ export default async function Footer() {
               Connect
             </p>
 
-            <div className="mt-3 space-y-2.5">
+            <div className="mt-3 space-y-2">
 
               <a
                 href="mailto:hello.saraikistan@gmail.com"
@@ -166,9 +165,9 @@ export default async function Footer() {
         </div>
 
         {/* COPYRIGHT */}
-        <div className="mt-7 border-t border-cream/10 pt-4 sm:mt-8 sm:pt-5">
+        <div className="mt-6 border-t border-cream/10 pt-3 sm:mt-7 sm:pt-4">
 
-          <div className="flex flex-col gap-1.5 font-body text-xs leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1 font-body text-xs leading-5 text-cream/35 sm:flex-row sm:items-center sm:justify-between">
 
             <p>
               © {new Date().getFullYear()} Saraikistan. All rights reserved.
@@ -186,16 +185,16 @@ export default async function Footer() {
 
       {/* ORIGINAL CULTURAL TEXTILE IMAGE */}
       {footerImageDesktop && footerImageMobile && (
-        <div className="relative h-12 w-full overflow-hidden border-t border-mustard/40 sm:h-14 lg:h-[68px]">
+        <div className="relative h-10 w-full overflow-hidden border-t border-mustard/50 sm:h-12 lg:h-14">
 
           <img
             src={footerImageDesktop}
-            srcSet={`${footerImageMobile} 800w, ${footerImageDesktop} 1600w`}
+            srcSet={`${footerImageMobile} 500w, ${footerImageDesktop} 1200w`}
             sizes="100vw"
             alt=""
             aria-hidden="true"
-            width={1600}
-            height={444}
+            width={1200}
+            height={480}
             loading="lazy"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover object-bottom"
