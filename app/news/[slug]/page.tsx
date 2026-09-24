@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PortableText } from '@portabletext/react'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
 
@@ -19,11 +20,12 @@ async function getNewsPost(slug: string) {
       gallery,
       videoUrl,
       body,
+      bodyUrdu,
       seoTitle,
       seoDescription,
       seoImage
     }`,
-    { slug }
+    {slug}
   )
 }
 
@@ -42,7 +44,7 @@ function formatNewsType(type: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string }
+  params: {slug: string}
 }): Promise<Metadata> {
   const post = await getNewsPost(params.slug)
 
@@ -106,7 +108,7 @@ export async function generateMetadata({
 export default async function NewsPostPage({
   params,
 }: {
-  params: { slug: string }
+  params: {slug: string}
 }) {
   const post = await getNewsPost(params.slug)
 
@@ -152,15 +154,15 @@ export default async function NewsPostPage({
           dateModified: post.publishedAt,
         }
       : {}),
-    ...(articleImage ? { image: articleImage } : {}),
+    ...(articleImage ? {image: articleImage} : {}),
     ...(post.category?.title
-      ? { articleSection: post.category.title }
+      ? {articleSection: post.category.title}
       : {}),
     ...(post.newsType
-      ? { genre: formatNewsType(post.newsType) }
+      ? {genre: formatNewsType(post.newsType)}
       : {}),
     ...(post.source
-      ? { isBasedOn: post.source }
+      ? {isBasedOn: post.source}
       : {}),
     inLanguage: 'en',
     author: post.author
@@ -275,16 +277,13 @@ export default async function NewsPostPage({
         )}
 
         {/* Article Body */}
-        {post.body && (
+        {(post.body || post.bodyUrdu) && (
           <div className="mt-10 max-w-3xl">
 
-            <p className="font-body text-sm text-shawl">
-              Article
-            </p>
-
-            <div className="prose prose-sm mt-4 max-w-none font-body leading-7 text-navy/75 sm:prose-base">
-              <PortableText value={post.body} />
-            </div>
+            <LanguageSwitcher
+              english={post.body}
+              urdu={post.bodyUrdu}
+            />
 
           </div>
         )}
