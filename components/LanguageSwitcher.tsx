@@ -44,68 +44,84 @@ export default function LanguageSwitcher({
     }))
   }
 
+  // Renders both legacy image blocks and new biography image objects.
+  const renderBiographyImage = (value: any, imageValue?: any) => {
+    const image = imageValue || value
+
+    if (!image?.asset) return null
+
+    const imageUrl = urlFor(image)
+      .width(1400)
+      .quality(80)
+      .auto('format')
+      .url()
+
+    const fullImageUrl = urlFor(image)
+      .width(2200)
+      .quality(90)
+      .auto('format')
+      .url()
+
+    const caption = value.caption || ''
+    const credit = value.credit || ''
+
+    return (
+      <figure className="my-8 sm:my-10">
+        <button
+          type="button"
+          onClick={() =>
+            setActiveImage({
+              images: [
+                {
+                  url: fullImageUrl,
+                  caption,
+                  credit,
+                },
+              ],
+              index: 0,
+            })
+          }
+          className="group block w-full cursor-zoom-in overflow-hidden bg-shawl/10 text-left"
+          aria-label={`View image${caption ? `: ${caption}` : ''}`}
+        >
+          <img
+            src={imageUrl}
+            alt={caption || 'Biography photograph'}
+            loading="lazy"
+            decoding="async"
+            className="mx-auto max-h-[650px] w-full object-contain transition duration-500 group-hover:scale-[1.01]"
+          />
+        </button>
+
+        {(caption || credit) && (
+          <figcaption className="mt-3 border-l-2 border-mustard/70 pl-4">
+            {caption && (
+              <p className="font-body text-sm leading-6 text-navy/70">
+                {caption}
+              </p>
+            )}
+
+            {credit && (
+              <p className="mt-1 font-body text-xs leading-5 text-navy/40">
+                Photo credit: {credit}
+              </p>
+            )}
+          </figcaption>
+        )}
+      </figure>
+    )
+  }
+
   const portableTextComponents = {
     types: {
+      // Existing biography image blocks
       image: ({ value }: any) => {
-        if (!value?.asset) return null
+        return renderBiographyImage(value)
+      },
 
-        const imageUrl = urlFor(value)
-          .width(1400)
-          .quality(80)
-          .auto('format')
-          .url()
-
-        const fullImageUrl = urlFor(value)
-          .width(2200)
-          .quality(90)
-          .auto('format')
-          .url()
-
-        return (
-          <figure className="my-8 sm:my-10">
-            <button
-              type="button"
-              onClick={() =>
-                setActiveImage({
-                  images: [
-                    {
-                      url: fullImageUrl,
-                      caption: value.caption || '',
-                      credit: value.credit || '',
-                    },
-                  ],
-                  index: 0,
-                })
-              }
-              className="group block w-full cursor-zoom-in overflow-hidden bg-shawl/10 text-left"
-              aria-label={`View image${value.caption ? `: ${value.caption}` : ''}`}
-            >
-              <img
-                src={imageUrl}
-                alt={value.caption || 'Biography photograph'}
-                loading="lazy"
-                decoding="async"
-                className="mx-auto max-h-[650px] w-full object-contain transition duration-500 group-hover:scale-[1.01]"
-              />
-            </button>
-
-            {(value.caption || value.credit) && (
-              <figcaption className="mt-3 border-l-2 border-mustard/70 pl-4">
-                {value.caption && (
-                  <p className="font-body text-sm leading-6 text-navy/70">
-                    {value.caption}
-                  </p>
-                )}
-
-                {value.credit && (
-                  <p className="mt-1 font-body text-xs leading-5 text-navy/40">
-                    Photo credit: {value.credit}
-                  </p>
-                )}
-              </figcaption>
-            )}
-          </figure>
-        )
+      // New bioImage schema objects
+      bioImage: ({ value }: any) => {
+        return renderBiographyImage(value, value.image)
       },
     },
 
@@ -322,7 +338,10 @@ export default function LanguageSwitcher({
           >
             <img
               src={activeImage.images[activeImage.index].url}
-              alt={activeImage.images[activeImage.index].caption || 'Biography photograph'}
+              alt={
+                activeImage.images[activeImage.index].caption ||
+                'Biography photograph'
+              }
               className="max-h-[75vh] max-w-full object-contain"
             />
 
