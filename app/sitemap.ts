@@ -1,7 +1,8 @@
+
 import type { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
 
-const baseUrl = 'https://saraikistan-ml2d.vercel.app'
+const baseUrl = 'https://saraikistan.org'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = await client.fetch(`
