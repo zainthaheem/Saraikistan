@@ -1,8 +1,8 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { PortableText } from '@portabletext/react'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
@@ -25,14 +25,14 @@ async function getStory(slug: string) {
       "relatedPersonName": relatedPerson->name,
       "relatedPersonSlug": relatedPerson->slug.current
     }`,
-    {slug}
+    { slug }
   )
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: {slug: string}
+  params: { slug: string }
 }): Promise<Metadata> {
   const story = await getStory(params.slug)
 
@@ -52,25 +52,31 @@ export async function generateMetadata({
     story.seoDescription ||
     `Read ${story.title} on Saraikistan — stories, history, people and culture from the Saraiki region.`
 
-  const image = story.seoImage
-    ? urlFor(story.seoImage).width(1200).height(630).fit('crop').url()
-    : story.coverImage
-      ? urlFor(story.coverImage).width(1200).height(630).fit('crop').url()
-      : undefined
+  const imageSource = story.seoImage || story.coverImage
+
+  const image = imageSource
+    ? urlFor(imageSource)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+        .url()
+    : undefined
 
   return {
     title,
     description,
 
     alternates: {
-      canonical: `https://saraikistan-ml2d.vercel.app/blog/${params.slug}`,
+      canonical: `https://saraikistan.org/blog/${params.slug}`,
     },
 
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://saraikistan-ml2d.vercel.app/blog/${params.slug}`,
+      url: `https://saraikistan.org/blog/${params.slug}`,
       siteName: 'Saraikistan',
       images: image
         ? [
@@ -96,7 +102,7 @@ export async function generateMetadata({
 export default async function StoryPage({
   params,
 }: {
-  params: {slug: string}
+  params: { slug: string }
 }) {
   const story = await getStory(params.slug)
 
@@ -114,13 +120,29 @@ export default async function StoryPage({
     )
   }
 
-  const storyUrl = `https://saraikistan-ml2d.vercel.app/blog/${params.slug}`
+  const storyUrl = `https://saraikistan.org/blog/${params.slug}`
 
-  const articleImage = story.seoImage
-    ? urlFor(story.seoImage).width(1200).height(630).fit('crop').url()
-    : story.coverImage
-      ? urlFor(story.coverImage).width(1200).height(630).fit('crop').url()
-      : undefined
+  const articleImageSource = story.seoImage || story.coverImage
+
+  const articleImage = articleImageSource
+    ? urlFor(articleImageSource)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+        .url()
+    : undefined
+
+  const coverImage = story.coverImage
+    ? urlFor(story.coverImage)
+        .width(1400)
+        .height(550)
+        .fit('crop')
+        .quality(72)
+        .format('webp')
+        .url()
+    : undefined
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -136,29 +158,29 @@ export default async function StoryPage({
       '@id': storyUrl,
     },
     ...(story.publishedAt
-      ? {datePublished: story.publishedAt}
+      ? { datePublished: story.publishedAt }
       : {}),
-    ...(articleImage ? {image: articleImage} : {}),
+    ...(articleImage ? { image: articleImage } : {}),
     ...(story.category?.title
-      ? {articleSection: story.category.title}
+      ? { articleSection: story.category.title }
       : {}),
     inLanguage: 'en',
     author: {
       '@type': 'Organization',
       name: 'Saraikistan',
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: 'https://saraikistan.org',
     },
     publisher: {
       '@type': 'Organization',
       name: 'Saraikistan',
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: 'https://saraikistan.org',
     },
     ...(story.relatedPersonName && story.relatedPersonSlug
       ? {
           about: {
             '@type': 'Person',
             name: story.relatedPersonName,
-            url: `https://saraikistan-ml2d.vercel.app/celebrities/${story.relatedPersonSlug}`,
+            url: `https://saraikistan.org/celebrities/${story.relatedPersonSlug}`,
           },
         }
       : {}),
@@ -166,8 +188,7 @@ export default async function StoryPage({
 
   return (
     <section className="min-h-screen bg-cream text-navy">
-
-      {/* Article Structured Data */}
+      {/* ARTICLE STRUCTURED DATA */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -175,27 +196,26 @@ export default async function StoryPage({
         }}
       />
 
-      {/* Cover Image */}
-      {story.coverImage && (
+      {/* COVER IMAGE */}
+      {coverImage && (
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
-            src={urlFor(story.coverImage)
-              .width(1800)
-              .height(700)
-              .fit('crop')
-              .url()}
+            src={coverImage}
             alt={story.title}
+            width={1400}
+            height={550}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </div>
       )}
 
-      {/* Main Content */}
+      {/* MAIN CONTENT */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 sm:px-10 sm:pt-10 lg:px-12">
-
-        {/* Story Header */}
+        {/* STORY HEADER */}
         <div className="border-t border-mustard pt-7">
-
           {story.category && (
             <p className="font-body text-sm text-shawl">
               {story.category.title}
@@ -220,37 +240,34 @@ export default async function StoryPage({
               About {story.relatedPersonName} →
             </Link>
           )}
-
         </div>
 
-        {/* Video */}
+        {/* VIDEO */}
         {story.videoUrl && (
           <div className="mt-10 aspect-video w-full overflow-hidden bg-navy">
             <iframe
               src={story.videoUrl.replace('watch?v=', 'embed/')}
               className="h-full w-full"
               title={story.title}
+              loading="lazy"
               allowFullScreen
             />
           </div>
         )}
 
-        {/* Story Body */}
+        {/* STORY BODY */}
         {(story.body || story.bodyUrdu) && (
           <div className="mt-10 max-w-3xl">
-
             <LanguageSwitcher
               english={story.body}
               urdu={story.bodyUrdu}
             />
-
           </div>
         )}
 
-        {/* Gallery */}
+        {/* GALLERY */}
         {story.gallery && story.gallery.length > 0 && (
           <div className="mt-14">
-
             <div className="mb-6">
               <p className="font-body text-sm text-shawl">
                 Gallery
@@ -262,7 +279,6 @@ export default async function StoryPage({
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-
               {story.gallery.map((img: any, i: number) => (
                 <div
                   key={i}
@@ -270,22 +286,26 @@ export default async function StoryPage({
                 >
                   <img
                     src={urlFor(img)
-                      .width(600)
-                      .height(600)
+                      .width(500)
+                      .height(500)
                       .fit('crop')
+                      .quality(65)
+                      .format('webp')
                       .url()}
                     alt={`${story.title} — photo ${i + 1}`}
+                    width={500}
+                    height={500}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
               ))}
-
             </div>
-
           </div>
         )}
 
-        {/* Image Credits */}
+        {/* IMAGE CREDITS */}
         {story.imageCredits && (
           <details className="group mt-14 border-t border-navy/10 pt-5">
             <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
@@ -303,9 +323,7 @@ export default async function StoryPage({
             </div>
           </details>
         )}
-
       </div>
-
     </section>
   )
 }
