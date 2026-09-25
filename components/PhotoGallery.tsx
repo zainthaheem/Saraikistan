@@ -62,12 +62,13 @@ export default function PhotoGallery({
           {visibleImages.map((img, i) => {
             if (!img?.asset?._ref) return null
 
+            // Preserve the complete original photo.
+            // Do not force a square crop.
             const imageUrl = urlFor(img)
-              .width(700)
-              .height(700)
-              .fit('crop')
+              .width(900)
+              .fit('max')
               .auto('format')
-              .quality(85)
+              .quality(90)
               .url()
 
             return (
@@ -76,20 +77,19 @@ export default function PhotoGallery({
                 type="button"
                 onClick={() => setSelectedIndex(i)}
                 aria-label={`View photo ${i + 1} of ${personName}`}
-                className="group overflow-hidden bg-shawl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-mustard"
+                className="group overflow-hidden bg-navy/5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-mustard"
               >
-                <div className="aspect-square overflow-hidden">
+                <div className="flex aspect-square items-center justify-center overflow-hidden bg-navy/5">
                   <img
                     src={imageUrl}
                     alt={
                       img.caption ||
                       `${personName} — photo ${i + 1}`
                     }
-                    width={700}
-                    height={700}
+                    width={900}
                     loading="lazy"
                     decoding="async"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.02]"
                   />
                 </div>
 
@@ -132,7 +132,7 @@ export default function PhotoGallery({
       {/* Fullscreen Photo Viewer */}
       {selectedIndex !== null && selectedImage && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 sm:p-8"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-label="Photo viewer"
@@ -143,7 +143,7 @@ export default function PhotoGallery({
             type="button"
             onClick={closeViewer}
             aria-label="Close photo viewer"
-            className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center border border-white/30 text-3xl text-white transition hover:border-mustard hover:text-mustard"
+            className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center border border-white/30 bg-black/40 text-3xl text-white transition hover:border-mustard hover:text-mustard"
           >
             ×
           </button>
@@ -163,29 +163,29 @@ export default function PhotoGallery({
             </button>
           )}
 
-          {/* Selected Photo and Caption */}
+          {/* Full Photo and Caption */}
           <div
-            className="flex max-h-full w-full max-w-6xl flex-col items-center"
+            className="flex max-h-[90vh] w-full max-w-6xl flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex min-h-0 flex-1 items-center justify-center">
+            <div className="flex min-h-0 w-full flex-1 items-center justify-center">
               <img
                 src={urlFor(selectedImage)
-                  .width(1800)
-                  .height(1600)
+                  .width(2200)
                   .fit('max')
                   .auto('format')
-                  .quality(90)
+                  .quality(95)
                   .url()}
                 alt={
                   selectedImage.caption ||
                   `${personName} — photo ${(selectedIndex ?? 0) + 1}`
                 }
-                className="max-h-[72vh] max-w-full object-contain"
+                decoding="async"
+                className="block max-h-[76vh] max-w-full object-contain"
               />
             </div>
 
-            <div className="mt-5 max-w-3xl text-center">
+            <div className="mt-4 max-w-3xl shrink-0 px-12 text-center">
               {selectedImage.caption && (
                 <p className="font-body text-sm leading-6 text-white sm:text-base">
                   {selectedImage.caption}
