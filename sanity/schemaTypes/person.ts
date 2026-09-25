@@ -1,6 +1,5 @@
 
 import { defineType, defineField, defineArrayMember } from 'sanity'
-import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
 
 export const person = defineType({
   name: 'person',
@@ -73,17 +72,25 @@ export const person = defineType({
       ],
     }),
 
-    // ENGLISH BIOGRAPHY WITH INLINE IMAGES
+    // ENGLISH BIOGRAPHY
     defineField({
       name: 'bio',
       title: 'Biography — English',
       description:
-        'Write the biography and insert images between paragraphs. Add a caption and optional credit to each image.',
+        'Write the biography using the standard Sanity editor. Insert a Biography Image between paragraphs to add a photo with a caption and optional credit.',
       type: 'array',
       of: [
+        // Normal paragraphs and headings
         defineArrayMember({
           type: 'block',
         }),
+
+        // New biography image object
+        defineArrayMember({
+          type: 'bioImage',
+        }),
+
+        // Legacy image blocks retained for existing biographies
         defineArrayMember({
           type: 'image',
           options: { hotspot: true },
@@ -105,22 +112,27 @@ export const person = defineType({
           ],
         }),
       ],
-      components: {
-        input: MarkdownPortableTextInput,
-      },
     }),
 
-    // URDU BIOGRAPHY WITH INLINE IMAGES
+    // URDU BIOGRAPHY
     defineField({
       name: 'bioUrdu',
       title: 'Biography — اردو',
       description:
-        'اردو سوانح عمری لکھیں۔ متعلقہ پیراگراف کے درمیان تصاویر شامل کریں اور ہر تصویر کا عنوان اور اختیاری کریڈٹ درج کریں۔',
+        'اردو سوانح عمری لکھیں۔ پیراگراف کے درمیان Biography Image شامل کرکے تصویر، عنوان اور اختیاری کریڈٹ درج کریں۔',
       type: 'array',
       of: [
+        // Urdu paragraphs and headings
         defineArrayMember({
           type: 'block',
         }),
+
+        // New biography image object
+        defineArrayMember({
+          type: 'bioImage',
+        }),
+
+        // Legacy image blocks retained for existing biographies
         defineArrayMember({
           type: 'image',
           options: { hotspot: true },
@@ -142,9 +154,6 @@ export const person = defineType({
           ],
         }),
       ],
-      components: {
-        input: MarkdownPortableTextInput,
-      },
     }),
 
     defineField({
