@@ -179,6 +179,13 @@ export default async function RootLayout({
       className={`${playfair.variable} ${montserrat.variable}`}
     >
       <head>
+        {/* Google AdSense account verification */}
+        <meta
+          name="google-adsense-account"
+          content="ca-pub-9866879353406837"
+        />
+
+        {/* Google AdSense script */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9866879353406837"
@@ -186,6 +193,7 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
 
+        {/* Website structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
