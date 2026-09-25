@@ -13,6 +13,7 @@ const footerLinks = [
   { href: '/news', label: 'News' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: '/privacy-policy', label: 'Privacy Policy' },
 ]
 
 async function getFooterData() {
