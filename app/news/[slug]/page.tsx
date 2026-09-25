@@ -1,7 +1,7 @@
+
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { PortableText } from '@portabletext/react'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export const revalidate = 60
@@ -25,7 +25,7 @@ async function getNewsPost(slug: string) {
       seoDescription,
       seoImage
     }`,
-    {slug}
+    { slug }
   )
 }
 
@@ -44,7 +44,7 @@ function formatNewsType(type: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: {slug: string}
+  params: { slug: string }
 }): Promise<Metadata> {
   const post = await getNewsPost(params.slug)
 
@@ -62,12 +62,24 @@ export async function generateMetadata({
 
   const description =
     post.seoDescription ||
-    `Read the latest news and developments from the Saraiki region on Saraikistan.`
+    'Read the latest news and developments from the Saraiki region on Saraikistan.'
 
   const image = post.seoImage
-    ? urlFor(post.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(post.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+        .url()
     : post.coverImage
-      ? urlFor(post.coverImage).width(1200).height(630).fit('crop').url()
+      ? urlFor(post.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()
       : undefined
 
   return {
@@ -75,14 +87,14 @@ export async function generateMetadata({
     description,
 
     alternates: {
-      canonical: `https://saraikistan-ml2d.vercel.app/news/${params.slug}`,
+      canonical: `https://saraikistan.org/news/${params.slug}`,
     },
 
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://saraikistan-ml2d.vercel.app/news/${params.slug}`,
+      url: `https://saraikistan.org/news/${params.slug}`,
       siteName: 'Saraikistan',
       images: image
         ? [
@@ -108,7 +120,7 @@ export async function generateMetadata({
 export default async function NewsPostPage({
   params,
 }: {
-  params: {slug: string}
+  params: { slug: string }
 }) {
   const post = await getNewsPost(params.slug)
 
@@ -126,13 +138,24 @@ export default async function NewsPostPage({
     )
   }
 
-  const postUrl =
-    `https://saraikistan-ml2d.vercel.app/news/${params.slug}`
+  const postUrl = `https://saraikistan.org/news/${params.slug}`
 
   const articleImage = post.seoImage
-    ? urlFor(post.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(post.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+        .url()
     : post.coverImage
-      ? urlFor(post.coverImage).width(1200).height(630).fit('crop').url()
+      ? urlFor(post.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()
       : undefined
 
   const newsArticleSchema = {
@@ -142,7 +165,7 @@ export default async function NewsPostPage({
     headline: post.title,
     description:
       post.seoDescription ||
-      `Read the latest news and developments from the Saraiki region on Saraikistan.`,
+      'Read the latest news and developments from the Saraiki region on Saraikistan.',
     url: postUrl,
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -154,15 +177,15 @@ export default async function NewsPostPage({
           dateModified: post.publishedAt,
         }
       : {}),
-    ...(articleImage ? {image: articleImage} : {}),
+    ...(articleImage ? { image: articleImage } : {}),
     ...(post.category?.title
-      ? {articleSection: post.category.title}
+      ? { articleSection: post.category.title }
       : {}),
     ...(post.newsType
-      ? {genre: formatNewsType(post.newsType)}
+      ? { genre: formatNewsType(post.newsType) }
       : {}),
     ...(post.source
-      ? {isBasedOn: post.source}
+      ? { isBasedOn: post.source }
       : {}),
     inLanguage: 'en',
     author: post.author
@@ -173,12 +196,12 @@ export default async function NewsPostPage({
       : {
           '@type': 'Organization',
           name: 'Saraikistan',
-          url: 'https://saraikistan-ml2d.vercel.app',
+          url: 'https://saraikistan.org',
         },
     publisher: {
       '@type': 'Organization',
       name: 'Saraikistan',
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: 'https://saraikistan.org',
     },
   }
 
@@ -201,11 +224,18 @@ export default async function NewsPostPage({
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
             src={urlFor(post.coverImage)
-              .width(1800)
-              .height(700)
+              .width(1400)
+              .height(550)
               .fit('crop')
+              .quality(72)
+              .format('webp')
               .url()}
             alt={post.title}
+            width={1400}
+            height={550}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </div>
@@ -271,6 +301,7 @@ export default async function NewsPostPage({
               src={post.videoUrl.replace('watch?v=', 'embed/')}
               className="h-full w-full"
               title={post.title}
+              loading="lazy"
               allowFullScreen
             />
           </div>
@@ -311,11 +342,17 @@ export default async function NewsPostPage({
                 >
                   <img
                     src={urlFor(img)
-                      .width(600)
-                      .height(600)
+                      .width(500)
+                      .height(500)
                       .fit('crop')
+                      .quality(65)
+                      .format('webp')
                       .url()}
                     alt={`${post.title} — photo ${i + 1}`}
+                    width={500}
+                    height={500}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
