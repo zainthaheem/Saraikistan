@@ -11,18 +11,18 @@ export const metadata: Metadata = {
   description:
     'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
   alternates: {
-    canonical: 'https://saraikistan-ml2d.vercel.app/region',
+    canonical: 'https://saraikistan.org/region',
   },
   openGraph: {
     title: 'Saraiki Region | Places, Cities & Heritage',
     description:
       'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
     type: 'website',
-    url: 'https://saraikistan-ml2d.vercel.app/region',
+    url: 'https://saraikistan.org/region',
     siteName: 'Saraikistan',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Saraiki Region | Places, Cities & Heritage',
     description:
       'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
@@ -112,24 +112,14 @@ export default async function Region() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
-            {places.map((place: any) => {
+            {places.map((place: any, index: number) => {
 
-              const imageMobile = place.coverImage
+              const imageUrl = place.coverImage
                 ? urlFor(place.coverImage)
-                    .width(500)
-                    .height(281)
+                    .width(720)
+                    .height(405)
                     .fit('crop')
-                    .quality(80)
-                    .format('webp')
-                    .url()
-                : null
-
-              const imageDesktop = place.coverImage
-                ? urlFor(place.coverImage)
-                    .width(900)
-                    .height(506)
-                    .fit('crop')
-                    .quality(82)
+                    .quality(70)
                     .format('webp')
                     .url()
                 : null
@@ -142,18 +132,17 @@ export default async function Region() {
                   className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
 
-                  {/* IMAGE */}
+                  {/* OPTIMIZED IMAGE */}
                   <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
-                    {imageDesktop && imageMobile ? (
+                    {imageUrl ? (
                       <img
-                        src={imageDesktop}
-                        srcSet={`${imageMobile} 500w, ${imageDesktop} 900w`}
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        alt={place.title}
-                        width={900}
-                        height={506}
-                        loading="lazy"
+                        src={imageUrl}
+                        alt={`${place.title} - Saraikistan`}
+                        width={720}
+                        height={405}
+                        loading={index < 3 ? 'eager' : 'lazy'}
+                        fetchPriority={index === 0 ? 'high' : 'auto'}
                         decoding="async"
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                       />
