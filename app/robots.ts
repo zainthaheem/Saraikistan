@@ -1,3 +1,4 @@
+
 import type { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
@@ -6,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://saraikistan-ml2d.vercel.app/sitemap.xml',
+    sitemap: 'https://saraikistan.org/sitemap.xml',
+    host: 'https://saraikistan.org',
   }
 }
