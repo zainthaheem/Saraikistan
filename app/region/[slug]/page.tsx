@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -48,24 +49,39 @@ export async function generateMetadata({
     `Explore ${place.title}, its history, culture and significance in the Saraiki region.`
 
   const image = place.seoImage
-    ? urlFor(place.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(place.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(80)
+        .format('webp')
+        .url()
     : place.coverImage
-      ? urlFor(place.coverImage).width(1200).height(630).fit('crop').url()
+      ? urlFor(place.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .quality(80)
+          .format('webp')
+          .url()
       : undefined
+
+  const canonicalUrl =
+    `https://saraikistan.org/region/${params.slug}`
 
   return {
     title,
     description,
 
     alternates: {
-      canonical: `https://saraikistan-ml2d.vercel.app/region/${params.slug}`,
+      canonical: canonicalUrl,
     },
 
     openGraph: {
       title,
       description,
       type: 'website',
-      url: `https://saraikistan-ml2d.vercel.app/region/${params.slug}`,
+      url: canonicalUrl,
       siteName: 'Saraikistan',
       images: image
         ? [
@@ -109,12 +125,25 @@ export default async function PlacePage({
     )
   }
 
-  const placeUrl = `https://saraikistan-ml2d.vercel.app/region/${params.slug}`
+  const placeUrl =
+    `https://saraikistan.org/region/${params.slug}`
 
   const placeImage = place.seoImage
-    ? urlFor(place.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(place.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(80)
+        .format('webp')
+        .url()
     : place.coverImage
-      ? urlFor(place.coverImage).width(1200).height(630).fit('crop').url()
+      ? urlFor(place.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .quality(80)
+          .format('webp')
+          .url()
       : undefined
 
   const placeSchema = {
@@ -136,6 +165,17 @@ export default async function PlacePage({
     },
   }
 
+  // Optimized cover image
+  const coverImageUrl = place.coverImage
+    ? urlFor(place.coverImage)
+        .width(1400)
+        .height(550)
+        .fit('crop')
+        .quality(72)
+        .format('webp')
+        .url()
+    : null
+
   return (
     <section className="min-h-screen bg-cream text-navy">
 
@@ -147,16 +187,17 @@ export default async function PlacePage({
         }}
       />
 
-      {/* Cover Image */}
-      {place.coverImage && (
+      {/* Optimized Cover Image */}
+      {coverImageUrl && (
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
-            src={urlFor(place.coverImage)
-              .width(1800)
-              .height(700)
-              .fit('crop')
-              .url()}
-            alt={place.title}
+            src={coverImageUrl}
+            alt={`${place.title} - Saraikistan`}
+            width={1400}
+            height={550}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </div>
@@ -188,6 +229,7 @@ export default async function PlacePage({
               src={place.videoUrl.replace('watch?v=', 'embed/')}
               className="h-full w-full"
               title={place.title}
+              loading="lazy"
               allowFullScreen
             />
           </div>
@@ -203,7 +245,7 @@ export default async function PlacePage({
           />
         )}
 
-        {/* Gallery */}
+        {/* Optimized Gallery */}
         {place.gallery && place.gallery.length > 0 && (
           <div className="mt-14">
 
@@ -219,22 +261,32 @@ export default async function PlacePage({
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
 
-              {place.gallery.map((img: any, i: number) => (
-                <div
-                  key={i}
-                  className="aspect-square overflow-hidden bg-shawl"
-                >
-                  <img
-                    src={urlFor(img)
-                      .width(600)
-                      .height(600)
-                      .fit('crop')
-                      .url()}
-                    alt={`${place.title} — photo ${i + 1}`}
-                    className="h-full w-full object-cover transition duration-500 hover:scale-105"
-                  />
-                </div>
-              ))}
+              {place.gallery.map((img: any, i: number) => {
+                const galleryImageUrl = urlFor(img)
+                  .width(500)
+                  .height(500)
+                  .fit('crop')
+                  .quality(68)
+                  .format('webp')
+                  .url()
+
+                return (
+                  <div
+                    key={i}
+                    className="aspect-square overflow-hidden bg-shawl"
+                  >
+                    <img
+                      src={galleryImageUrl}
+                      alt={`${place.title} — photo ${i + 1}`}
+                      width={500}
+                      height={500}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                    />
+                  </div>
+                )
+              })}
 
             </div>
 
