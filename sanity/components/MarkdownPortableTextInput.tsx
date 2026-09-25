@@ -1,7 +1,8 @@
+
 'use client'
 
-import React, {useCallback} from 'react'
-import {PatchEvent, set} from 'sanity'
+import React, { useCallback, useRef, useState } from 'react'
+import { PatchEvent, set, useClient } from 'sanity'
 
 function createKey() {
   return Math.random().toString(36).slice(2, 11)
@@ -66,12 +67,10 @@ function parseMarkdown(markdown: string) {
   for (const rawLine of lines) {
     const line = rawLine.trimEnd()
 
-    // Ignore empty lines
     if (!line.trim()) {
       continue
     }
 
-    // Heading 3
     const h3 = line.match(/^###\s+(.+)$/)
 
     if (h3) {
@@ -85,7 +84,6 @@ function parseMarkdown(markdown: string) {
       continue
     }
 
-    // Heading 2
     const h2 = line.match(/^##\s+(.+)$/)
 
     if (h2) {
@@ -99,7 +97,6 @@ function parseMarkdown(markdown: string) {
       continue
     }
 
-    // Heading 1
     const h1 = line.match(/^#\s+(.+)$/)
 
     if (h1) {
@@ -113,7 +110,6 @@ function parseMarkdown(markdown: string) {
       continue
     }
 
-    // Bullet list
     const bullet = line.match(/^\s*[-*]\s+(.+)$/)
 
     if (bullet) {
@@ -129,7 +125,6 @@ function parseMarkdown(markdown: string) {
       continue
     }
 
-    // Numbered list
     const numbered = line.match(/^\s*\d+\.\s+(.+)$/)
 
     if (numbered) {
@@ -145,7 +140,6 @@ function parseMarkdown(markdown: string) {
       continue
     }
 
-    // Normal paragraph
     blocks.push({
       _type: 'block',
       _key: createKey(),
@@ -159,7 +153,16 @@ function parseMarkdown(markdown: string) {
 }
 
 export default function MarkdownPortableTextInput(props: any) {
-  const {renderDefault, onChange} = props
+  const { renderDefault, onChange, value } = props
+
+  const client = useClient({
+    apiVersion: '2025-01-01',
+  })
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const [uploading, setUploading] = useState(false)
+  const [uploadMessage, setUploadMessage] = useState('')
 
   const handlePaste = useCallback(
     (event: React.ClipboardEvent<HTMLDivElement>) => {
@@ -189,9 +192,104 @@ export default function MarkdownPortableTextInput(props: any) {
     [onChange]
   )
 
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setUploadMessage('Please select an image file.')
+      return
+    }
+
+    setUploading(true)
+    setUploadMessage('Uploading image...')
+
+    try {
+      const asset = await client.assets.upload('image', file, {
+        filename: file.name,
+      })
+
+      const imageItem = {
+        _type: 'image',
+        _key: createKey(),
+        asset: {
+          _type: 'reference',
+          _ref: asset._id,
+        },
+        caption: '',
+        credit: '',
+      }
+
+      const currentValue = Array.isArray(value) ? value : []
+
+      onChange(
+        PatchEvent.from(
+          set([...currentValue, imageItem])
+        )
+      )
+
+      setUploadMessage(
+        'Image uploaded. Add its caption in the image fields.'
+      )
+    } catch (error) {
+      console.error('Image upload failed:', error)
+
+      setUploadMessage(
+        'Upload failed. Please try again.'
+      )
+    } finally {
+      setUploading(false)
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
+
   return (
-    <div onPasteCapture={handlePaste}>
-      {renderDefault(props)}
+    <div className="space-y-4">
+      <div className="rounded-lg border border-gray-300 p-3">
+        <p className="mb-2 text-sm font-medium">
+          Insert an image into the biography
+        </p>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
+
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileInputRef.current?.click()}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        >
+          {uploading ? 'Uploading...' : '＋ Upload biography image'}
+        </button>
+
+        {uploadMessage && (
+          <p className="mt-2 text-sm text-gray-500">
+            {uploadMessage}
+          </p>
+        )}
+
+        <p className="mt-2 text-xs text-gray-500">
+          The image will be added at the end of the biography.
+          You can then add its caption and credit.
+        </p>
+      </div>
+
+      <div onPasteCapture={handlePaste}>
+        {renderDefault(props)}
+      </div>
     </div>
   )
 }
