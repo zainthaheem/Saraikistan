@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -47,9 +48,21 @@ export async function generateMetadata({
     `Explore ${item.title}, a part of the cultural traditions and heritage of the Saraiki region.`
 
   const image = item.seoImage
-    ? urlFor(item.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(item.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+        .url()
     : item.coverImage
-      ? urlFor(item.coverImage).width(1200).height(630).fit('crop').url()
+      ? urlFor(item.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()
       : undefined
 
   return {
@@ -57,14 +70,14 @@ export async function generateMetadata({
     description,
 
     alternates: {
-      canonical: `https://saraikistan-ml2d.vercel.app/culture/${params.slug}`,
+      canonical: `https://saraikistan.org/culture/${params.slug}`,
     },
 
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://saraikistan-ml2d.vercel.app/culture/${params.slug}`,
+      url: `https://saraikistan.org/culture/${params.slug}`,
       siteName: 'Saraikistan',
       images: image
         ? [
@@ -99,7 +112,7 @@ export default async function CulturePage({
       <section className="min-h-screen bg-cream text-navy">
         <div className="mx-auto max-w-7xl px-6 pb-20 pt-6 sm:px-10 sm:pt-8 lg:px-12">
           <div className="border-t border-mustard pt-7">
-            <p className="font-body text-base leading-7 text-navy/65 sm:text-lg">
+            <p className="max-w-3xl font-body text-base leading-7 text-navy/65 sm:text-lg">
               Not found.
             </p>
           </div>
@@ -108,12 +121,24 @@ export default async function CulturePage({
     )
   }
 
-  const itemUrl = `https://saraikistan-ml2d.vercel.app/culture/${params.slug}`
+  const itemUrl = `https://saraikistan.org/culture/${params.slug}`
 
   const itemImage = item.seoImage
-    ? urlFor(item.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(item.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+        .url()
     : item.coverImage
-      ? urlFor(item.coverImage).width(1200).height(630).fit('crop').url()
+      ? urlFor(item.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()
       : undefined
 
   const cultureSchema = {
@@ -129,20 +154,20 @@ export default async function CulturePage({
       '@type': 'WebPage',
       '@id': itemUrl,
     },
-    ...(itemImage ? {image: itemImage} : {}),
+    ...(itemImage ? { image: itemImage } : {}),
     ...(item.category?.title
-      ? {articleSection: item.category.title}
+      ? { articleSection: item.category.title }
       : {}),
     inLanguage: 'en',
     author: {
       '@type': 'Organization',
       name: 'Saraikistan',
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: 'https://saraikistan.org',
     },
     publisher: {
       '@type': 'Organization',
       name: 'Saraikistan',
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: 'https://saraikistan.org',
     },
   }
 
@@ -162,11 +187,18 @@ export default async function CulturePage({
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
             src={urlFor(item.coverImage)
-              .width(1800)
-              .height(700)
+              .width(1400)
+              .height(550)
               .fit('crop')
+              .quality(72)
+              .format('webp')
               .url()}
             alt={item.title}
+            width={1400}
+            height={550}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </div>
@@ -197,6 +229,7 @@ export default async function CulturePage({
               src={item.videoUrl.replace('watch?v=', 'embed/')}
               className="h-full w-full"
               title={item.title}
+              loading="lazy"
               allowFullScreen
             />
           </div>
@@ -235,11 +268,17 @@ export default async function CulturePage({
                 >
                   <img
                     src={urlFor(img)
-                      .width(600)
-                      .height(600)
+                      .width(500)
+                      .height(500)
                       .fit('crop')
+                      .quality(65)
+                      .format('webp')
                       .url()}
                     alt={`${item.title} — photo ${i + 1}`}
+                    width={500}
+                    height={500}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
