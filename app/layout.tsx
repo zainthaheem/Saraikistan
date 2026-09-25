@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { Playfair_Display, Montserrat } from 'next/font/google'
 import './globals.css'
@@ -6,6 +7,8 @@ import Footer from '@/components/Footer'
 import ScrollToTop from '@/components/ScrollToTop'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
+
+const baseUrl = 'https://saraikistan.org'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -51,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = `${siteTitle} — People, Culture, Heritage, Beyond`
 
   return {
-    metadataBase: new URL('https://saraikistan-ml2d.vercel.app'),
+    metadataBase: new URL(baseUrl),
 
     title: {
       default: title,
@@ -88,14 +91,10 @@ export async function generateMetadata(): Promise<Metadata> {
       google: 'NjAgnLZ3JG6G2QHd4t2PhirONbwdU2ags6jPpdl5Yp4',
     },
 
-    alternates: {
-      canonical: 'https://saraikistan-ml2d.vercel.app',
-    },
-
     openGraph: {
       type: 'website',
       locale: 'en_US',
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: baseUrl,
       siteName: siteTitle,
       title,
       description,
@@ -158,12 +157,12 @@ export default async function RootLayout({
     '@type': 'WebSite',
     name: siteTitle,
     alternateName: 'Saraikistan',
-    url: 'https://saraikistan-ml2d.vercel.app',
+    url: baseUrl,
     description,
     publisher: {
       '@type': 'Organization',
       name: siteTitle,
-      url: 'https://saraikistan-ml2d.vercel.app',
+      url: baseUrl,
       logo: socialImage
         ? {
             '@type': 'ImageObject',
