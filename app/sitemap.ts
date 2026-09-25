@@ -71,6 +71,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    {
+      url: `${baseUrl}/privacy-policy`,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ]
 
   const peopleRoutes: MetadataRoute.Sitemap = content.people.map(
