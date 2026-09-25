@@ -26,13 +26,23 @@ export default function Nav() {
   const isHome = pathname === '/'
 
   useEffect(() => {
+    let isMounted = true
+
     async function loadLogo() {
       try {
         const settings = await client.fetch(
-          `*[_type == "siteSettings"][0]{ logo }`
+          `*[_type == "siteSettings" && !(_id in path("drafts.**"))][0]{
+            logo {
+              asset,
+              crop,
+              hotspot
+            }
+          }`,
+          {},
+          { useCdn: false }
         )
 
-        if (settings?.logo) {
+        if (isMounted && settings?.logo?.asset) {
           setLogo(settings.logo)
         }
       } catch (error) {
@@ -41,6 +51,10 @@ export default function Nav() {
     }
 
     loadLogo()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   // Close mobile menu whenever the page changes
@@ -110,7 +124,7 @@ export default function Nav() {
           onClick={closeMobileMenu}
           className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
-          {logo ? (
+          {logo?.asset ? (
             <img
               src={urlFor(logo)
                 .width(600)
