@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -54,8 +55,14 @@ function PersonCard({ person }: { person: any }) {
               .width(220)
               .height(220)
               .fit('crop')
+              .auto('format')
+              .quality(75)
               .url()}
             alt={person.name}
+            width={220}
+            height={220}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
