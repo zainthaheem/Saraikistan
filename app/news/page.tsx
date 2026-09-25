@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -10,14 +11,14 @@ export const metadata: Metadata = {
   description:
     'Follow the latest news, updates, announcements and developments from across the Saraiki region.',
   alternates: {
-    canonical: 'https://saraikistan-ml2d.vercel.app/news',
+    canonical: 'https://saraikistan.org/news',
   },
   openGraph: {
     title: 'Saraiki News | Latest Updates & Developments',
     description:
       'Follow the latest news, updates, announcements and developments from across the Saraiki region.',
     type: 'website',
-    url: 'https://saraikistan-ml2d.vercel.app/news',
+    url: 'https://saraikistan.org/news',
     siteName: 'Saraikistan',
   },
   twitter: {
@@ -151,11 +152,18 @@ export default async function News() {
                   {featured.coverImage ? (
                     <img
                       src={urlFor(featured.coverImage)
-                        .width(1200)
-                        .height(800)
+                        .width(900)
+                        .height(600)
                         .fit('crop')
+                        .quality(68)
+                        .format('webp')
                         .url()}
                       alt={featured.title}
+                      width={900}
+                      height={600}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
                   ) : (
@@ -253,13 +261,15 @@ export default async function News() {
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-                  {remaining.map((item: any) => {
+                  {remaining.map((item: any, index: number) => {
 
                     const image = item.coverImage
                       ? urlFor(item.coverImage)
-                          .width(900)
-                          .height(600)
+                          .width(640)
+                          .height(427)
                           .fit('crop')
+                          .quality(65)
+                          .format('webp')
                           .url()
                       : null
 
@@ -277,6 +287,10 @@ export default async function News() {
                             <img
                               src={image}
                               alt={item.title}
+                              width={640}
+                              height={427}
+                              loading="lazy"
+                              decoding="async"
                               className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                             />
                           ) : (
