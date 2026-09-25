@@ -86,8 +86,6 @@ export const person = defineType({
         }),
         defineArrayMember({
           type: 'image',
-          name: 'bioImage',
-          title: 'Biography Image',
           options: { hotspot: true },
           fields: [
             defineField({
@@ -125,8 +123,6 @@ export const person = defineType({
         }),
         defineArrayMember({
           type: 'image',
-          name: 'bioImageUrdu',
-          title: 'Biography Image — اردو',
           options: { hotspot: true },
           fields: [
             defineField({
