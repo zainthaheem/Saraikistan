@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -48,27 +49,43 @@ export async function generateMetadata({
     person.seoDescription ||
     `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`
 
+  // Use the dedicated SEO image first for social sharing.
+  // Use the cover image as a fallback, but never crop the portrait
+  // into a landscape social sharing image.
   const image = person.seoImage
-    ? urlFor(person.seoImage).width(1200).height(630).fit('crop').url()
+    ? urlFor(person.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .auto('format')
+        .quality(85)
+        .url()
     : person.coverImage
-      ? urlFor(person.coverImage).width(1200).height(630).fit('crop').url()
-      : person.profileImage
-        ? urlFor(person.profileImage).width(1200).height(630).fit('crop').url()
-        : undefined
+      ? urlFor(person.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .auto('format')
+          .quality(85)
+          .url()
+      : undefined
+
+  const pageUrl =
+    `https://saraikistan.org/celebrities/${params.slug}`
 
   return {
     title,
     description,
 
     alternates: {
-      canonical: `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
+      canonical: pageUrl,
     },
 
     openGraph: {
       title,
       description,
       type: 'profile',
-      url: `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
+      url: pageUrl,
       siteName: 'Saraikistan',
       images: image
         ? [
@@ -76,7 +93,7 @@ export async function generateMetadata({
               url: image,
               width: 1200,
               height: 630,
-              alt: person.name,
+              alt: `${person.name} | Saraikistan`,
             },
           ]
         : undefined,
@@ -113,21 +130,36 @@ export default async function PersonPage({
   }
 
   const profileImage = person.profileImage
-    ? urlFor(person.profileImage).width(800).height(800).fit('crop').url()
+    ? urlFor(person.profileImage)
+        .width(800)
+        .height(800)
+        .fit('crop')
+        .auto('format')
+        .quality(85)
+        .url()
     : undefined
 
   const coverImage = person.coverImage
-    ? urlFor(person.coverImage).width(1800).height(700).fit('crop').url()
+    ? urlFor(person.coverImage)
+        .width(1800)
+        .height(700)
+        .fit('crop')
+        .auto('format')
+        .quality(85)
+        .url()
     : undefined
 
   const socialLinks =
     person.socialLinks?.map((link: any) => link.url).filter(Boolean) || []
 
+  const pageUrl =
+    `https://saraikistan.org/celebrities/${params.slug}`
+
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: person.name,
-    url: `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
+    url: pageUrl,
     image: profileImage || coverImage,
     description:
       person.seoDescription ||
@@ -136,7 +168,7 @@ export default async function PersonPage({
     sameAs: socialLinks.length > 0 ? socialLinks : undefined,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://saraikistan-ml2d.vercel.app/celebrities/${params.slug}`,
+      '@id': pageUrl,
     },
   }
 
@@ -155,12 +187,12 @@ export default async function PersonPage({
       {person.coverImage && (
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
-            src={urlFor(person.coverImage)
-              .width(1800)
-              .height(700)
-              .fit('crop')
-              .url()}
+            src={coverImage}
             alt={person.name}
+            width={1800}
+            height={700}
+            loading="eager"
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </div>
@@ -176,12 +208,12 @@ export default async function PersonPage({
 
             {person.profileImage && (
               <img
-                src={urlFor(person.profileImage)
-                  .width(240)
-                  .height(240)
-                  .fit('crop')
-                  .url()}
+                src={profileImage}
                 alt={person.name}
+                width={240}
+                height={240}
+                loading="lazy"
+                decoding="async"
                 className="h-28 w-28 shrink-0 rounded-full border-4 border-cream object-cover sm:h-32 sm:w-32"
               />
             )}
@@ -255,8 +287,14 @@ export default async function PersonPage({
                       .width(600)
                       .height(600)
                       .fit('crop')
+                      .auto('format')
+                      .quality(80)
                       .url()}
                     alt={`${person.name} — photo ${i + 1}`}
+                    width={600}
+                    height={600}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                   />
                 </div>
