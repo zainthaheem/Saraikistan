@@ -7,7 +7,6 @@ import {newsPost} from './newsPost'
 import {story} from './story'
 import {siteSettings} from './siteSettings'
 import {exploreCard} from './exploreCard'
-import {bioImage} from '../schemas/bioImage'
 
 export const schemaTypes = [
   category,
@@ -19,5 +18,4 @@ export const schemaTypes = [
   story,
   siteSettings,
   exploreCard,
-  bioImage,
 ]
