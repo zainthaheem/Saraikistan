@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -10,14 +11,14 @@ export const metadata: Metadata = {
   description:
     'Explore Saraiki culture, traditions, language, music, poetry, crafts, Sufi heritage and the living cultural identity of the Saraiki region.',
   alternates: {
-    canonical: 'https://saraikistan-ml2d.vercel.app/culture',
+    canonical: 'https://saraikistan.org/culture',
   },
   openGraph: {
     title: 'Saraiki Culture | Traditions, Heritage & Identity',
     description:
       'Explore Saraiki culture, traditions, language, music, poetry, crafts, Sufi heritage and the living cultural identity of the Saraiki region.',
     type: 'website',
-    url: 'https://saraikistan-ml2d.vercel.app/culture',
+    url: 'https://saraikistan.org/culture',
     siteName: 'Saraikistan',
   },
   twitter: {
@@ -76,7 +77,7 @@ export default async function Culture() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
-            {items.map((item: any) => (
+            {items.map((item: any, index: number) => (
 
               <Link
                 key={item._id}
@@ -89,11 +90,18 @@ export default async function Culture() {
 
                     <img
                       src={urlFor(item.coverImage)
-                        .width(900)
-                        .height(506)
+                        .width(640)
+                        .height(360)
                         .fit('crop')
+                        .quality(65)
+                        .format('webp')
                         .url()}
                       alt={item.title}
+                      width={640}
+                      height={360}
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
+                      decoding="async"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
 
