@@ -1,5 +1,6 @@
 
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Playfair_Display, Montserrat } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
@@ -178,6 +179,13 @@ export default async function RootLayout({
       className={`${playfair.variable} ${montserrat.variable}`}
     >
       <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9866879353406837"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
