@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import PhotoGallery from '@/components/PhotoGallery'
 
 export const revalidate = 60
 
@@ -13,7 +14,13 @@ async function getPerson(slug: string) {
       "category": category->{title},
       profileImage,
       coverImage,
-      gallery,
+      gallery[]{
+        _key,
+        _type,
+        asset,
+        caption,
+        credit
+      },
       bio,
       bioUrdu,
       socialLinks,
@@ -49,9 +56,6 @@ export async function generateMetadata({
     person.seoDescription ||
     `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`
 
-  // Use the dedicated SEO image first for social sharing.
-  // Use the cover image as a fallback, but never crop the portrait
-  // into a landscape social sharing image.
   const image = person.seoImage
     ? urlFor(person.seoImage)
         .width(1200)
@@ -203,7 +207,6 @@ export default async function PersonPage({
 
         {/* Profile Header */}
         <div className="border-t border-mustard pt-7">
-
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
 
             {person.profileImage && (
@@ -219,7 +222,6 @@ export default async function PersonPage({
             )}
 
             <div>
-
               {person.category && (
                 <p className="font-body text-sm text-shawl">
                   {person.category.title}
@@ -229,11 +231,9 @@ export default async function PersonPage({
               <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
                 {person.name}
               </h1>
-
             </div>
 
           </div>
-
         </div>
 
         {/* Social Links */}
@@ -261,7 +261,7 @@ export default async function PersonPage({
           />
         )}
 
-        {/* Gallery */}
+        {/* Interactive Photo Gallery */}
         {person.gallery && person.gallery.length > 0 && (
           <div className="mt-14">
 
@@ -275,32 +275,10 @@ export default async function PersonPage({
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-
-              {person.gallery.map((img: any, i: number) => (
-                <div
-                  key={i}
-                  className="aspect-square overflow-hidden bg-shawl"
-                >
-                  <img
-                    src={urlFor(img)
-                      .width(600)
-                      .height(600)
-                      .fit('crop')
-                      .auto('format')
-                      .quality(80)
-                      .url()}
-                    alt={`${person.name} — photo ${i + 1}`}
-                    width={600}
-                    height={600}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover transition duration-500 hover:scale-105"
-                  />
-                </div>
-              ))}
-
-            </div>
+            <PhotoGallery
+              images={person.gallery}
+              personName={person.name}
+            />
 
           </div>
         )}
@@ -327,7 +305,6 @@ export default async function PersonPage({
         )}
 
       </div>
-
     </section>
   )
 }
