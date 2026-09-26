@@ -66,11 +66,47 @@ function formatNewsType(type: string) {
   return labels[type] || type
 }
 
+// Generate responsive Sanity image URLs.
+// All candidates use the same 16:10 crop as the existing design.
+function getNewsImage(image: any, quality: number) {
+  if (!image?.asset) return null
+
+  const widths = [320, 480, 640, 800, 1000, 1200]
+
+  const srcSet = widths
+    .map((width) => {
+      const url = urlFor(image)
+        .width(width)
+        .height(Math.round((width * 10) / 16))
+        .fit('crop')
+        .quality(quality)
+        .format('webp')
+        .url()
+
+      return `${url} ${width}w`
+    })
+    .join(', ')
+
+  const src = urlFor(image)
+    .width(640)
+    .height(400)
+    .fit('crop')
+    .quality(quality)
+    .format('webp')
+    .url()
+
+  return { src, srcSet }
+}
+
 export default async function News() {
   const news = await getNews()
 
   const featured = news[0]
   const remaining = news.slice(1)
+
+  const featuredImage = featured?.coverImage
+    ? getNewsImage(featured.coverImage, 75)
+    : null
 
   return (
     <main className="min-h-screen bg-cream text-navy">
@@ -149,15 +185,11 @@ export default async function News() {
                 {/* IMAGE */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
 
-                  {featured.coverImage ? (
+                  {featuredImage ? (
                     <img
-                      src={urlFor(featured.coverImage)
-                        .width(900)
-                        .height(600)
-                        .fit('crop')
-                        .quality(68)
-                        .format('webp')
-                        .url()}
+                      src={featuredImage.src}
+                      srcSet={featuredImage.srcSet}
+                      sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
                       alt={featured.title}
                       width={900}
                       height={600}
@@ -261,16 +293,10 @@ export default async function News() {
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
-                  {remaining.map((item: any, index: number) => {
+                  {remaining.map((item: any) => {
 
                     const image = item.coverImage
-                      ? urlFor(item.coverImage)
-                          .width(640)
-                          .height(427)
-                          .fit('crop')
-                          .quality(65)
-                          .format('webp')
-                          .url()
+                      ? getNewsImage(item.coverImage, 65)
                       : null
 
                     return (
@@ -285,7 +311,9 @@ export default async function News() {
 
                           {image ? (
                             <img
-                              src={image}
+                              src={image.src}
+                              srcSet={image.srcSet}
+                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, calc(100vw - 48px)"
                               alt={item.title}
                               width={640}
                               height={427}
