@@ -72,15 +72,6 @@ function formatDate(date: string) {
   })
 }
 
-/**
- * Responsive Sanity image helper.
- *
- * Generates multiple real image widths from Sanity.
- * The browser selects the appropriate source based on
- * the rendered image size and device pixel ratio.
- *
- * ratio = height / width
- */
 function ResponsiveImage({
   source,
   alt,
@@ -143,12 +134,13 @@ export default async function Home() {
   } = await getHomeData()
 
   const singleFeaturedPerson = featuredPeople?.length === 1
+  const twoFeaturedPeople = featuredPeople?.length === 2
 
   return (
     <main className="bg-cream text-navy">
 
       {/* HERO */}
-      <section className="relative min-h-[680px] overflow-hidden bg-navy sm:min-h-[720px]">
+      <section className="relative min-h-[480px] overflow-hidden bg-navy sm:min-h-[510px] lg:min-h-[540px]">
 
         {settings?.headerImage && (
           <ResponsiveImage
@@ -164,18 +156,17 @@ export default async function Home() {
         )}
 
         <div className="absolute inset-0 bg-navy/55" />
-
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
 
-        <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-end px-6 pb-16 pt-32 sm:min-h-[720px] sm:px-10 sm:pb-20 lg:px-12">
+        <div className="relative mx-auto flex min-h-[480px] max-w-7xl items-center px-6 py-12 sm:min-h-[510px] sm:px-10 sm:py-14 lg:min-h-[540px] lg:px-12">
 
           <div className="max-w-3xl text-cream">
 
-            <p className="font-body text-sm text-cream/80 sm:text-base">
+            <p className="font-body text-xs text-cream/80 sm:text-sm">
               A digital home for the Saraiki region
             </p>
 
-            <h1 className="mt-5 font-display text-5xl leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
+            <h1 className="mt-4 font-display text-4xl leading-[0.98] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               The land, the language,
               <br />
               and the lives of
@@ -183,23 +174,23 @@ export default async function Home() {
               Saraikistan.
             </h1>
 
-            <p className="mt-7 max-w-2xl font-body text-base leading-7 text-cream/85 sm:text-lg sm:leading-8">
+            <p className="mt-5 max-w-xl font-body text-sm leading-6 text-cream/85 sm:text-base sm:leading-7">
               Discover the people, places, culture, language, heritage and
               stories that shape the Saraiki region.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 font-body text-sm sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 font-body text-xs sm:flex-row sm:text-sm">
 
               <Link
                 href="/culture"
-                className="bg-mustard px-7 py-4 text-center text-cream transition hover:bg-mustard/90"
+                className="bg-mustard px-6 py-3 text-center text-cream transition hover:bg-mustard/90"
               >
                 Explore the culture
               </Link>
 
               <Link
                 href="/region"
-                className="border border-cream/70 px-7 py-4 text-center text-cream transition hover:bg-cream hover:text-navy"
+                className="border border-cream/70 px-6 py-3 text-center text-cream transition hover:bg-cream hover:text-navy"
               >
                 Explore the region
               </Link>
@@ -210,28 +201,28 @@ export default async function Home() {
 
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-3 bg-[repeating-linear-gradient(90deg,#C8923A_0px,#C8923A_14px,transparent_14px,transparent_28px)]" />
+        <div className="absolute bottom-0 left-0 right-0 h-2 bg-[repeating-linear-gradient(90deg,#C8923A_0px,#C8923A_14px,transparent_14px,transparent_28px)]" />
 
       </section>
 
       {/* EXPLORE SARAIKISTAN */}
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+      <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
 
-        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
 
           <div>
-            <p className="font-body text-sm text-shawl">
+            <p className="font-body text-xs text-shawl sm:text-sm">
               Discover
             </p>
 
-            <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+            <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
               Explore Saraikistan
             </h2>
 
-            <div className="mt-4 h-[2px] w-12 bg-mustard" />
+            <div className="mt-3 h-[2px] w-12 bg-mustard" />
           </div>
 
-          <p className="max-w-md font-body text-sm leading-6 text-navy/60">
+          <p className="max-w-md font-body text-xs leading-5 text-navy/60 sm:text-sm sm:leading-6">
             Explore the people, places, culture and stories that make the
             Saraiki region unique.
           </p>
@@ -240,7 +231,7 @@ export default async function Home() {
 
         {exploreCards?.length > 0 ? (
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
 
             {exploreCards.map((card: any) => {
 
@@ -271,21 +262,21 @@ export default async function Home() {
 
                   <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-navy/10 to-navy/95" />
 
-                  <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4 sm:h-8 sm:w-8 sm:text-base">
+                  <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4">
                     +
                   </div>
 
-                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6">
+                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 lg:p-5">
 
-                    <h3 className="font-display text-2xl leading-none text-cream sm:text-3xl">
+                    <h3 className="font-display text-xl leading-none text-cream sm:text-2xl lg:text-3xl">
                       {card.title}
                     </h3>
 
-                    <p className="mt-2 max-w-[95%] font-body text-xs leading-5 text-cream/80 sm:mt-3 sm:text-sm sm:leading-6">
+                    <p className="mt-2 max-w-[95%] font-body text-[11px] leading-4 text-cream/80 sm:mt-2.5 sm:text-xs sm:leading-5">
                       {description}
                     </p>
 
-                    <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-mustard transition group-hover:tracking-[0.18em] sm:mt-5 sm:text-xs">
+                    <span className="mt-3 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-mustard transition group-hover:tracking-[0.18em] sm:mt-4 sm:text-[11px]">
                       Explore →
                     </span>
 
@@ -299,8 +290,8 @@ export default async function Home() {
 
         ) : (
 
-          <div className="border-t border-mustard pt-7">
-            <p className="max-w-3xl font-body text-base leading-7 text-navy/55 sm:text-lg">
+          <div className="border-t border-mustard pt-6">
+            <p className="max-w-3xl font-body text-sm leading-6 text-navy/55 sm:text-base">
               Add Explore Cards from the Studio to display them here.
             </p>
           </div>
@@ -313,25 +304,25 @@ export default async function Home() {
       {featuredPeople?.length > 0 && (
         <section className="bg-navy text-cream">
 
-          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+          <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
 
-            <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
 
               <div>
-                <p className="font-body text-sm text-mustard">
+                <p className="font-body text-xs text-mustard sm:text-sm">
                   People
                 </p>
 
-                <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+                <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
                   Featured People
                 </h2>
 
-                <div className="mt-4 h-[2px] w-12 bg-mustard" />
+                <div className="mt-3 h-[2px] w-12 bg-mustard" />
               </div>
 
               <Link
                 href="/celebrities"
-                className="font-body text-xs uppercase tracking-[0.12em] text-cream/65 transition hover:text-mustard"
+                className="font-body text-[11px] uppercase tracking-[0.12em] text-cream/65 transition hover:text-mustard sm:text-xs"
               >
                 View all →
               </Link>
@@ -341,8 +332,10 @@ export default async function Home() {
             <div
               className={
                 singleFeaturedPerson
-                  ? 'grid grid-cols-1'
-                  : 'grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4'
+                  ? 'mx-auto grid max-w-2xl grid-cols-1'
+                  : twoFeaturedPeople
+                    ? 'mx-auto grid max-w-3xl grid-cols-2 gap-3 sm:gap-5'
+                    : 'grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4'
               }
             >
 
@@ -353,58 +346,36 @@ export default async function Home() {
                   href={`/celebrities/${person.slug?.current || ''}`}
                   className={
                     singleFeaturedPerson
-                      ? 'group flex w-full flex-col overflow-hidden rounded-[2px] bg-navy sm:relative sm:block sm:aspect-[3/2] lg:max-w-5xl'
-                      : 'group flex flex-col overflow-hidden rounded-[2px] bg-navy sm:relative sm:block sm:aspect-[4/5]'
+                      ? 'group relative block aspect-[4/3] overflow-hidden rounded-[2px] bg-navy'
+                      : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-navy'
                   }
                 >
 
-                  {/* PORTRAIT */}
-                  <div
-                    className={
-                      singleFeaturedPerson
-                        ? 'relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-shawl sm:absolute sm:inset-0 sm:aspect-auto'
-                        : 'relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-shawl sm:absolute sm:inset-0 sm:aspect-auto'
-                    }
-                  >
-
-                    {person.profileImage ? (
-                      <ResponsiveImage
-                        source={person.profileImage}
-                        alt={person.name}
-                        ratio={5 / 4}
-                        widths={[320, 480, 640, 900, 1400]}
-                        sizes={
-                          singleFeaturedPerson
-                            ? '(min-width: 1024px) 1024px, 100vw'
+                  {person.profileImage ? (
+                    <ResponsiveImage
+                      source={person.profileImage}
+                      alt={person.name}
+                      ratio={5 / 4}
+                      widths={[320, 480, 640, 900, 1400]}
+                      sizes={
+                        singleFeaturedPerson
+                          ? '(min-width: 1024px) 768px, 100vw'
+                          : twoFeaturedPeople
+                            ? '(min-width: 768px) 360px, 45vw'
                             : '(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)'
-                        }
-                        className={
-                          singleFeaturedPerson
-                            ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105 sm:object-cover'
-                            : 'absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105'
-                        }
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-shawl" />
-                    )}
+                      }
+                      className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-shawl" />
+                  )}
 
-                    {/* Desktop-only image gradient.
-                        Mobile uses a solid text panel instead. */}
-                    <div className="absolute inset-0 hidden bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95 sm:block" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/10 to-navy/95" />
 
-                  </div>
-
-                  {/* TEXT PANEL */}
-                  <div
-                    className={
-                      singleFeaturedPerson
-                        ? 'relative border-t-2 border-mustard bg-navy p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:border-t-0 sm:bg-transparent sm:p-7 lg:p-9'
-                        : 'relative border-t-2 border-mustard bg-navy p-4 sm:absolute sm:inset-x-0 sm:bottom-0 sm:border-t-0 sm:bg-transparent sm:p-5 lg:p-6'
-                    }
-                  >
+                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 lg:p-5">
 
                     {person.category?.title && (
-                      <p className="mb-2 font-body text-[10px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
+                      <p className="mb-1.5 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
                         {person.category.title}
                       </p>
                     )}
@@ -412,14 +383,14 @@ export default async function Home() {
                     <h3
                       className={
                         singleFeaturedPerson
-                          ? 'font-display text-2xl leading-tight text-cream sm:text-4xl sm:leading-[1.05] lg:text-5xl'
-                          : 'font-display text-xl leading-tight text-cream sm:text-3xl sm:leading-[1.05]'
+                          ? 'font-display text-2xl leading-tight text-cream sm:text-3xl lg:text-4xl'
+                          : 'font-display text-lg leading-tight text-cream sm:text-2xl'
                       }
                     >
                       {person.name}
                     </h3>
 
-                    <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/75 transition group-hover:text-mustard group-hover:tracking-[0.18em] sm:text-xs sm:text-cream/65">
+                    <span className="mt-3 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/75 transition group-hover:text-mustard sm:text-[11px]">
                       View profile →
                     </span>
 
@@ -440,32 +411,32 @@ export default async function Home() {
 
       {/* STORIES */}
       {featuredStories?.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+        <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
 
-          <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
 
             <div>
-              <p className="font-body text-sm text-shawl">
+              <p className="font-body text-xs text-shawl sm:text-sm">
                 Long-form
               </p>
 
-              <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+              <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
                 Stories
               </h2>
 
-              <div className="mt-4 h-[2px] w-12 bg-mustard" />
+              <div className="mt-3 h-[2px] w-12 bg-mustard" />
             </div>
 
             <Link
               href="/blog"
-              className="font-body text-xs uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard"
+              className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
             >
               View all →
             </Link>
 
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
 
             {featuredStories.map((story: any) => (
 
@@ -475,13 +446,13 @@ export default async function Home() {
                 className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
 
-                <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
                   {story.coverImage ? (
                     <ResponsiveImage
                       source={story.coverImage}
                       alt={story.title}
-                      ratio={10 / 16}
+                      ratio={9 / 16}
                       widths={[320, 480, 640, 800, 1000]}
                       sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -494,7 +465,7 @@ export default async function Home() {
 
                 </div>
 
-                <div className="border-t-2 border-mustard p-6">
+                <div className="border-t-2 border-mustard p-4 sm:p-5">
 
                   {story.publishedAt && (
                     <p className="font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
@@ -502,17 +473,17 @@ export default async function Home() {
                     </p>
                   )}
 
-                  <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                  <h3 className="mt-2 font-display text-xl leading-tight transition group-hover:text-shawl sm:text-2xl">
                     {story.title}
                   </h3>
 
                   {story.summary && (
-                    <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                    <p className="mt-2 line-clamp-3 font-body text-xs leading-5 text-navy/60 sm:text-sm sm:leading-6">
                       {story.summary}
                     </p>
                   )}
 
-                  <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                  <span className="mt-4 inline-block font-body text-[11px] uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
                     Read story →
                   </span>
 
@@ -531,32 +502,32 @@ export default async function Home() {
       {latestNews?.length > 0 && (
         <section className="border-t border-navy/10">
 
-          <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
+          <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
 
-            <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
 
               <div>
-                <p className="font-body text-sm text-shawl">
+                <p className="font-body text-xs text-shawl sm:text-sm">
                   Latest updates
                 </p>
 
-                <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">
+                <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
                   News
                 </h2>
 
-                <div className="mt-4 h-[2px] w-12 bg-mustard" />
+                <div className="mt-3 h-[2px] w-12 bg-mustard" />
               </div>
 
               <Link
                 href="/news"
-                className="font-body text-xs uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard"
+                className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
               >
                 View all →
               </Link>
 
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
 
               {latestNews.map((item: any) => (
 
@@ -566,13 +537,13 @@ export default async function Home() {
                   className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
 
-                  <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
                     {item.coverImage ? (
                       <ResponsiveImage
                         source={item.coverImage}
                         alt={item.title}
-                        ratio={10 / 16}
+                        ratio={9 / 16}
                         widths={[320, 480, 640, 800, 1000]}
                         sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -585,7 +556,7 @@ export default async function Home() {
 
                   </div>
 
-                  <div className="border-t-2 border-mustard p-6">
+                  <div className="border-t-2 border-mustard p-4 sm:p-5">
 
                     {item.category?.title && (
                       <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
@@ -594,28 +565,28 @@ export default async function Home() {
                     )}
 
                     {item.publishedAt && (
-                      <p className="mt-2 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
+                      <p className="mt-1.5 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
                         {formatDate(item.publishedAt)}
                       </p>
                     )}
 
-                    <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                    <h3 className="mt-2 font-display text-xl leading-tight transition group-hover:text-shawl sm:text-2xl">
                       {item.title}
                     </h3>
 
                     {item.summary && (
-                      <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                      <p className="mt-2 line-clamp-3 font-body text-xs leading-5 text-navy/60 sm:text-sm sm:leading-6">
                         {item.summary}
                       </p>
                     )}
 
                     {item.author && (
-                      <p className="mt-4 font-body text-xs text-navy/45">
+                      <p className="mt-3 font-body text-xs text-navy/45">
                         By {item.author}
                       </p>
                     )}
 
-                    <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                    <span className="mt-4 inline-block font-body text-[11px] uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
                       Read news →
                     </span>
 
@@ -633,16 +604,16 @@ export default async function Home() {
       )}
 
       {/* PURPOSE */}
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-24 lg:px-12">
+      <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14 lg:px-12">
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div className="grid gap-6 lg:grid-cols-2 lg:items-center">
 
           <div>
-            <p className="font-body text-sm text-shawl">
+            <p className="font-body text-xs text-shawl sm:text-sm">
               Our purpose
             </p>
 
-            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-6xl">
+            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl lg:text-5xl">
               A digital home for
               <br />
               Saraiki culture.
@@ -650,7 +621,7 @@ export default async function Home() {
           </div>
 
           <div>
-            <p className="font-body text-lg leading-8 text-navy/65">
+            <p className="font-body text-base leading-7 text-navy/65 sm:text-lg">
               Saraikistan brings together the people, places, language,
               traditions and stories of the Saraiki region in one growing
               cultural archive.
@@ -658,7 +629,7 @@ export default async function Home() {
 
             <Link
               href="/about"
-              className="mt-7 inline-block border-b border-mustard pb-1 font-body text-sm uppercase tracking-[0.12em] text-navy transition hover:text-mustard"
+              className="mt-5 inline-block border-b border-mustard pb-1 font-body text-xs uppercase tracking-[0.12em] text-navy transition hover:text-mustard sm:text-sm"
             >
               Learn about Saraikistan →
             </Link>
