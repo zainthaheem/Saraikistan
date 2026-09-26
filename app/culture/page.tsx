@@ -77,58 +77,80 @@ export default async function Culture() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
-            {items.map((item: any, index: number) => (
+            {items.map((item: any, index: number) => {
 
-              <Link
-                key={item._id}
-                href={`/culture/${item.slug.current}`}
-                className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
+              const imageBuilder = item.coverImage
+                ? urlFor(item.coverImage)
+                    .height(450)
+                    .fit('crop')
+                    .quality(75)
+                    .format('webp')
+                : null
 
-                {item.coverImage && (
-                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
+              const imageUrl = imageBuilder
+                ? imageBuilder.width(480).url()
+                : null
 
-                    <img
-                      src={urlFor(item.coverImage)
-                        .width(640)
-                        .height(360)
-                        .fit('crop')
-                        .quality(65)
-                        .format('webp')
-                        .url()}
-                      alt={item.title}
-                      width={640}
-                      height={360}
-                      loading={index < 3 ? 'eager' : 'lazy'}
-                      fetchPriority={index === 0 ? 'high' : 'auto'}
-                      decoding="async"
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
+              const imageSrcSet = imageBuilder
+                ? [
+                    `${imageBuilder.width(320).url()} 320w`,
+                    `${imageBuilder.width(480).url()} 480w`,
+                    `${imageBuilder.width(640).url()} 640w`,
+                    `${imageBuilder.width(800).url()} 800w`,
+                  ].join(', ')
+                : undefined
 
-                  </div>
-                )}
+              return (
 
-                <div className="border-t-2 border-mustard p-6">
+                <Link
+                  key={item._id}
+                  href={`/culture/${item.slug.current}`}
+                  className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
 
-                  {item.category && (
-                    <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
-                      {item.category.title}
-                    </p>
+                  {/* RESPONSIVE OPTIMIZED IMAGE */}
+                  {imageUrl && (
+                    <div className="aspect-[16/9] overflow-hidden bg-shawl">
+
+                      <img
+                        src={imageUrl}
+                        srcSet={imageSrcSet}
+                        sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 1023px) calc(50vw - 56px), (max-width: 1280px) calc(33.333vw - 48px), 384px"
+                        alt={item.title}
+                        width={480}
+                        height={270}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        fetchPriority={index === 0 ? 'high' : 'auto'}
+                        decoding="async"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+
+                    </div>
                   )}
 
-                  <h2 className="mt-2 font-display text-2xl text-navy">
-                    {item.title}
-                  </h2>
+                  {/* CONTENT */}
+                  <div className="border-t-2 border-mustard p-6">
 
-                  <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-                    Explore →
-                  </span>
+                    {item.category && (
+                      <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                        {item.category.title}
+                      </p>
+                    )}
 
-                </div>
+                    <h2 className="mt-2 font-display text-2xl text-navy">
+                      {item.title}
+                    </h2>
 
-              </Link>
+                    <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                      Explore →
+                    </span>
 
-            ))}
+                  </div>
+
+                </Link>
+
+              )
+            })}
 
           </div>
 
