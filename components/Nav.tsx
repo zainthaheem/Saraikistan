@@ -27,13 +27,23 @@ export default function Nav({ initialLogo }: NavProps) {
 
   const isHome = pathname === '/'
 
-  const logoUrl = initialLogo?.asset
+  // Generate responsive logo images through Sanity.
+  // The browser selects the appropriate size for the screen.
+  const logoSrc = initialLogo?.asset
     ? urlFor(initialLogo)
-        .width(600)
-        .quality(90)
+        .width(490)
+        .quality(75)
         .format('webp')
         .url()
     : null
+
+  const logoSrcSet = initialLogo?.asset
+    ? [
+        `${urlFor(initialLogo).width(320).quality(75).format('webp').url()} 320w`,
+        `${urlFor(initialLogo).width(400).quality(75).format('webp').url()} 400w`,
+        `${urlFor(initialLogo).width(490).quality(75).format('webp').url()} 490w`,
+      ].join(', ')
+    : undefined
 
   useEffect(() => {
     setMobileMenuOpen(false)
@@ -99,12 +109,16 @@ export default function Nav({ initialLogo }: NavProps) {
           onClick={closeMobileMenu}
           className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
-          {logoUrl ? (
+          {logoSrc ? (
             <img
-              src={logoUrl}
+              src={logoSrc}
+              srcSet={logoSrcSet}
+              sizes="(min-width: 1024px) 245px, (min-width: 640px) 225px, 190px"
               alt="Saraikistan"
               width={600}
-              height={120}
+              height={200}
+              decoding="async"
+              fetchPriority="high"
               className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
           ) : (
