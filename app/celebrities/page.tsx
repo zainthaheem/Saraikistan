@@ -42,25 +42,46 @@ async function getPeople() {
   )
 }
 
-function PersonCard({ person }: { person: any }) {
+function PersonCard({
+  person,
+}: {
+  person: any
+}) {
+  const imageBuilder = person.profileImage
+    ? urlFor(person.profileImage)
+        .height(160)
+        .fit('crop')
+        .quality(75)
+        .format('webp')
+    : null
+
+  const imageUrl = imageBuilder
+    ? imageBuilder.width(160).url()
+    : null
+
+  const imageSrcSet = imageBuilder
+    ? [
+        `${imageBuilder.width(96).url()} 96w`,
+        `${imageBuilder.width(128).url()} 128w`,
+        `${imageBuilder.width(160).url()} 160w`,
+        `${imageBuilder.width(224).url()} 224w`,
+      ].join(', ')
+    : undefined
+
   return (
     <Link
       href={`/celebrities/${person.slug.current}`}
       className="group flex items-center gap-6 border-b border-navy/10 py-8 transition duration-300 hover:bg-navy/[0.02]"
     >
       <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full bg-shawl sm:h-28 sm:w-28">
-        {person.profileImage ? (
+        {imageUrl ? (
           <img
-            src={urlFor(person.profileImage)
-              .width(220)
-              .height(220)
-              .fit('crop')
-              .auto('format')
-              .quality(75)
-              .url()}
+            src={imageUrl}
+            srcSet={imageSrcSet}
+            sizes="(max-width: 639px) 96px, 112px"
             alt={person.name}
-            width={220}
-            height={220}
+            width={160}
+            height={160}
             loading="lazy"
             decoding="async"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -88,17 +109,20 @@ function PersonCard({ person }: { person: any }) {
 export default async function Celebrities() {
   const people = await getPeople()
 
-  const groupedPeople = people.reduce((groups: any, person: any) => {
-    const category = person.category?.title || 'Other'
+  const groupedPeople = people.reduce(
+    (groups: any, person: any) => {
+      const category = person.category?.title || 'Other'
 
-    if (!groups[category]) {
-      groups[category] = []
-    }
+      if (!groups[category]) {
+        groups[category] = []
+      }
 
-    groups[category].push(person)
+      groups[category].push(person)
 
-    return groups
-  }, {})
+      return groups
+    },
+    {}
+  )
 
   const categoryOrder = [
     'Singers',
@@ -109,9 +133,13 @@ export default async function Celebrities() {
   ]
 
   const orderedCategories = [
-    ...categoryOrder.filter((category) => groupedPeople[category]),
+    ...categoryOrder.filter(
+      (category) => groupedPeople[category]
+    ),
     ...Object.keys(groupedPeople)
-      .filter((category) => !categoryOrder.includes(category))
+      .filter(
+        (category) => !categoryOrder.includes(category)
+      )
       .sort(),
   ]
 
