@@ -47,24 +47,49 @@ function PersonCard({
 }: {
   person: any
 }) {
-  const imageBuilder = person.profileImage
+  const imageUrl = person.profileImage
     ? urlFor(person.profileImage)
+        .width(160)
         .height(160)
         .fit('crop')
         .quality(75)
         .format('webp')
+        .url()
     : null
 
-  const imageUrl = imageBuilder
-    ? imageBuilder.width(160).url()
-    : null
-
-  const imageSrcSet = imageBuilder
+  const imageSrcSet = person.profileImage
     ? [
-        `${imageBuilder.width(96).url()} 96w`,
-        `${imageBuilder.width(128).url()} 128w`,
-        `${imageBuilder.width(160).url()} 160w`,
-        `${imageBuilder.width(224).url()} 224w`,
+        `${urlFor(person.profileImage)
+          .width(96)
+          .height(96)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()} 96w`,
+
+        `${urlFor(person.profileImage)
+          .width(128)
+          .height(128)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()} 128w`,
+
+        `${urlFor(person.profileImage)
+          .width(160)
+          .height(160)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()} 160w`,
+
+        `${urlFor(person.profileImage)
+          .width(224)
+          .height(224)
+          .fit('crop')
+          .quality(75)
+          .format('webp')
+          .url()} 224w`,
       ].join(', ')
     : undefined
 
