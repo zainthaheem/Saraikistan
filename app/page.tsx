@@ -1,3 +1,4 @@
+
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -352,44 +353,58 @@ export default async function Home() {
                   href={`/celebrities/${person.slug?.current || ''}`}
                   className={
                     singleFeaturedPerson
-                      ? 'group relative block aspect-[4/3] w-full overflow-hidden rounded-[2px] bg-shawl sm:aspect-[3/2] lg:max-w-5xl'
-                      : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl'
+                      ? 'group flex w-full flex-col overflow-hidden rounded-[2px] bg-navy sm:relative sm:block sm:aspect-[3/2] lg:max-w-5xl'
+                      : 'group flex flex-col overflow-hidden rounded-[2px] bg-navy sm:relative sm:block sm:aspect-[4/5]'
                   }
                 >
 
-                  {person.profileImage ? (
-                    <ResponsiveImage
-                      source={person.profileImage}
-                      alt={person.name}
-                      ratio={5 / 4}
-                      widths={[320, 480, 640, 900, 1400]}
-                      sizes={
-                        singleFeaturedPerson
-                          ? '(min-width: 1024px) 1024px, 100vw'
-                          : '(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)'
-                      }
-                      className={
-                        singleFeaturedPerson
-                          ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105'
-                          : 'absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105'
-                      }
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-shawl" />
-                  )}
-
-                  <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
-
+                  {/* PORTRAIT */}
                   <div
                     className={
                       singleFeaturedPerson
-                        ? 'absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:p-9'
-                        : 'absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6'
+                        ? 'relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-shawl sm:absolute sm:inset-0 sm:aspect-auto'
+                        : 'relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-shawl sm:absolute sm:inset-0 sm:aspect-auto'
+                    }
+                  >
+
+                    {person.profileImage ? (
+                      <ResponsiveImage
+                        source={person.profileImage}
+                        alt={person.name}
+                        ratio={5 / 4}
+                        widths={[320, 480, 640, 900, 1400]}
+                        sizes={
+                          singleFeaturedPerson
+                            ? '(min-width: 1024px) 1024px, 100vw'
+                            : '(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)'
+                        }
+                        className={
+                          singleFeaturedPerson
+                            ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105 sm:object-cover'
+                            : 'absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105'
+                        }
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-shawl" />
+                    )}
+
+                    {/* Desktop-only image gradient.
+                        Mobile uses a solid text panel instead. */}
+                    <div className="absolute inset-0 hidden bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95 sm:block" />
+
+                  </div>
+
+                  {/* TEXT PANEL */}
+                  <div
+                    className={
+                      singleFeaturedPerson
+                        ? 'relative border-t-2 border-mustard bg-navy p-5 sm:absolute sm:inset-x-0 sm:bottom-0 sm:border-t-0 sm:bg-transparent sm:p-7 lg:p-9'
+                        : 'relative border-t-2 border-mustard bg-navy p-4 sm:absolute sm:inset-x-0 sm:bottom-0 sm:border-t-0 sm:bg-transparent sm:p-5 lg:p-6'
                     }
                   >
 
                     {person.category?.title && (
-                      <p className="mb-2 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
+                      <p className="mb-2 font-body text-[10px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
                         {person.category.title}
                       </p>
                     )}
@@ -397,14 +412,14 @@ export default async function Home() {
                     <h3
                       className={
                         singleFeaturedPerson
-                          ? 'font-display text-3xl leading-[1.05] text-cream sm:text-4xl lg:text-5xl'
-                          : 'font-display text-2xl leading-[1.05] text-cream sm:text-3xl'
+                          ? 'font-display text-2xl leading-tight text-cream sm:text-4xl sm:leading-[1.05] lg:text-5xl'
+                          : 'font-display text-xl leading-tight text-cream sm:text-3xl sm:leading-[1.05]'
                       }
                     >
                       {person.name}
                     </h3>
 
-                    <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/65 transition group-hover:text-mustard group-hover:tracking-[0.18em] sm:text-xs">
+                    <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/75 transition group-hover:text-mustard group-hover:tracking-[0.18em] sm:text-xs sm:text-cream/65">
                       View profile →
                     </span>
 
