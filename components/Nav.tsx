@@ -1,4 +1,3 @@
-
 'use client'
 
 import Link from 'next/link'
@@ -17,15 +16,23 @@ const links = [
   { href: '/contact', label: 'Contact' },
 ]
 
-export default function Nav() {
+type NavProps = {
+  initialLogo?: any
+}
+
+export default function Nav({ initialLogo }: NavProps) {
   const pathname = usePathname()
-  const [logo, setLogo] = useState<any>(null)
+
+  const [logo, setLogo] = useState<any>(initialLogo || null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   const isHome = pathname === '/'
 
   useEffect(() => {
+    if (initialLogo) return
+
     let isMounted = true
 
     async function loadLogo() {
@@ -55,14 +62,12 @@ export default function Nav() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [initialLogo])
 
-  // Close mobile menu whenever the page changes
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [pathname])
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -82,7 +87,6 @@ export default function Nav() {
     }
   }, [mobileMenuOpen])
 
-  // Close mobile menu when pressing Escape
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === 'Escape') {
