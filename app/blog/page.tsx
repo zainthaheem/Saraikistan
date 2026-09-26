@@ -51,33 +51,61 @@ function formatDate(date: string) {
   })
 }
 
+// Responsive Sanity image helper.
+// All candidates maintain the correct 16:10 aspect ratio.
+function StoryImage({
+  source,
+  alt,
+  widths,
+  sizes,
+  priority = false,
+  className,
+}: {
+  source: any
+  alt: string
+  widths: number[]
+  sizes: string
+  priority?: boolean
+  className: string
+}) {
+  if (!source) return null
+
+  const makeUrl = (width: number) =>
+    urlFor(source)
+      .width(width)
+      .height(Math.round(width * 10 / 16))
+      .fit('crop')
+      .quality(65)
+      .format('webp')
+      .url()
+
+  const largestWidth = widths[widths.length - 1]
+
+  const srcSet = widths
+    .map((width) => `${makeUrl(width)} ${width}w`)
+    .join(', ')
+
+  return (
+    <img
+      src={makeUrl(largestWidth)}
+      srcSet={srcSet}
+      sizes={sizes}
+      alt={alt}
+      width={largestWidth}
+      height={Math.round(largestWidth * 10 / 16)}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : 'auto'}
+      decoding="async"
+      className={className}
+    />
+  )
+}
+
 export default async function Blog() {
   const stories = await getStories()
 
   const featured = stories[0]
   const remaining = stories.slice(1)
-
-  const featuredImageBuilder = featured?.coverImage
-    ? urlFor(featured.coverImage)
-        .height(667)
-        .fit('crop')
-        .quality(65)
-        .format('webp')
-    : null
-
-  const featuredImageUrl = featuredImageBuilder
-    ? featuredImageBuilder.width(1000).url()
-    : null
-
-  const featuredImageSrcSet = featuredImageBuilder
-    ? [
-        `${featuredImageBuilder.width(480).url()} 480w`,
-        `${featuredImageBuilder.width(640).url()} 640w`,
-        `${featuredImageBuilder.width(800).url()} 800w`,
-        `${featuredImageBuilder.width(1000).url()} 1000w`,
-        `${featuredImageBuilder.width(1200).url()} 1200w`,
-      ].join(', ')
-    : undefined
 
   return (
     <main className="min-h-screen bg-cream text-navy">
@@ -135,22 +163,16 @@ export default async function Blog() {
               <div className="grid lg:grid-cols-2">
                 {/* FEATURED IMAGE */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
-                  {featuredImageUrl && (
-                    <img
-                      src={featuredImageUrl}
-                      srcSet={featuredImageSrcSet}
-                      sizes="(min-width: 1280px) 576px, (min-width: 1024px) 50vw, calc(100vw - 48px)"
+                  {featured.coverImage ? (
+                    <StoryImage
+                      source={featured.coverImage}
                       alt={featured.title}
-                      width={1000}
-                      height={667}
-                      loading="eager"
-                      fetchPriority="high"
-                      decoding="async"
+                      widths={[480, 640, 800, 1000, 1200]}
+                      sizes="(min-width: 1280px) 576px, (min-width: 1024px) 50vw, calc(100vw - 48px)"
+                      priority
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
-                  )}
-
-                  {!featuredImageUrl && (
+                  ) : (
                     <div className="flex h-full min-h-[300px] items-center justify-center bg-shawl font-display text-cream/40">
                       Saraikistan
                     </div>
@@ -208,87 +230,59 @@ export default async function Blog() {
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {remaining.map((post: any) => {
-                    const imageBuilder = post.coverImage
-                      ? urlFor(post.coverImage)
-                          .height(467)
-                          .fit('crop')
-                          .quality(65)
-                          .format('webp')
-                      : null
+                  {remaining.map((post: any) => (
+                    <Link
+                      key={post._id}
+                      href={`/blog/${post.slug.current}`}
+                      className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    >
+                      {/* CARD IMAGE */}
+                      <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                        {post.coverImage ? (
+                          <StoryImage
+                            source={post.coverImage}
+                            alt={post.title}
+                            widths={[320, 400, 560, 700, 900]}
+                            sizes="(min-width: 1280px) 384px, (min-width: 1024px) calc(33.333vw - 48px), (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center font-display text-cream/40">
+                            Saraikistan
+                          </div>
+                        )}
+                      </div>
 
-                    const imageUrl = imageBuilder
-                      ? imageBuilder.width(700).url()
-                      : null
+                      {/* CONTENT */}
+                      <div className="border-t-2 border-mustard p-6">
+                        {post.category && (
+                          <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
+                            {post.category.title}
+                          </p>
+                        )}
 
-                    const imageSrcSet = imageBuilder
-                      ? [
-                          `${imageBuilder.width(320).url()} 320w`,
-                          `${imageBuilder.width(400).url()} 400w`,
-                          `${imageBuilder.width(560).url()} 560w`,
-                          `${imageBuilder.width(700).url()} 700w`,
-                          `${imageBuilder.width(900).url()} 900w`,
-                        ].join(', ')
-                      : undefined
+                        {post.publishedAt && (
+                          <p className="mt-2 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
+                            Published · {formatDate(post.publishedAt)}
+                          </p>
+                        )}
 
-                    return (
-                      <Link
-                        key={post._id}
-                        href={`/blog/${post.slug.current}`}
-                        className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                      >
-                        {/* CARD IMAGE */}
-                        <div className="aspect-[16/10] overflow-hidden bg-shawl">
-                          {imageUrl ? (
-                            <img
-                              src={imageUrl}
-                              srcSet={imageSrcSet}
-                              sizes="(min-width: 1280px) 384px, (min-width: 1024px) calc(33.333vw - 48px), (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)"
-                              alt={post.title}
-                              width={700}
-                              height={467}
-                              loading="lazy"
-                              decoding="async"
-                              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                            />
-                          ) : (
-                            <div className="flex h-full items-center justify-center font-display text-cream/40">
-                              Saraikistan
-                            </div>
-                          )}
-                        </div>
+                        <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                          {post.title}
+                        </h3>
 
-                        {/* CONTENT */}
-                        <div className="border-t-2 border-mustard p-6">
-                          {post.category && (
-                            <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
-                              {post.category.title}
-                            </p>
-                          )}
+                        {post.summary && (
+                          <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                            {post.summary}
+                          </p>
+                        )}
 
-                          {post.publishedAt && (
-                            <p className="mt-2 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
-                              Published · {formatDate(post.publishedAt)}
-                            </p>
-                          )}
-
-                          <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
-                            {post.title}
-                          </h3>
-
-                          {post.summary && (
-                            <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
-                              {post.summary}
-                            </p>
-                          )}
-
-                          <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-                            Read story →
-                          </span>
-                        </div>
-                      </Link>
-                    )
-                  })}
+                        <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                          Read story →
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
               </div>
             </section>
