@@ -1,9 +1,9 @@
+
 'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
 const links = [
@@ -22,47 +22,18 @@ type NavProps = {
 
 export default function Nav({ initialLogo }: NavProps) {
   const pathname = usePathname()
-
-  const [logo, setLogo] = useState<any>(initialLogo || null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   const isHome = pathname === '/'
 
-  useEffect(() => {
-    if (initialLogo) return
-
-    let isMounted = true
-
-    async function loadLogo() {
-      try {
-        const settings = await client.fetch(
-          `*[_type == "siteSettings" && !(_id in path("drafts.**"))][0]{
-            logo {
-              asset,
-              crop,
-              hotspot
-            }
-          }`,
-          {},
-          { useCdn: false }
-        )
-
-        if (isMounted && settings?.logo?.asset) {
-          setLogo(settings.logo)
-        }
-      } catch (error) {
-        console.error('Failed to load logo:', error)
-      }
-    }
-
-    loadLogo()
-
-    return () => {
-      isMounted = false
-    }
-  }, [initialLogo])
+  const logoUrl = initialLogo?.asset
+    ? urlFor(initialLogo)
+        .width(600)
+        .quality(90)
+        .format('webp')
+        .url()
+    : null
 
   useEffect(() => {
     setMobileMenuOpen(false)
@@ -128,13 +99,9 @@ export default function Nav({ initialLogo }: NavProps) {
           onClick={closeMobileMenu}
           className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
-          {logo?.asset ? (
+          {logoUrl ? (
             <img
-              src={urlFor(logo)
-                .width(600)
-                .quality(90)
-                .format('webp')
-                .url()}
+              src={logoUrl}
               alt="Saraikistan"
               width={600}
               height={120}
