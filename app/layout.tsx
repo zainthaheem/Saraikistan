@@ -30,7 +30,12 @@ async function getSiteSettings() {
     *[_type == "siteSettings"][0]{
       siteTitle,
       tagline,
-      headerImage
+      headerImage,
+      logo {
+        asset,
+        crop,
+        hotspot
+      }
     }
   `)
 }
@@ -79,12 +84,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'Saraiki music',
     ],
 
-    authors: [
-      {
-        name: 'Saraikistan',
-      },
-    ],
-
+    authors: [{ name: 'Saraikistan' }],
     creator: 'Saraikistan',
     publisher: 'Saraikistan',
 
@@ -203,7 +203,7 @@ export default async function RootLayout({
       </head>
 
       <body className="m-0 w-full overflow-x-hidden font-body">
-        <Nav />
+        <Nav initialLogo={settings?.logo} />
 
         <main className="m-0 min-h-screen w-full max-w-none p-0">
           {children}
