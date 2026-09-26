@@ -1,6 +1,5 @@
 
 import Link from 'next/link'
-import { preload } from 'react'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
@@ -102,15 +101,6 @@ export default async function Home() {
         .url()
     : null
 
-  // Preload the main hero image to improve Largest Contentful Paint.
-  // The mobile and desktop image URLs remain responsive through srcSet.
-  if (heroImage) {
-    preload(heroImage, {
-      as: 'image',
-      fetchPriority: 'high',
-    })
-  }
-
   const singleFeaturedPerson = featuredPeople?.length === 1
 
   return (
@@ -131,9 +121,9 @@ export default async function Home() {
             alt="Saraikistan landscape"
             width={1800}
             height={1000}
-            fetchPriority="high"
             loading="eager"
-            decoding="async"
+            fetchPriority="high"
+            decoding="sync"
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}
@@ -459,7 +449,6 @@ export default async function Home() {
 
         </section>
       )}
-
 
       {/* STORIES */}
       {featuredStories?.length > 0 && (
