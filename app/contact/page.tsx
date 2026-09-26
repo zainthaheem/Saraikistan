@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -5,14 +6,14 @@ export const metadata: Metadata = {
   description:
     'Contact Saraikistan for cultural collaborations, research, media inquiries, news submissions, contributions, events and community projects.',
   alternates: {
-    canonical: 'https://saraikistan-ml2d.vercel.app/contact',
+    canonical: 'https://saraikistan.org/contact',
   },
   openGraph: {
     title: 'Contact Saraikistan | Collaborate & Contribute',
     description:
       'Contact Saraikistan for cultural collaborations, research, media inquiries, news submissions, contributions, events and community projects.',
     type: 'website',
-    url: 'https://saraikistan-ml2d.vercel.app/contact',
+    url: 'https://saraikistan.org/contact',
     siteName: 'Saraikistan',
   },
   twitter: {
