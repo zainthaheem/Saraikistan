@@ -1,4 +1,6 @@
+
 import Link from 'next/link'
+import { preload } from 'react'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 
@@ -100,6 +102,15 @@ export default async function Home() {
         .url()
     : null
 
+  // Preload the main hero image to improve Largest Contentful Paint.
+  // The mobile and desktop image URLs remain responsive through srcSet.
+  if (heroImage) {
+    preload(heroImage, {
+      as: 'image',
+      fetchPriority: 'high',
+    })
+  }
+
   const singleFeaturedPerson = featuredPeople?.length === 1
 
   return (
@@ -121,6 +132,7 @@ export default async function Home() {
             width={1800}
             height={1000}
             fetchPriority="high"
+            loading="eager"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -301,7 +313,9 @@ export default async function Home() {
         )}
 
       </section>
-            {/* FEATURED PEOPLE */}
+
+
+      {/* FEATURED PEOPLE */}
       {featuredPeople?.length > 0 && (
         <section className="bg-navy text-cream">
 
