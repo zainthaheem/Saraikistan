@@ -57,25 +57,27 @@ export default async function Blog() {
   const featured = stories[0]
   const remaining = stories.slice(1)
 
-  const featuredImageDesktop = featured?.coverImage
+  const featuredImageBuilder = featured?.coverImage
     ? urlFor(featured.coverImage)
-        .width(1000)
         .height(667)
         .fit('crop')
-        .quality(70)
+        .quality(75)
         .format('webp')
-        .url()
     : null
 
-  const featuredImageMobile = featured?.coverImage
-    ? urlFor(featured.coverImage)
-        .width(600)
-        .height(400)
-        .fit('crop')
-        .quality(68)
-        .format('webp')
-        .url()
+  const featuredImageUrl = featuredImageBuilder
+    ? featuredImageBuilder.width(1000).url()
     : null
+
+  const featuredImageSrcSet = featuredImageBuilder
+    ? [
+        `${featuredImageBuilder.width(480).url()} 480w`,
+        `${featuredImageBuilder.width(640).url()} 640w`,
+        `${featuredImageBuilder.width(800).url()} 800w`,
+        `${featuredImageBuilder.width(1000).url()} 1000w`,
+        `${featuredImageBuilder.width(1200).url()} 1200w`,
+      ].join(', ')
+    : undefined
 
   return (
     <main className="min-h-screen bg-cream text-navy">
@@ -133,11 +135,11 @@ export default async function Blog() {
               <div className="grid lg:grid-cols-2">
                 {/* FEATURED IMAGE */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
-                  {featuredImageDesktop && featuredImageMobile ? (
+                  {featuredImageUrl && (
                     <img
-                      src={featuredImageMobile}
-                      srcSet={`${featuredImageMobile} 600w, ${featuredImageDesktop} 1000w`}
-                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      src={featuredImageUrl}
+                      srcSet={featuredImageSrcSet}
+                      sizes="(min-width: 1280px) 576px, (min-width: 1024px) 50vw, calc(100vw - 48px)"
                       alt={featured.title}
                       width={1000}
                       height={667}
@@ -146,7 +148,9 @@ export default async function Blog() {
                       decoding="async"
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                     />
-                  ) : (
+                  )}
+
+                  {!featuredImageUrl && (
                     <div className="flex h-full min-h-[300px] items-center justify-center bg-shawl font-display text-cream/40">
                       Saraikistan
                     </div>
@@ -205,25 +209,27 @@ export default async function Blog() {
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {remaining.map((post: any) => {
-                    const imageDesktop = post.coverImage
+                    const imageBuilder = post.coverImage
                       ? urlFor(post.coverImage)
-                          .width(700)
                           .height(467)
                           .fit('crop')
-                          .quality(65)
+                          .quality(75)
                           .format('webp')
-                          .url()
                       : null
 
-                    const imageMobile = post.coverImage
-                      ? urlFor(post.coverImage)
-                          .width(400)
-                          .height(267)
-                          .fit('crop')
-                          .quality(60)
-                          .format('webp')
-                          .url()
+                    const imageUrl = imageBuilder
+                      ? imageBuilder.width(700).url()
                       : null
+
+                    const imageSrcSet = imageBuilder
+                      ? [
+                          `${imageBuilder.width(320).url()} 320w`,
+                          `${imageBuilder.width(400).url()} 400w`,
+                          `${imageBuilder.width(560).url()} 560w`,
+                          `${imageBuilder.width(700).url()} 700w`,
+                          `${imageBuilder.width(900).url()} 900w`,
+                        ].join(', ')
+                      : undefined
 
                     return (
                       <Link
@@ -233,11 +239,11 @@ export default async function Blog() {
                       >
                         {/* CARD IMAGE */}
                         <div className="aspect-[16/10] overflow-hidden bg-shawl">
-                          {imageDesktop && imageMobile ? (
+                          {imageUrl ? (
                             <img
-                              src={imageMobile}
-                              srcSet={`${imageMobile} 400w, ${imageDesktop} 700w`}
-                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                              src={imageUrl}
+                              srcSet={imageSrcSet}
+                              sizes="(min-width: 1280px) 384px, (min-width: 1024px) calc(33.333vw - 48px), (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)"
                               alt={post.title}
                               width={700}
                               height={467}
