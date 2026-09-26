@@ -1,6 +1,7 @@
 
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { cache } from 'react'
 import { Playfair_Display, Montserrat } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
@@ -25,7 +26,7 @@ const montserrat = Montserrat({
 
 export const revalidate = 60
 
-async function getSiteSettings() {
+const getSiteSettings = cache(async () => {
   return client.fetch(`
     *[_type == "siteSettings"][0]{
       siteTitle,
@@ -38,7 +39,7 @@ async function getSiteSettings() {
       }
     }
   `)
-}
+})
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
@@ -189,14 +190,6 @@ export default async function RootLayout({
           content="ca-pub-9866879353406837"
         />
 
-        {/* Google AdSense script */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9866879353406837"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-
         {/* Website structured data */}
         <script
           type="application/ld+json"
@@ -216,6 +209,15 @@ export default async function RootLayout({
         <Footer />
 
         <ScrollToTop />
+
+        {/* Load Google AdSense during browser idle time */}
+        <Script
+          id="google-adsense"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9866879353406837"
+          crossOrigin="anonymous"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   )
