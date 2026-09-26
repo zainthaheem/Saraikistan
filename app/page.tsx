@@ -140,7 +140,7 @@ export default async function Home() {
     <main className="bg-cream text-navy">
 
       {/* HERO */}
-      <section className="relative min-h-[600px] overflow-hidden bg-navy sm:min-h-[510px] lg:min-h-[540px]">
+      <section className="relative min-h-[500px] overflow-hidden bg-navy sm:min-h-[510px] lg:min-h-[540px]">
 
         {settings?.headerImage && (
           <ResponsiveImage
@@ -158,11 +158,11 @@ export default async function Home() {
         <div className="absolute inset-0 bg-navy/55" />
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
 
-        <div className="relative mx-auto flex min-h-[600px] max-w-7xl items-start px-5 pb-12 pt-32 sm:min-h-[510px] sm:items-center sm:px-10 sm:py-14 lg:min-h-[540px] lg:px-12">
+        <div className="relative mx-auto flex min-h-[500px] max-w-7xl items-start px-5 pb-8 pt-24 sm:min-h-[510px] sm:items-center sm:px-10 sm:py-14 lg:min-h-[540px] lg:px-12">
 
           <div className="max-w-3xl text-cream">
 
-            <p className="font-body text-[11px] text-cream/80 sm:text-sm">
+            <p className="mt-3 font-body text-[11px] leading-5 text-cream/80 sm:mt-8 sm:text-sm sm:leading-6 lg:mt-10">
               A digital home for the Saraiki region
             </p>
 
