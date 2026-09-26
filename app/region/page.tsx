@@ -114,15 +114,26 @@ export default async function Region() {
 
             {places.map((place: any, index: number) => {
 
-              const imageUrl = place.coverImage
+              const imageBuilder = place.coverImage
                 ? urlFor(place.coverImage)
-                    .width(720)
                     .height(405)
                     .fit('crop')
-                    .quality(70)
+                    .quality(65)
                     .format('webp')
-                    .url()
                 : null
+
+              const imageUrl = imageBuilder
+                ? imageBuilder.width(480).url()
+                : null
+
+              const imageSrcSet = imageBuilder
+                ? [
+                    `${imageBuilder.width(320).url()} 320w`,
+                    `${imageBuilder.width(480).url()} 480w`,
+                    `${imageBuilder.width(640).url()} 640w`,
+                    `${imageBuilder.width(800).url()} 800w`,
+                  ].join(', ')
+                : undefined
 
               return (
 
@@ -132,16 +143,18 @@ export default async function Region() {
                   className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
 
-                  {/* OPTIMIZED IMAGE */}
+                  {/* RESPONSIVE OPTIMIZED IMAGE */}
                   <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
                     {imageUrl ? (
                       <img
                         src={imageUrl}
+                        srcSet={imageSrcSet}
+                        sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 1023px) calc(50vw - 56px), (max-width: 1280px) calc(33.333vw - 48px), 384px"
                         alt={`${place.title} - Saraikistan`}
-                        width={720}
-                        height={405}
-                        loading={index < 3 ? 'eager' : 'lazy'}
+                        width={480}
+                        height={270}
+                        loading={index === 0 ? 'eager' : 'lazy'}
                         fetchPriority={index === 0 ? 'high' : 'auto'}
                         decoding="async"
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
