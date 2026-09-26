@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -5,14 +6,14 @@ export const metadata: Metadata = {
   description:
     'Learn about Saraikistan, a digital cultural platform documenting the people, language, places, traditions, heritage and stories of the Saraiki region.',
   alternates: {
-    canonical: 'https://saraikistan-ml2d.vercel.app/about',
+    canonical: 'https://saraikistan.org/about',
   },
   openGraph: {
     title: 'About Saraikistan | People, Culture & Heritage',
     description:
       'Learn about Saraikistan, a digital cultural platform documenting the people, language, places, traditions, heritage and stories of the Saraiki region.',
     type: 'website',
-    url: 'https://saraikistan-ml2d.vercel.app/about',
+    url: 'https://saraikistan.org/about',
     siteName: 'Saraikistan',
   },
   twitter: {
