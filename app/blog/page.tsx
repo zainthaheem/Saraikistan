@@ -61,7 +61,7 @@ export default async function Blog() {
     ? urlFor(featured.coverImage)
         .height(667)
         .fit('crop')
-        .quality(75)
+        .quality(65)
         .format('webp')
     : null
 
@@ -213,7 +213,7 @@ export default async function Blog() {
                       ? urlFor(post.coverImage)
                           .height(467)
                           .fit('crop')
-                          .quality(75)
+                          .quality(65)
                           .format('webp')
                       : null
 
