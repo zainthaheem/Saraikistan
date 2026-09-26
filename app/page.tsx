@@ -1,4 +1,3 @@
-
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -72,6 +71,67 @@ function formatDate(date: string) {
   })
 }
 
+/**
+ * Responsive Sanity image helper.
+ *
+ * Generates multiple real image widths from Sanity.
+ * The browser selects the appropriate source based on
+ * the rendered image size and device pixel ratio.
+ *
+ * ratio = height / width
+ */
+function ResponsiveImage({
+  source,
+  alt,
+  ratio,
+  sizes,
+  widths,
+  loading = 'lazy',
+  priority = false,
+  className,
+}: {
+  source: any
+  alt: string
+  ratio: number
+  sizes: string
+  widths: number[]
+  loading?: 'lazy' | 'eager'
+  priority?: boolean
+  className: string
+}) {
+  if (!source) return null
+
+  const makeUrl = (width: number) =>
+    urlFor(source)
+      .width(width)
+      .height(Math.round(width * ratio))
+      .fit('crop')
+      .quality(priority ? 72 : 68)
+      .format('webp')
+      .url()
+
+  const srcSet = widths
+    .map((width) => `${makeUrl(width)} ${width}w`)
+    .join(', ')
+
+  const largestWidth = widths[widths.length - 1]
+
+  return (
+    <img
+      src={makeUrl(largestWidth)}
+      srcSet={srcSet}
+      sizes={sizes}
+      alt={alt}
+      width={largestWidth}
+      height={Math.round(largestWidth * ratio)}
+      loading={loading}
+      fetchPriority={priority ? 'high' : 'auto'}
+      decoding={priority ? 'sync' : 'async'}
+      className={className}
+    />
+  )
+}
+
 export default async function Home() {
   const {
     settings,
@@ -81,26 +141,6 @@ export default async function Home() {
     exploreCards,
   } = await getHomeData()
 
-  const heroImage = settings?.headerImage
-    ? urlFor(settings.headerImage)
-        .width(1800)
-        .height(1000)
-        .fit('crop')
-        .quality(78)
-        .format('webp')
-        .url()
-    : null
-
-  const heroImageMobile = settings?.headerImage
-    ? urlFor(settings.headerImage)
-        .width(800)
-        .height(444)
-        .fit('crop')
-        .quality(78)
-        .format('webp')
-        .url()
-    : null
-
   const singleFeaturedPerson = featuredPeople?.length === 1
 
   return (
@@ -109,21 +149,15 @@ export default async function Home() {
       {/* HERO */}
       <section className="relative min-h-[680px] overflow-hidden bg-navy sm:min-h-[720px]">
 
-        {heroImage && (
-          <img
-            src={heroImage}
-            srcSet={
-              heroImageMobile
-                ? `${heroImageMobile} 800w, ${heroImage} 1800w`
-                : undefined
-            }
-            sizes="100vw"
+        {settings?.headerImage && (
+          <ResponsiveImage
+            source={settings.headerImage}
             alt="Saraikistan landscape"
-            width={1800}
-            height={1000}
+            ratio={1000 / 1800}
+            widths={[480, 800, 1200, 1600, 1800]}
+            sizes="100vw"
             loading="eager"
-            fetchPriority="high"
-            decoding="sync"
+            priority
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}
@@ -179,14 +213,12 @@ export default async function Home() {
 
       </section>
 
-
       {/* EXPLORE SARAIKISTAN */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
 
         <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 
           <div>
-
             <p className="font-body text-sm text-shawl">
               Discover
             </p>
@@ -196,7 +228,6 @@ export default async function Home() {
             </h2>
 
             <div className="mt-4 h-[2px] w-12 bg-mustard" />
-
           </div>
 
           <p className="max-w-md font-body text-sm leading-6 text-navy/60">
@@ -212,26 +243,6 @@ export default async function Home() {
 
             {exploreCards.map((card: any) => {
 
-              const image = card.image
-                ? urlFor(card.image)
-                    .width(900)
-                    .height(1125)
-                    .fit('crop')
-                    .quality(78)
-                    .format('webp')
-                    .url()
-                : null
-
-              const imageMobile = card.image
-                ? urlFor(card.image)
-                    .width(400)
-                    .height(500)
-                    .fit('crop')
-                    .quality(78)
-                    .format('webp')
-                    .url()
-                : null
-
               const description =
                 card.description ||
                 defaultDescriptions[card.title] ||
@@ -244,20 +255,13 @@ export default async function Home() {
                   className="group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-navy"
                 >
 
-                  {image ? (
-                    <img
-                      src={image}
-                      srcSet={
-                        imageMobile
-                          ? `${imageMobile} 400w, ${image} 900w`
-                          : undefined
-                      }
-                      sizes="(min-width: 1024px) 25vw, 50vw"
+                  {card.image ? (
+                    <ResponsiveImage
+                      source={card.image}
                       alt={card.title}
-                      width={900}
-                      height={1125}
-                      loading="lazy"
-                      decoding="async"
+                      ratio={5 / 4}
+                      widths={[320, 480, 640, 900]}
+                      sizes="(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
                       className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
                     />
                   ) : (
@@ -304,7 +308,6 @@ export default async function Home() {
 
       </section>
 
-
       {/* FEATURED PEOPLE */}
       {featuredPeople?.length > 0 && (
         <section className="bg-navy text-cream">
@@ -314,7 +317,6 @@ export default async function Home() {
             <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
               <div>
-
                 <p className="font-body text-sm text-mustard">
                   People
                 </p>
@@ -324,7 +326,6 @@ export default async function Home() {
                 </h2>
 
                 <div className="mt-4 h-[2px] w-12 bg-mustard" />
-
               </div>
 
               <Link
@@ -344,102 +345,74 @@ export default async function Home() {
               }
             >
 
-              {featuredPeople.map((person: any) => {
+              {featuredPeople.map((person: any) => (
 
-                const image = person.profileImage
-                  ? urlFor(person.profileImage)
-                      .width(1400)
-                      .height(1750)
-                      .fit('crop')
-                      .quality(78)
-                      .format('webp')
-                      .url()
-                  : null
+                <Link
+                  key={person.slug?.current || person.name}
+                  href={`/celebrities/${person.slug?.current || ''}`}
+                  className={
+                    singleFeaturedPerson
+                      ? 'group relative block aspect-[4/3] w-full overflow-hidden rounded-[2px] bg-shawl sm:aspect-[3/2] lg:max-w-5xl'
+                      : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl'
+                  }
+                >
 
-                const imageMobile = person.profileImage
-                  ? urlFor(person.profileImage)
-                      .width(500)
-                      .height(625)
-                      .fit('crop')
-                      .quality(78)
-                      .format('webp')
-                      .url()
-                  : null
+                  {person.profileImage ? (
+                    <ResponsiveImage
+                      source={person.profileImage}
+                      alt={person.name}
+                      ratio={5 / 4}
+                      widths={[320, 480, 640, 900, 1400]}
+                      sizes={
+                        singleFeaturedPerson
+                          ? '(min-width: 1024px) 1024px, 100vw'
+                          : '(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)'
+                      }
+                      className={
+                        singleFeaturedPerson
+                          ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105'
+                          : 'absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105'
+                      }
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-shawl" />
+                  )}
 
-                return (
-                  <Link
-                    key={person.slug?.current || person.name}
-                    href={`/celebrities/${person.slug?.current || ''}`}
+                  <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
+
+                  <div
                     className={
                       singleFeaturedPerson
-                        ? 'group relative block aspect-[4/3] w-full overflow-hidden rounded-[2px] bg-shawl sm:aspect-[3/2] lg:max-w-5xl'
-                        : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-shawl'
+                        ? 'absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:p-9'
+                        : 'absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6'
                     }
                   >
 
-                    {image ? (
-                      <img
-                        src={image}
-                        srcSet={
-                          imageMobile
-                            ? `${imageMobile} 500w, ${image} 1400w`
-                            : undefined
-                        }
-                        sizes={
-                          singleFeaturedPerson
-                            ? '(min-width: 1024px) 1024px, 100vw'
-                            : '(min-width: 1024px) 25vw, 50vw'
-                        }
-                        alt={person.name}
-                        width={1400}
-                        height={1750}
-                        loading="lazy"
-                        decoding="async"
-                        className={
-                          singleFeaturedPerson
-                            ? 'absolute inset-0 h-full w-full object-cover object-[center_22%] transition duration-700 ease-out group-hover:scale-105'
-                            : 'absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105'
-                        }
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-shawl" />
+                    {person.category?.title && (
+                      <p className="mb-2 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
+                        {person.category.title}
+                      </p>
                     )}
 
-                    <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/15 to-navy/95" />
-
-                    <div
+                    <h3
                       className={
                         singleFeaturedPerson
-                          ? 'absolute inset-x-0 bottom-0 p-5 sm:p-7 lg:p-9'
-                          : 'absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-6'
+                          ? 'font-display text-3xl leading-[1.05] text-cream sm:text-4xl lg:text-5xl'
+                          : 'font-display text-2xl leading-[1.05] text-cream sm:text-3xl'
                       }
                     >
+                      {person.name}
+                    </h3>
 
-                      {person.category?.title && (
-                        <p className="mb-2 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
-                          {person.category.title}
-                        </p>
-                      )}
+                    <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/65 transition group-hover:text-mustard group-hover:tracking-[0.18em] sm:text-xs">
+                      View profile →
+                    </span>
 
-                      <h3
-                        className={
-                          singleFeaturedPerson
-                            ? 'font-display text-3xl leading-[1.05] text-cream sm:text-4xl lg:text-5xl'
-                            : 'font-display text-2xl leading-[1.05] text-cream sm:text-3xl'
-                        }
-                      >
-                        {person.name}
-                      </h3>
+                  </div>
 
-                      <span className="mt-4 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/65 transition group-hover:text-mustard group-hover:tracking-[0.18em] sm:text-xs">
-                        View profile →
-                      </span>
+                </Link>
 
-                    </div>
-
-                  </Link>
-                )
-              })}
+              ))}
 
             </div>
 
@@ -457,7 +430,6 @@ export default async function Home() {
           <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
             <div>
-
               <p className="font-body text-sm text-shawl">
                 Long-form
               </p>
@@ -467,7 +439,6 @@ export default async function Home() {
               </h2>
 
               <div className="mt-4 h-[2px] w-12 bg-mustard" />
-
             </div>
 
             <Link
@@ -481,94 +452,65 @@ export default async function Home() {
 
           <div className="grid gap-6 lg:grid-cols-2">
 
-            {featuredStories.map((story: any) => {
+            {featuredStories.map((story: any) => (
 
-              const image = story.coverImage
-                ? urlFor(story.coverImage)
-                    .width(1000)
-                    .height(625)
-                    .fit('crop')
-                    .quality(78)
-                    .format('webp')
-                    .url()
-                : null
+              <Link
+                key={story._id}
+                href={`/blog/${story.slug.current}`}
+                className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
 
-              const imageMobile = story.coverImage
-                ? urlFor(story.coverImage)
-                    .width(640)
-                    .height(400)
-                    .fit('crop')
-                    .quality(78)
-                    .format('webp')
-                    .url()
-                : null
+                <div className="aspect-[16/10] overflow-hidden bg-shawl">
 
-              return (
-                <Link
-                  key={story._id}
-                  href={`/blog/${story.slug.current}`}
-                  className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                >
+                  {story.coverImage ? (
+                    <ResponsiveImage
+                      source={story.coverImage}
+                      alt={story.title}
+                      ratio={10 / 16}
+                      widths={[320, 480, 640, 800, 1000]}
+                      sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center font-display text-cream/40">
+                      Saraikistan
+                    </div>
+                  )}
 
-                  <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                </div>
 
-                    {image ? (
-                      <img
-                        src={image}
-                        srcSet={
-                          imageMobile
-                            ? `${imageMobile} 640w, ${image} 1000w`
-                            : undefined
-                        }
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        alt={story.title}
-                        width={1000}
-                        height={625}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center font-display text-cream/40">
-                        Saraikistan
-                      </div>
-                    )}
+                <div className="border-t-2 border-mustard p-6">
 
-                  </div>
+                  {story.publishedAt && (
+                    <p className="font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
+                      {formatDate(story.publishedAt)}
+                    </p>
+                  )}
 
-                  <div className="border-t-2 border-mustard p-6">
+                  <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                    {story.title}
+                  </h3>
 
-                    {story.publishedAt && (
-                      <p className="font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
-                        {formatDate(story.publishedAt)}
-                      </p>
-                    )}
+                  {story.summary && (
+                    <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                      {story.summary}
+                    </p>
+                  )}
 
-                    <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
-                      {story.title}
-                    </h3>
+                  <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                    Read story →
+                  </span>
 
-                    {story.summary && (
-                      <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
-                        {story.summary}
-                      </p>
-                    )}
+                </div>
 
-                    <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-                      Read story →
-                    </span>
+              </Link>
 
-                  </div>
-
-                </Link>
-              )
-            })}
+            ))}
 
           </div>
 
         </section>
       )}
-
 
       {/* LATEST NEWS */}
       {latestNews?.length > 0 && (
@@ -579,7 +521,6 @@ export default async function Home() {
             <div className="mb-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
               <div>
-
                 <p className="font-body text-sm text-shawl">
                   Latest updates
                 </p>
@@ -589,7 +530,6 @@ export default async function Home() {
                 </h2>
 
                 <div className="mt-4 h-[2px] w-12 bg-mustard" />
-
               </div>
 
               <Link
@@ -603,100 +543,72 @@ export default async function Home() {
 
             <div className="grid gap-6 lg:grid-cols-2">
 
-              {latestNews.map((item: any) => {
+              {latestNews.map((item: any) => (
 
-                const image = item.coverImage
-                  ? urlFor(item.coverImage)
-                      .width(1000)
-                      .height(625)
-                      .fit('crop')
-                      .quality(78)
-                      .format('webp')
-                      .url()
-                  : null
+                <Link
+                  key={item._id}
+                  href={`/news/${item.slug.current}`}
+                  className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
 
-                const imageMobile = item.coverImage
-                  ? urlFor(item.coverImage)
-                      .width(640)
-                      .height(400)
-                      .fit('crop')
-                      .quality(78)
-                      .format('webp')
-                      .url()
-                  : null
+                  <div className="aspect-[16/10] overflow-hidden bg-shawl">
 
-                return (
-                  <Link
-                    key={item._id}
-                    href={`/news/${item.slug.current}`}
-                    className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                  >
+                    {item.coverImage ? (
+                      <ResponsiveImage
+                        source={item.coverImage}
+                        alt={item.title}
+                        ratio={10 / 16}
+                        widths={[320, 480, 640, 800, 1000]}
+                        sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center font-display text-cream/40">
+                        Saraikistan
+                      </div>
+                    )}
 
-                    <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                  </div>
 
-                      {image ? (
-                        <img
-                          src={image}
-                          srcSet={
-                            imageMobile
-                              ? `${imageMobile} 640w, ${image} 1000w`
-                              : undefined
-                          }
-                          sizes="(min-width: 1024px) 50vw, 100vw"
-                          alt={item.title}
-                          width={1000}
-                          height={625}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center font-display text-cream/40">
-                          Saraikistan
-                        </div>
-                      )}
+                  <div className="border-t-2 border-mustard p-6">
 
-                    </div>
+                    {item.category?.title && (
+                      <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
+                        {item.category.title}
+                      </p>
+                    )}
 
-                    <div className="border-t-2 border-mustard p-6">
+                    {item.publishedAt && (
+                      <p className="mt-2 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
+                        {formatDate(item.publishedAt)}
+                      </p>
+                    )}
 
-                      {item.category?.title && (
-                        <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
-                          {item.category.title}
-                        </p>
-                      )}
+                    <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
+                      {item.title}
+                    </h3>
 
-                      {item.publishedAt && (
-                        <p className="mt-2 font-body text-[10px] uppercase tracking-[0.12em] text-navy/45">
-                          {formatDate(item.publishedAt)}
-                        </p>
-                      )}
+                    {item.summary && (
+                      <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
+                        {item.summary}
+                      </p>
+                    )}
 
-                      <h3 className="mt-3 font-display text-2xl leading-tight transition group-hover:text-shawl">
-                        {item.title}
-                      </h3>
+                    {item.author && (
+                      <p className="mt-4 font-body text-xs text-navy/45">
+                        By {item.author}
+                      </p>
+                    )}
 
-                      {item.summary && (
-                        <p className="mt-3 line-clamp-3 font-body text-sm leading-6 text-navy/60">
-                          {item.summary}
-                        </p>
-                      )}
+                    <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+                      Read news →
+                    </span>
 
-                      {item.author && (
-                        <p className="mt-4 font-body text-xs text-navy/45">
-                          By {item.author}
-                        </p>
-                      )}
+                  </div>
 
-                      <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-                        Read news →
-                      </span>
+                </Link>
 
-                    </div>
-
-                  </Link>
-                )
-              })}
+              ))}
 
             </div>
 
@@ -705,14 +617,12 @@ export default async function Home() {
         </section>
       )}
 
-
       {/* PURPOSE */}
       <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-24 lg:px-12">
 
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
 
           <div>
-
             <p className="font-body text-sm text-shawl">
               Our purpose
             </p>
@@ -722,11 +632,9 @@ export default async function Home() {
               <br />
               Saraiki culture.
             </h2>
-
           </div>
 
           <div>
-
             <p className="font-body text-lg leading-8 text-navy/65">
               Saraikistan brings together the people, places, language,
               traditions and stories of the Saraiki region in one growing
@@ -739,7 +647,6 @@ export default async function Home() {
             >
               Learn about Saraikistan →
             </Link>
-
           </div>
 
         </div>
