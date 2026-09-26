@@ -140,7 +140,7 @@ export default async function Home() {
     <main className="bg-cream text-navy">
 
       {/* HERO */}
-      <section className="relative min-h-[480px] overflow-hidden bg-navy sm:min-h-[510px] lg:min-h-[540px]">
+      <section className="relative min-h-[600px] overflow-hidden bg-navy sm:min-h-[510px] lg:min-h-[540px]">
 
         {settings?.headerImage && (
           <ResponsiveImage
@@ -158,15 +158,15 @@ export default async function Home() {
         <div className="absolute inset-0 bg-navy/55" />
         <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
 
-        <div className="relative mx-auto flex min-h-[480px] max-w-7xl items-center px-6 py-12 sm:min-h-[510px] sm:px-10 sm:py-14 lg:min-h-[540px] lg:px-12">
+        <div className="relative mx-auto flex min-h-[600px] max-w-7xl items-start px-5 pb-12 pt-32 sm:min-h-[510px] sm:items-center sm:px-10 sm:py-14 lg:min-h-[540px] lg:px-12">
 
           <div className="max-w-3xl text-cream">
 
-            <p className="font-body text-xs text-cream/80 sm:text-sm">
+            <p className="font-body text-[11px] text-cream/80 sm:text-sm">
               A digital home for the Saraiki region
             </p>
 
-            <h1 className="mt-4 font-display text-4xl leading-[0.98] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mt-3 font-display text-3xl leading-[1.02] tracking-tight sm:mt-4 sm:text-5xl sm:leading-[0.98] md:text-6xl lg:text-7xl">
               The land, the language,
               <br />
               and the lives of
@@ -174,12 +174,12 @@ export default async function Home() {
               Saraikistan.
             </h1>
 
-            <p className="mt-5 max-w-xl font-body text-sm leading-6 text-cream/85 sm:text-base sm:leading-7">
+            <p className="mt-4 max-w-xl font-body text-[13px] leading-5 text-cream/85 sm:mt-5 sm:text-base sm:leading-7">
               Discover the people, places, culture, language, heritage and
               stories that shape the Saraiki region.
             </p>
 
-            <div className="mt-6 flex flex-col gap-3 font-body text-xs sm:flex-row sm:text-sm">
+            <div className="mt-5 flex flex-col gap-2.5 font-body text-xs sm:mt-6 sm:flex-row sm:gap-3 sm:text-sm">
 
               <Link
                 href="/culture"
@@ -206,16 +206,16 @@ export default async function Home() {
       </section>
 
       {/* EXPLORE SARAIKISTAN */}
-      <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
+      <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
 
-        <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
 
           <div>
             <p className="font-body text-xs text-shawl sm:text-sm">
               Discover
             </p>
 
-            <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
+            <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
               Explore Saraikistan
             </h2>
 
@@ -304,16 +304,16 @@ export default async function Home() {
       {featuredPeople?.length > 0 && (
         <section className="bg-navy text-cream">
 
-          <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
+          <div className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
 
-            <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
 
               <div>
                 <p className="font-body text-xs text-mustard sm:text-sm">
                   People
                 </p>
 
-                <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
+                <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
                   Featured People
                 </h2>
 
@@ -411,16 +411,16 @@ export default async function Home() {
 
       {/* STORIES */}
       {featuredStories?.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
+        <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
 
-          <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
 
             <div>
               <p className="font-body text-xs text-shawl sm:text-sm">
                 Long-form
               </p>
 
-              <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
+              <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
                 Stories
               </h2>
 
@@ -502,16 +502,16 @@ export default async function Home() {
       {latestNews?.length > 0 && (
         <section className="border-t border-navy/10">
 
-          <div className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-12 lg:px-12">
+          <div className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
 
-            <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
 
               <div>
                 <p className="font-body text-xs text-shawl sm:text-sm">
                   Latest updates
                 </p>
 
-                <h2 className="mt-1.5 font-display text-3xl leading-tight sm:text-4xl">
+                <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
                   News
                 </h2>
 
@@ -604,7 +604,7 @@ export default async function Home() {
       )}
 
       {/* PURPOSE */}
-      <section className="mx-auto max-w-7xl px-6 py-10 sm:px-10 sm:py-14 lg:px-12">
+      <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-14 lg:px-12">
 
         <div className="grid gap-6 lg:grid-cols-2 lg:items-center">
 
@@ -613,7 +613,7 @@ export default async function Home() {
               Our purpose
             </p>
 
-            <h2 className="mt-3 font-display text-3xl leading-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 font-display text-2xl leading-tight sm:text-4xl lg:text-5xl">
               A digital home for
               <br />
               Saraiki culture.
@@ -621,7 +621,7 @@ export default async function Home() {
           </div>
 
           <div>
-            <p className="font-body text-base leading-7 text-navy/65 sm:text-lg">
+            <p className="font-body text-sm leading-6 text-navy/65 sm:text-lg sm:leading-7">
               Saraikistan brings together the people, places, language,
               traditions and stories of the Saraiki region in one growing
               cultural archive.
