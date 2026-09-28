@@ -218,7 +218,9 @@ function markdownToBlocks(markdown: string) {
 }
 
 export default function MarkdownPortableTextInput(props: any) {
-  function handlePaste(event: ClipboardEvent<HTMLDivElement>) {
+  function handlePasteCapture(
+    event: ClipboardEvent<HTMLDivElement>,
+  ) {
     const text = event.clipboardData.getData('text/plain')
 
     if (!text) return
@@ -234,6 +236,7 @@ export default function MarkdownPortableTextInput(props: any) {
     if (!hasMarkdown) return
 
     event.preventDefault()
+    event.stopPropagation()
 
     const blocks = markdownToBlocks(text)
 
@@ -241,7 +244,7 @@ export default function MarkdownPortableTextInput(props: any) {
   }
 
   return (
-    <div onPaste={handlePaste}>
+    <div onPasteCapture={handlePasteCapture}>
       {props.renderDefault(props)}
     </div>
   )
