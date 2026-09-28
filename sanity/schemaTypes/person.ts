@@ -72,19 +72,38 @@ export const person = defineType({
       ],
     }),
 
-    // ENGLISH BIOGRAPHY
+    // ENGLISH BIOGRAPHY — MARKDOWN
+    defineField({
+      name: 'bioMarkdown',
+      title: 'Biography — English (Markdown)',
+      type: 'text',
+      rows: 20,
+      description:
+        'Paste your English biography using Markdown. Use # for headings, **text** for bold, *text* for italics, - for bullet lists, and 1. for numbered lists. Leave blank to use the existing Biography — English field below.',
+    }),
+
+    // URDU BIOGRAPHY — MARKDOWN
+    defineField({
+      name: 'bioUrduMarkdown',
+      title: 'Biography — اردو (Markdown)',
+      type: 'text',
+      rows: 20,
+      description:
+        'اردو سوانح عمری Markdown میں پیسٹ کریں۔ سرخی کے لیے #، بولڈ کے لیے **متن**، اور فہرست کے لیے - استعمال کریں۔ خالی چھوڑنے پر نیچے موجود پرانا اردو بائیو استعمال ہوگا۔',
+    }),
+
+    // EXISTING ENGLISH BIOGRAPHY — PORTABLE TEXT
     defineField({
       name: 'bio',
-      title: 'Biography — English',
+      title: 'Biography — English (Legacy Editor)',
       description:
-        'Write the biography using the standard Sanity editor. Insert a native Image block between paragraphs to add a photo with a caption and optional credit.',
+        'Existing structured biography editor. Keep your current content and biography images here. This remains available for older profiles.',
       type: 'array',
       of: [
         defineArrayMember({
           type: 'block',
         }),
 
-        // Native image blocks with captions and credits
         defineArrayMember({
           type: 'image',
           options: { hotspot: true },
@@ -108,19 +127,18 @@ export const person = defineType({
       ],
     }),
 
-    // URDU BIOGRAPHY
+    // EXISTING URDU BIOGRAPHY — PORTABLE TEXT
     defineField({
       name: 'bioUrdu',
-      title: 'Biography — اردو',
+      title: 'Biography — اردو (Legacy Editor)',
       description:
-        'اردو سوانح عمری لکھیں۔ پیراگراف کے درمیان عام Image بلاک شامل کرکے تصویر، عنوان اور اختیاری کریڈٹ درج کریں۔',
+        'پرانا اردو بائیو ایڈیٹر۔ موجودہ مواد اور تصاویر محفوظ رکھیں۔',
       type: 'array',
       of: [
         defineArrayMember({
           type: 'block',
         }),
 
-        // Native image blocks with captions and credits
         defineArrayMember({
           type: 'image',
           options: { hotspot: true },
