@@ -1,5 +1,6 @@
 'use client'
 
+import type {ClipboardEvent} from 'react'
 import {PatchEvent, set} from 'sanity'
 
 function createKey() {
@@ -8,6 +9,8 @@ function createKey() {
 
 function parseInline(text: string) {
   const children: any[] = []
+  const markDefs: any[] = []
+
   const regex =
     /(\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|_[^_]+_|`[^`]+`|\[[^\]]+\]\([^)]+\))/g
 
@@ -18,7 +21,6 @@ function parseInline(text: string) {
 
     let value = part
     const marks: string[] = []
-    const markDefs: any[] = []
 
     if (
       (part.startsWith('**') && part.endsWith('**')) ||
@@ -59,22 +61,22 @@ function parseInline(text: string) {
       text: value,
       marks,
     })
-
-    if (markDefs.length) {
-      children[children.length - 1].markDefs = markDefs
-    }
   })
 
-  return children.length
-    ? children
-    : [
-        {
-          _type: 'span',
-          _key: createKey(),
-          text,
-          marks: [],
-        },
-      ]
+  return {
+    children:
+      children.length > 0
+        ? children
+        : [
+            {
+              _type: 'span',
+              _key: createKey(),
+              text,
+              marks: [],
+            },
+          ],
+    markDefs,
+  }
 }
 
 function createBlock(
@@ -83,21 +85,25 @@ function createBlock(
   listItem?: 'bullet' | 'number',
   level = 1,
 ) {
+  const inline = parseInline(text)
+
   return {
     _type: 'block',
     _key: createKey(),
     style,
     ...(listItem ? {listItem, level} : {}),
-    markDefs: [],
-    children: parseInline(text),
+    markDefs: inline.markDefs,
+    children: inline.children,
   }
 }
 
 function markdownToBlocks(markdown: string) {
   const lines = markdown.replace(/\r\n/g, '\n').split('\n')
-  const blocks: any[] = []
 
+  const blocks: any[] = []
   let paragraph: string[] = []
+  let inCodeBlock = false
+  let codeLines: string[] = []
 
   function flushParagraph() {
     if (!paragraph.length) return
@@ -106,8 +112,47 @@ function markdownToBlocks(markdown: string) {
     paragraph = []
   }
 
+  function flushCodeBlock() {
+    if (!codeLines.length) return
+
+    blocks.push({
+      _type: 'block',
+      _key: createKey(),
+      style: 'normal',
+      markDefs: [],
+      children: [
+        {
+          _type: 'span',
+          _key: createKey(),
+          text: codeLines.join('\n'),
+          marks: ['code'],
+        },
+      ],
+    })
+
+    codeLines = []
+  }
+
   for (const line of lines) {
     const trimmed = line.trim()
+
+    if (trimmed.startsWith('```')) {
+      flushParagraph()
+
+      if (inCodeBlock) {
+        flushCodeBlock()
+        inCodeBlock = false
+      } else {
+        inCodeBlock = true
+      }
+
+      continue
+    }
+
+    if (inCodeBlock) {
+      codeLines.push(line)
+      continue
+    }
 
     if (!trimmed) {
       flushParagraph()
@@ -120,6 +165,7 @@ function markdownToBlocks(markdown: string) {
       flushParagraph()
 
       const level = heading[1].length
+
       const style =
         level === 1
           ? 'h1'
@@ -164,11 +210,15 @@ function markdownToBlocks(markdown: string) {
 
   flushParagraph()
 
+  if (inCodeBlock) {
+    flushCodeBlock()
+  }
+
   return blocks
 }
 
 export default function MarkdownPortableTextInput(props: any) {
-  function handlePaste(event: React.ClipboardEvent<HTMLDivElement>) {
+  function handlePaste(event: ClipboardEvent<HTMLDivElement>) {
     const text = event.clipboardData.getData('text/plain')
 
     if (!text) return
@@ -177,8 +227,9 @@ export default function MarkdownPortableTextInput(props: any) {
       /^#{1,6}\s/m.test(text) ||
       /^\s*[-*+]\s/m.test(text) ||
       /^\s*\d+[.)]\s/m.test(text) ||
-      /\*\*.+?\*\*/s.test(text) ||
-      /(^|\n)>\s/m.test(text)
+      /\*\*[\s\S]+?\*\*/.test(text) ||
+      /(^|\n)>\s/m.test(text) ||
+      /```/.test(text)
 
     if (!hasMarkdown) return
 
