@@ -1,5 +1,5 @@
-
 import { defineType, defineField, defineArrayMember } from 'sanity'
+import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
 
 export const person = defineType({
   name: 'person',
@@ -77,6 +77,11 @@ export const person = defineType({
       name: 'bio',
       title: 'Biography — English',
       type: 'array',
+
+      components: {
+        input: MarkdownPortableTextInput,
+      },
+
       of: [
         defineArrayMember({
           type: 'block',
@@ -110,6 +115,11 @@ export const person = defineType({
       name: 'bioUrdu',
       title: 'Biography — اردو',
       type: 'array',
+
+      components: {
+        input: MarkdownPortableTextInput,
+      },
+
       of: [
         defineArrayMember({
           type: 'block',
