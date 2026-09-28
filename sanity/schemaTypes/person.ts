@@ -65,7 +65,7 @@ export const person = defineType({
               title: 'Photo Credit',
               type: 'string',
               description:
-                'Optional photographer, source, or copyright credit.',
+                'An optional photographer, source, or copyright credit.',
             }),
           ],
         }),
@@ -75,30 +75,31 @@ export const person = defineType({
     // ENGLISH BIOGRAPHY — MARKDOWN
     defineField({
       name: 'bioMarkdown',
-      title: 'Biography — English (Markdown)',
+      title: 'Biography — English',
       type: 'text',
       rows: 20,
       description:
-        'Paste your English biography using Markdown. Use # for headings, **text** for bold, *text* for italics, - for bullet lists, and 1. for numbered lists. Leave blank to use the existing Biography — English field below.',
+        'Paste your English biography using Markdown. Use # for headings, **text** for bold, *text* for italics, - for bullet lists, and 1. for numbered lists. This is the main English biography editor.',
     }),
 
     // URDU BIOGRAPHY — MARKDOWN
     defineField({
       name: 'bioUrduMarkdown',
-      title: 'Biography — اردو (Markdown)',
+      title: 'Biography — اردو',
       type: 'text',
       rows: 20,
       description:
-        'اردو سوانح عمری Markdown میں پیسٹ کریں۔ سرخی کے لیے #، بولڈ کے لیے **متن**، اور فہرست کے لیے - استعمال کریں۔ خالی چھوڑنے پر نیچے موجود پرانا اردو بائیو استعمال ہوگا۔',
+        'اردو سوانح عمری Markdown میں پیسٹ کریں۔ سرخی کے لیے #، بولڈ کے لیے **متن**، اٹالک کے لیے *متن*، اور فہرستوں کے لیے - یا 1. استعمال کریں۔',
     }),
 
-    // EXISTING ENGLISH BIOGRAPHY — PORTABLE TEXT
+    // EXISTING ENGLISH BIOGRAPHY — PRESERVED
     defineField({
       name: 'bio',
       title: 'Biography — English (Legacy Editor)',
       description:
-        'Existing structured biography editor. Keep your current content and biography images here. This remains available for older profiles.',
+        'Hidden legacy biography. Existing structured text and embedded images are preserved for older profiles and public-page fallback.',
       type: 'array',
+      hidden: true,
       of: [
         defineArrayMember({
           type: 'block',
@@ -127,13 +128,14 @@ export const person = defineType({
       ],
     }),
 
-    // EXISTING URDU BIOGRAPHY — PORTABLE TEXT
+    // EXISTING URDU BIOGRAPHY — PRESERVED
     defineField({
       name: 'bioUrdu',
       title: 'Biography — اردو (Legacy Editor)',
       description:
-        'پرانا اردو بائیو ایڈیٹر۔ موجودہ مواد اور تصاویر محفوظ رکھیں۔',
+        'پرانا اردو بائیو محفوظ ہے۔ موجودہ مواد اور تصاویر ویب سائٹ کے پرانے پروفائلز کے لیے برقرار رہیں گی۔',
       type: 'array',
+      hidden: true,
       of: [
         defineArrayMember({
           type: 'block',
