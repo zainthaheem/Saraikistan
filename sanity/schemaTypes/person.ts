@@ -65,41 +65,18 @@ export const person = defineType({
               title: 'Photo Credit',
               type: 'string',
               description:
-                'An optional photographer, source, or copyright credit.',
+                'Optional photographer, source, or copyright credit.',
             }),
           ],
         }),
       ],
     }),
 
-    // ENGLISH BIOGRAPHY — MARKDOWN
-    defineField({
-      name: 'bioMarkdown',
-      title: 'Biography — English',
-      type: 'text',
-      rows: 20,
-      description:
-        'Paste your English biography using Markdown. Use # for headings, **text** for bold, *text* for italics, - for bullet lists, and 1. for numbered lists. This is the main English biography editor.',
-    }),
-
-    // URDU BIOGRAPHY — MARKDOWN
-    defineField({
-      name: 'bioUrduMarkdown',
-      title: 'Biography — اردو',
-      type: 'text',
-      rows: 20,
-      description:
-        'اردو سوانح عمری Markdown میں پیسٹ کریں۔ سرخی کے لیے #، بولڈ کے لیے **متن**، اٹالک کے لیے *متن*، اور فہرستوں کے لیے - یا 1. استعمال کریں۔',
-    }),
-
-    // EXISTING ENGLISH BIOGRAPHY — PRESERVED
+    // ENGLISH BIOGRAPHY
     defineField({
       name: 'bio',
-      title: 'Biography — English (Legacy Editor)',
-      description:
-        'Hidden legacy biography. Existing structured text and embedded images are preserved for older profiles and public-page fallback.',
+      title: 'Biography — English',
       type: 'array',
-      hidden: true,
       of: [
         defineArrayMember({
           type: 'block',
@@ -128,14 +105,11 @@ export const person = defineType({
       ],
     }),
 
-    // EXISTING URDU BIOGRAPHY — PRESERVED
+    // URDU BIOGRAPHY
     defineField({
       name: 'bioUrdu',
-      title: 'Biography — اردو (Legacy Editor)',
-      description:
-        'پرانا اردو بائیو محفوظ ہے۔ موجودہ مواد اور تصاویر ویب سائٹ کے پرانے پروفائلز کے لیے برقرار رہیں گی۔',
+      title: 'Biography — اردو',
       type: 'array',
-      hidden: true,
       of: [
         defineArrayMember({
           type: 'block',
