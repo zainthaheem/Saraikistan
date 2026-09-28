@@ -23,8 +23,6 @@ async function getPerson(slug: string) {
       },
       bio,
       bioUrdu,
-      bioMarkdown,
-      bioUrduMarkdown,
       socialLinks,
       seoTitle,
       seoDescription,
@@ -255,16 +253,11 @@ export default async function PersonPage({
           </div>
         )}
 
-        {/* Biography + Language Switcher */}
-        {(person.bioMarkdown ||
-          person.bioUrduMarkdown ||
-          person.bio ||
-          person.bioUrdu) && (
+        {/* Original Biography + Language Switcher */}
+        {(person.bio || person.bioUrdu) && (
           <LanguageSwitcher
             english={person.bio}
             urdu={person.bioUrdu}
-            englishMarkdown={person.bioMarkdown}
-            urduMarkdown={person.bioUrduMarkdown}
           />
         )}
 
