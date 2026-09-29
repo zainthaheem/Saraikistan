@@ -66,36 +66,36 @@ function formatNewsType(type: string) {
   return labels[type] || type
 }
 
-// Generate responsive Sanity image URLs.
-// All candidates use the same 16:10 crop as the existing design.
-function getNewsImage(image: any, quality: number) {
-  if (!image?.asset) return null
+// Responsive Sanity image helper.
+// All candidates use the same 16:10 crop as the design.
+function getNewsImage(
+  image: any,
+  quality: number,
+  widths: number[]
+) {
+  if (!image?.asset || widths.length === 0) return null
 
-  const widths = [320, 480, 640, 800, 1000, 1200]
+  const makeUrl = (width: number) =>
+    urlFor(image)
+      .width(width)
+      .height(Math.round((width * 10) / 16))
+      .fit('crop')
+      .quality(quality)
+      .format('webp')
+      .url()
+
+  const largestWidth = widths[widths.length - 1]
 
   const srcSet = widths
-    .map((width) => {
-      const url = urlFor(image)
-        .width(width)
-        .height(Math.round((width * 10) / 16))
-        .fit('crop')
-        .quality(quality)
-        .format('webp')
-        .url()
-
-      return `${url} ${width}w`
-    })
+    .map((width) => `${makeUrl(width)} ${width}w`)
     .join(', ')
 
-  const src = urlFor(image)
-    .width(640)
-    .height(400)
-    .fit('crop')
-    .quality(quality)
-    .format('webp')
-    .url()
-
-  return { src, srcSet }
+  return {
+    src: makeUrl(largestWidth),
+    srcSet,
+    width: largestWidth,
+    height: Math.round((largestWidth * 10) / 16),
+  }
 }
 
 export default async function News() {
@@ -105,16 +105,14 @@ export default async function News() {
   const remaining = news.slice(1)
 
   const featuredImage = featured?.coverImage
-    ? getNewsImage(featured.coverImage, 75)
+    ? getNewsImage(featured.coverImage, 75, [480, 640, 800, 1000])
     : null
 
   return (
     <main className="min-h-screen bg-cream text-navy">
-
       {/* PAGE HEADER */}
       <section>
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
-
           <p className="font-body text-sm text-shawl">
             What's happening
           </p>
@@ -122,35 +120,25 @@ export default async function News() {
           <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
             News
           </h1>
-
         </div>
       </section>
 
       {/* NEWS INTRO */}
       <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12">
-
         <div className="border-t border-mustard pt-7">
-
           <div className="max-w-3xl">
-
             <p className="font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
               Latest updates, announcements and developments from
               across the Saraiki region.
             </p>
-
           </div>
-
         </div>
-
       </section>
 
       {news.length === 0 ? (
-
         /* EMPTY STATE */
         <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
-
           <div className="border border-navy/10 bg-cream p-8 sm:p-12">
-
             <p className="font-body text-sm uppercase tracking-[0.14em] text-mustard">
               News archive
             </p>
@@ -163,36 +151,27 @@ export default async function News() {
               No news stories have been published yet. Add your first
               news entry through the Studio and it will appear here.
             </p>
-
           </div>
-
         </section>
-
       ) : (
-
         <>
-
           {/* FEATURED NEWS */}
           <section className="mx-auto max-w-7xl px-6 pb-16 sm:px-10 sm:pb-20 lg:px-12">
-
             <Link
               href={`/news/${featured.slug.current}`}
               className="group block overflow-hidden bg-navy"
             >
-
               <div className="grid lg:grid-cols-2">
-
                 {/* IMAGE */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
-
                   {featuredImage ? (
                     <img
                       src={featuredImage.src}
                       srcSet={featuredImage.srcSet}
                       sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
                       alt={featured.title}
-                      width={900}
-                      height={600}
+                      width={featuredImage.width}
+                      height={featuredImage.height}
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
@@ -205,12 +184,10 @@ export default async function News() {
                   )}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent lg:bg-gradient-to-r" />
-
                 </div>
 
                 {/* FEATURED CONTENT */}
                 <div className="flex flex-col justify-center p-7 text-cream sm:p-10 lg:p-14">
-
                   {/* CATEGORY */}
                   {featured.category && (
                     <span className="w-fit bg-mustard px-4 py-2 font-body text-[10px] uppercase tracking-[0.14em] text-navy">
@@ -261,24 +238,16 @@ export default async function News() {
                   <span className="mt-8 inline-block font-body text-xs uppercase tracking-[0.14em] text-mustard">
                     Read news →
                   </span>
-
                 </div>
-
               </div>
-
             </Link>
-
           </section>
 
           {/* MORE NEWS */}
           {remaining.length > 0 && (
-
             <section className="border-t border-navy/10">
-
               <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
-
                 <div className="mb-10">
-
                   <p className="font-body text-sm text-shawl">
                     Latest updates
                   </p>
@@ -288,15 +257,18 @@ export default async function News() {
                   </h2>
 
                   <div className="mt-4 h-[2px] w-12 bg-mustard" />
-
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-
                   {remaining.map((item: any) => {
-
                     const image = item.coverImage
-                      ? getNewsImage(item.coverImage, 65)
+                      ? getNewsImage(item.coverImage, 65, [
+                          320,
+                          400,
+                          560,
+                          700,
+                          800,
+                        ])
                       : null
 
                     return (
@@ -305,18 +277,16 @@ export default async function News() {
                         href={`/news/${item.slug.current}`}
                         className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                       >
-
                         {/* IMAGE */}
                         <div className="aspect-[16/10] overflow-hidden bg-shawl">
-
                           {image ? (
                             <img
                               src={image.src}
                               srcSet={image.srcSet}
                               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, calc(100vw - 48px)"
                               alt={item.title}
-                              width={640}
-                              height={427}
+                              width={image.width}
+                              height={image.height}
                               loading="lazy"
                               decoding="async"
                               className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -326,12 +296,10 @@ export default async function News() {
                               Saraikistan
                             </div>
                           )}
-
                         </div>
 
                         {/* CONTENT */}
                         <div className="border-t-2 border-mustard p-6">
-
                           {/* CATEGORY */}
                           {item.category && (
                             <p className="font-body text-[10px] uppercase tracking-[0.14em] text-shawl">
@@ -382,30 +350,20 @@ export default async function News() {
                           <span className="mt-6 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
                             Read more →
                           </span>
-
                         </div>
-
                       </Link>
                     )
                   })}
-
                 </div>
-
               </div>
-
             </section>
-
           )}
 
           {/* CLOSING BANNER */}
           <section className="bg-navy text-cream">
-
             <div className="mx-auto max-w-7xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12">
-
               <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
-
                 <div>
-
                   <p className="font-body text-sm uppercase tracking-[0.18em] text-mustard">
                     Stay informed
                   </p>
@@ -415,30 +373,21 @@ export default async function News() {
                     <br />
                     Saraikistan alive.
                   </h2>
-
                 </div>
 
                 <div>
-
                   <p className="max-w-xl font-body text-base leading-7 text-cream/65 sm:text-lg sm:leading-8">
                     Keep exploring the latest stories, updates and
                     developments from across the Saraiki region.
                   </p>
-
                 </div>
-
               </div>
-
             </div>
 
             <div className="tile-rule" />
-
           </section>
-
         </>
-
       )}
-
     </main>
   )
 }
