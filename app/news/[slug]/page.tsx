@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -56,9 +55,7 @@ export async function generateMetadata({
     }
   }
 
-  const title =
-    post.seoTitle ||
-    `${post.title} | Saraikistan`
+  const title = post.seoTitle || `${post.title} | Saraikistan`
 
   const description =
     post.seoDescription ||
@@ -277,20 +274,7 @@ export default async function NewsPostPage({
               </span>
             )}
 
-            {post.newsType && (
-              <span>
-                {formatNewsType(post.newsType)}
-              </span>
-            )}
-
           </div>
-
-          {/* SOURCE */}
-          {post.source && (
-            <p className="mt-3 font-body text-xs text-navy/45">
-              Source · {post.source}
-            </p>
-          )}
 
         </div>
 
@@ -363,7 +347,26 @@ export default async function NewsPostPage({
           </div>
         )}
 
-        {/* Image Credits */}
+        {/* SOURCES — KEPT AT THE END */}
+        {post.source && (
+          <div className="mt-14 border-t border-navy/10 pt-6">
+
+            <h2 className="font-display text-2xl text-navy sm:text-3xl">
+              Sources
+            </h2>
+
+            <div className="mt-4 max-w-3xl border-l-2 border-mustard pl-5">
+
+              <p className="whitespace-pre-line break-words font-body text-sm leading-7 text-navy/65">
+                {post.source}
+              </p>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* IMAGE CREDITS */}
         {post.imageCredits && (
           <details className="group mt-14 border-t border-navy/10 pt-5">
 
