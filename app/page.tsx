@@ -1,4 +1,4 @@
-```tsx
+
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -6,7 +6,7 @@ import { urlFor } from '@/sanity/lib/image'
 export const revalidate = 60
 
 async function getHomeData() {
-  return client.fetch(`
+  const query = `
     {
       "settings": *[_type == "siteSettings"][0]{
         headerImage,
@@ -54,7 +54,9 @@ async function getHomeData() {
         enabled
       }
     }
-  `)
+  `
+
+  return client.fetch(query)
 }
 
 const defaultDescriptions: Record<string, string> = {
@@ -644,4 +646,3 @@ export default async function Home() {
     </main>
   )
 }
-```
