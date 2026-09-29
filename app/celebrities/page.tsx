@@ -44,52 +44,30 @@ async function getPeople() {
 
 function PersonCard({
   person,
+  priority = false,
 }: {
   person: any
+  priority?: boolean
 }) {
-  const imageUrl = person.profileImage
+  const imageBuilder = person.profileImage
     ? urlFor(person.profileImage)
-        .width(160)
-        .height(160)
+        .height(224)
         .fit('crop')
-        .quality(75)
+        .quality(70)
         .format('webp')
-        .url()
     : null
 
-  const imageSrcSet = person.profileImage
+  // Generate each responsive image URL only once.
+  const imageUrl = imageBuilder
+    ? imageBuilder.width(160).url()
+    : null
+
+  const imageSrcSet = imageBuilder
     ? [
-        `${urlFor(person.profileImage)
-          .width(96)
-          .height(96)
-          .fit('crop')
-          .quality(75)
-          .format('webp')
-          .url()} 96w`,
-
-        `${urlFor(person.profileImage)
-          .width(128)
-          .height(128)
-          .fit('crop')
-          .quality(75)
-          .format('webp')
-          .url()} 128w`,
-
-        `${urlFor(person.profileImage)
-          .width(160)
-          .height(160)
-          .fit('crop')
-          .quality(75)
-          .format('webp')
-          .url()} 160w`,
-
-        `${urlFor(person.profileImage)
-          .width(224)
-          .height(224)
-          .fit('crop')
-          .quality(75)
-          .format('webp')
-          .url()} 224w`,
+        `${imageBuilder.width(96).url()} 96w`,
+        `${imageBuilder.width(128).url()} 128w`,
+        `${imageBuilder.width(160).url()} 160w`,
+        `${imageBuilder.width(224).url()} 224w`,
       ].join(', ')
     : undefined
 
@@ -107,7 +85,8 @@ function PersonCard({
             alt={person.name}
             width={160}
             height={160}
-            loading="lazy"
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : 'auto'}
             decoding="async"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
@@ -194,7 +173,7 @@ export default async function Celebrities() {
           </div>
         ) : (
           <div className="space-y-16 border-t border-mustard pt-10">
-            {orderedCategories.map((category) => {
+            {orderedCategories.map((category, categoryIndex) => {
               const categoryPeople = groupedPeople[category]
               const visiblePeople = categoryPeople.slice(0, 5)
               const remainingPeople = categoryPeople.slice(5)
@@ -212,10 +191,13 @@ export default async function Celebrities() {
                   </div>
 
                   <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
-                    {visiblePeople.map((person: any) => (
+                    {visiblePeople.map((person: any, personIndex: number) => (
                       <PersonCard
                         key={person._id}
                         person={person}
+                        priority={
+                          categoryIndex === 0 && personIndex === 0
+                        }
                       />
                     ))}
                   </div>
