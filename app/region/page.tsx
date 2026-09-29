@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Saraiki Region | Places, Cities & Heritage',
     description:
-      'Explore the cities, landscapes, historic sites and cultural places that form the living geography and heritage of the Saraiki region.',
+      'Explore the cities, landscapes, historic sites and cultural places that form the living geography of the Saraiki region.',
   },
 }
 
@@ -46,11 +46,9 @@ export default async function Region() {
 
   return (
     <main className="min-h-screen bg-cream text-navy">
-
       {/* PAGE HEADER */}
       <section>
         <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
-
           <p className="font-body text-sm text-shawl">
             Where Saraiki culture comes from
           </p>
@@ -58,36 +56,26 @@ export default async function Region() {
           <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
             Places
           </h1>
-
         </div>
       </section>
 
       {/* INTRO */}
       <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12">
-
         <div className="border-t border-mustard pt-7">
-
           <div className="max-w-3xl">
-
             <p className="font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
               Explore the cities, landscapes, historic sites and
               cultural places that form the living geography of
               the Saraiki region.
             </p>
-
           </div>
-
         </div>
-
       </section>
 
       {places.length === 0 ? (
-
         /* EMPTY STATE */
         <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
-
           <div className="border border-navy/10 bg-cream p-8 sm:p-12">
-
             <p className="font-body text-sm uppercase tracking-[0.14em] text-mustard">
               Places archive
             </p>
@@ -100,20 +88,13 @@ export default async function Region() {
               No places have been added yet. Add your first place
               through the Studio and it will appear here.
             </p>
-
           </div>
-
         </section>
-
       ) : (
-
         /* PLACES GRID */
         <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
-
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
             {places.map((place: any, index: number) => {
-
               const imageBuilder = place.coverImage
                 ? urlFor(place.coverImage)
                     .height(405)
@@ -122,6 +103,7 @@ export default async function Region() {
                     .format('webp')
                 : null
 
+              // Generate only the image sizes needed for the cards.
               const imageUrl = imageBuilder
                 ? imageBuilder.width(480).url()
                 : null
@@ -136,16 +118,13 @@ export default async function Region() {
                 : undefined
 
               return (
-
                 <Link
                   key={place._id}
                   href={`/region/${place.slug.current}`}
                   className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
-
                   {/* RESPONSIVE OPTIMIZED IMAGE */}
                   <div className="aspect-[16/9] overflow-hidden bg-shawl">
-
                     {imageUrl ? (
                       <img
                         src={imageUrl}
@@ -164,12 +143,10 @@ export default async function Region() {
                         Saraikistan
                       </div>
                     )}
-
                   </div>
 
                   {/* CONTENT */}
                   <div className="border-t-2 border-mustard p-6">
-
                     {place.category && (
                       <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
                         {place.category.title}
@@ -183,20 +160,13 @@ export default async function Region() {
                     <span className="mt-5 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
                       Explore →
                     </span>
-
                   </div>
-
                 </Link>
-
               )
             })}
-
           </div>
-
         </section>
-
       )}
-
     </main>
   )
 }
