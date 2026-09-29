@@ -8,59 +8,66 @@ import PhotoGallery from '@/components/PhotoGallery'
 
 export const revalidate = 60
 
+// Get one person from Sanity using a validated slug.
+// This avoids the missing $slug parameter error.
 async function getPerson(slug: string) {
-  return client.fetch(
-    `*[_type == "person" && slug.current == $slug][0] {
-      name,
-      "category": category->{
-        _id,
-        title
-      },
-      profileImage,
-      coverImage,
-      gallery[]{
-        _key,
-        _type,
-        asset,
-        caption,
-        credit
-      },
-      bio,
-      bioUrdu,
-      socialLinks,
-      seoTitle,
-      seoDescription,
-      seoImage,
-      imageCredits
-    }`,
-    { slug }
-  )
+  if (!slug || !/^[a-zA-Z0-9-]+$/.test(slug)) {
+    return null
+  }
+
+  const query = `*[
+    _type == "person" &&
+    slug.current == ${JSON.stringify(slug)}
+  ][0] {
+    name,
+    "category": category->{
+      _id,
+      title
+    },
+    profileImage,
+    coverImage,
+    gallery[]{
+      _key,
+      _type,
+      asset,
+      caption,
+      credit
+    },
+    bio,
+    bioUrdu,
+    socialLinks,
+    seoTitle,
+    seoDescription,
+    seoImage,
+    imageCredits
+  }`
+
+  return client.fetch(query)
 }
 
+// Get related people from the same category.
 async function getRelatedPeople(
   categoryId: string | undefined,
   currentSlug: string
 ) {
-  if (!categoryId) return []
+  if (!categoryId) {
+    return []
+  }
 
-  return client.fetch(
-    `*[
-      _type == "person" &&
-      defined(slug.current) &&
-      slug.current != $currentSlug &&
-      category._ref == $categoryId
-    ]
-    | order(name asc)[0...4] {
-      name,
-      "slug": slug.current,
-      profileImage,
-      "category": category->{title}
-    }`,
-    {
-      categoryId,
-      currentSlug,
-    }
-  )
+  const query = `*[
+    _type == "person" &&
+    defined(slug.current) &&
+    slug.current != ${JSON.stringify(currentSlug)} &&
+    category._ref == ${JSON.stringify(categoryId)}
+  ]
+  | order(name asc)[0...4] {
+    name,
+    "slug": slug.current,
+    profileImage,
+    "category": category->{title}
+  }`
+
+  return client.fetch(query)
 }
 
 export async function generateMetadata({
@@ -239,7 +246,7 @@ export default async function PersonPage({
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-[440px]">
           <img
             src={coverImage}
-            alt={`${person.name} - Saraikistan`}
+            alt={person.name}
             width={1800}
             height={700}
             loading="eager"
@@ -250,7 +257,7 @@ export default async function PersonPage({
         </div>
       )}
 
-      {/* Page Container */}
+      {/* Main Page Container */}
       <div className="mx-auto max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:px-12">
 
         {/* Profile Header */}
@@ -313,7 +320,7 @@ export default async function PersonPage({
           )
         }
 
-        {/* Editorial Content Layout */}
+        {/* Editorial Two-Column Layout */}
         <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1fr)_320px]">
 
           {/* Main Biography Column */}
@@ -337,7 +344,7 @@ export default async function PersonPage({
               </div>
             )}
 
-            {/* Original Biography + Language Switcher */}
+            {/* English / Urdu Biography */}
             {(person.bio || person.bioUrdu) && (
               <div className="min-w-0">
                 <LanguageSwitcher
@@ -399,7 +406,7 @@ export default async function PersonPage({
 
           </main>
 
-          {/* Sidebar - Related People and Explore */}
+          {/* Right Sidebar */}
           <aside className="min-w-0 space-y-10 lg:sticky lg:top-8">
 
             {/* Related People */}
