@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -312,7 +313,7 @@ export default async function PlacePage({
           </article>
 
           {/* EDITORIAL SIDEBAR */}
-          <aside className="min-w-0 self-start lg:sticky lg:top-24 lg:border-l lg:border-navy/10 lg:pl-8 xl:pl-10">
+          <aside className="min-w-0 self-start lg:border-l lg:border-navy/10 lg:pl-8 xl:pl-10">
 
             {/* SIDEBAR HEADING */}
             <div className="border-t border-mustard pt-5">
