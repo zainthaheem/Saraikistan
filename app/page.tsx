@@ -1,650 +1,566 @@
 
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import PhotoGallery from '@/components/PhotoGallery'
 
 export const revalidate = 60
 
-async function getHomeData() {
-  const query = `
-    {
-      "settings": *[_type == "siteSettings"][0]{
-        headerImage,
-        siteTitle,
-        tagline
-      },
-
-      "featuredPeople": *[_type == "person" && featured == true][0...4]{
-        name,
-        slug,
-        profileImage,
-        category->{title}
-      },
-
-      "featuredStories": *[_type == "story"] | order(featured desc, publishedAt desc)[0...4]{
+async function getPerson(slug: string) {
+  return client.fetch(
+    `*[_type == "person" && slug.current == $slug][0] {
+      name,
+      "category": category->{
         _id,
-        title,
-        slug,
-        summary,
-        publishedAt,
-        coverImage
+        title
       },
-
-      "latestNews": *[_type == "newsPost"] | order(publishedAt desc)[0...4]{
-        _id,
-        title,
-        slug,
-        "category": category->{title},
-        publishedAt,
-        author,
-        summary,
-        coverImage
+      profileImage,
+      coverImage,
+      gallery[]{
+        _key,
+        _type,
+        asset,
+        caption,
+        credit
       },
-
-      "exploreCards": *[
-        _type == "exploreCard" &&
-        enabled == true
-      ] | order(order asc){
-        _id,
-        title,
-        description,
-        image,
-        link,
-        order,
-        enabled
-      }
-    }
-  `
-
-  return client.fetch(query)
-}
-
-const defaultDescriptions: Record<string, string> = {
-  Culture: 'Traditions, language, food, music and more.',
-  Places: 'Cities, landscapes and historical places.',
-  People: 'Poets, writers, scholars, singers and more.',
-  Stories: 'Cultural stories, history, interviews and more.',
-}
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
-function ResponsiveImage({
-  source,
-  alt,
-  ratio,
-  sizes,
-  widths,
-  loading = 'lazy',
-  priority = false,
-  className,
-}: {
-  source: any
-  alt: string
-  ratio: number
-  sizes: string
-  widths: number[]
-  loading?: 'lazy' | 'eager'
-  priority?: boolean
-  className: string
-}) {
-  if (!source) return null
-
-  const makeUrl = (width: number) =>
-    urlFor(source)
-      .width(width)
-      .height(Math.round(width * ratio))
-      .fit('crop')
-      .quality(priority ? 72 : 68)
-      .format('webp')
-      .url()
-
-  const srcSet = widths
-    .map((width) => `${makeUrl(width)} ${width}w`)
-    .join(', ')
-
-  const largestWidth = widths[widths.length - 1]
-
-  return (
-    <img
-      src={makeUrl(largestWidth)}
-      srcSet={srcSet}
-      sizes={sizes}
-      alt={alt}
-      width={largestWidth}
-      height={Math.round(largestWidth * ratio)}
-      loading={loading}
-      fetchPriority={priority ? 'high' : 'auto'}
-      decoding={priority ? 'sync' : 'async'}
-      className={className}
-    />
+      bio,
+      bioUrdu,
+      socialLinks,
+      seoTitle,
+      seoDescription,
+      seoImage,
+      imageCredits
+    }`,
+    { slug }
   )
 }
 
-export default async function Home() {
-  const {
-    settings,
-    featuredPeople,
-    featuredStories,
-    latestNews,
-    exploreCards,
-  } = await getHomeData()
+async function getRelatedPeople(
+  categoryId: string | undefined,
+  currentSlug: string
+) {
+  if (!categoryId) return []
 
-  const singleFeaturedPerson = featuredPeople?.length === 1
-  const twoFeaturedPeople = featuredPeople?.length === 2
+  return client.fetch(
+    `*[
+      _type == "person" &&
+      defined(slug.current) &&
+      slug.current != $currentSlug &&
+      category._ref == $categoryId
+    ]
+    | order(name asc)[0...4] {
+      name,
+      "slug": slug.current,
+      profileImage,
+      "category": category->{title}
+    }`,
+    {
+      categoryId,
+      currentSlug,
+    }
+  )
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string }
+}): Promise<Metadata> {
+  const person = await getPerson(params.slug)
+
+  if (!person) {
+    return {
+      title: 'Person Not Found | Saraikistan',
+      description:
+        'The requested person could not be found on Saraikistan.',
+    }
+  }
+
+  const title =
+    person.seoTitle ||
+    `${person.name} | Saraikistan`
+
+  const description =
+    person.seoDescription ||
+    `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`
+
+  const image = person.seoImage
+    ? urlFor(person.seoImage)
+        .width(1200)
+        .height(630)
+        .fit('crop')
+        .auto('format')
+        .quality(85)
+        .url()
+    : person.coverImage
+      ? urlFor(person.coverImage)
+          .width(1200)
+          .height(630)
+          .fit('crop')
+          .auto('format')
+          .quality(85)
+          .url()
+      : undefined
+
+  const pageUrl =
+    `https://saraikistan.org/celebrities/${params.slug}`
+
+  return {
+    title,
+    description,
+
+    alternates: {
+      canonical: pageUrl,
+    },
+
+    openGraph: {
+      title,
+      description,
+      type: 'profile',
+      url: pageUrl,
+      siteName: 'Saraikistan',
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: `${person.name} | Saraikistan`,
+            },
+          ]
+        : undefined,
+    },
+
+    twitter: {
+      card: image ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
+}
+
+export default async function PersonPage({
+  params,
+}: {
+  params: { slug: string }
+}) {
+  const person = await getPerson(params.slug)
+
+  if (!person) {
+    return (
+      <section className="min-h-screen bg-cream text-navy">
+        <div className="mx-auto max-w-7xl px-6 pb-20 pt-6 sm:px-10 sm:pt-8 lg:px-12">
+          <div className="border-t border-mustard pt-7">
+            <p className="font-body text-base leading-7 text-navy/65 sm:text-lg">
+              Person not found.
+            </p>
+
+            <Link
+              href="/celebrities"
+              className="mt-5 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
+            >
+              Back to People
+            </Link>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  const relatedPeople = await getRelatedPeople(
+    person.category?._id,
+    params.slug
+  )
+
+  const profileImage = person.profileImage
+    ? urlFor(person.profileImage)
+        .width(800)
+        .height(800)
+        .fit('crop')
+        .auto('format')
+        .quality(85)
+        .url()
+    : undefined
+
+  const coverImage = person.coverImage
+    ? urlFor(person.coverImage)
+        .width(1800)
+        .height(700)
+        .fit('crop')
+        .auto('format')
+        .quality(85)
+        .url()
+    : undefined
+
+  const socialLinks =
+    person.socialLinks
+      ?.map((link: any) => link.url)
+      .filter(Boolean) || []
+
+  const pageUrl =
+    `https://saraikistan.org/celebrities/${params.slug}`
+
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: person.name,
+    url: pageUrl,
+    image: profileImage || coverImage,
+    description:
+      person.seoDescription ||
+      `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`,
+    jobTitle: person.category?.title || undefined,
+    sameAs:
+      socialLinks.length > 0
+        ? socialLinks
+        : undefined,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': pageUrl,
+    },
+  }
 
   return (
-    <main className="bg-cream text-navy">
+    <section className="min-h-screen bg-cream text-navy">
 
-      {/* HERO */}
-      <section className="relative min-h-[500px] overflow-hidden bg-navy sm:min-h-[510px] lg:min-h-[540px]">
+      {/* Person Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(personSchema),
+        }}
+      />
 
-        {settings?.headerImage && (
-          <ResponsiveImage
-            source={settings.headerImage}
-            alt="Saraikistan landscape"
-            ratio={1000 / 1800}
-            widths={[480, 800, 1200, 1600, 1800]}
-            sizes="100vw"
+      {/* Full-Width Cover Image */}
+      {person.coverImage && (
+        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-[440px]">
+          <img
+            src={coverImage}
+            alt={`${person.name} - Saraikistan`}
+            width={1800}
+            height={700}
             loading="eager"
-            priority
-            className="absolute inset-0 h-full w-full object-cover"
+            decoding="async"
+            fetchPriority="high"
+            className="h-full w-full object-cover"
           />
-        )}
-
-        <div className="absolute inset-0 bg-navy/55" />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/50 to-transparent" />
-
-        <div className="relative mx-auto flex min-h-[500px] max-w-7xl items-start px-5 pb-8 pt-24 sm:min-h-[510px] sm:items-center sm:px-10 sm:py-14 lg:min-h-[540px] lg:px-12">
-
-          <div className="max-w-3xl text-cream">
-
-            <p className="mt-3 font-body text-[11px] leading-5 text-cream/80 sm:mt-8 sm:text-sm sm:leading-6 lg:mt-10">
-              A digital home for the Saraiki region
-            </p>
-
-            <h1 className="mt-3 font-display text-3xl leading-[1.02] tracking-tight sm:mt-4 sm:text-5xl sm:leading-[0.98] md:text-6xl lg:text-7xl">
-              The land, the language,
-              <br />
-              and the lives of
-              <br />
-              Saraikistan.
-            </h1>
-
-            <p className="mt-4 max-w-xl font-body text-[13px] leading-5 text-cream/85 sm:mt-5 sm:text-base sm:leading-7">
-              Discover the people, places, culture, language, heritage and
-              stories that shape the Saraiki region.
-            </p>
-
-            <div className="mt-5 flex flex-col gap-2.5 font-body text-xs sm:mt-6 sm:flex-row sm:gap-3 sm:text-sm">
-
-              <Link
-                href="/culture"
-                className="bg-mustard px-6 py-3 text-center text-cream transition hover:bg-mustard/90"
-              >
-                Explore the culture
-              </Link>
-
-              <Link
-                href="/region"
-                className="border border-cream/70 px-6 py-3 text-center text-cream transition hover:bg-cream hover:text-navy"
-              >
-                Explore the region
-              </Link>
-
-            </div>
-
-          </div>
-
         </div>
+      )}
 
-        <div className="absolute bottom-0 left-0 right-0 h-2 bg-[repeating-linear-gradient(90deg,#C8923A_0px,#C8923A_14px,transparent_14px,transparent_28px)]" />
+      {/* Page Container */}
+      <div className="mx-auto max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:px-12">
 
-      </section>
+        {/* Profile Header */}
+        <div className="border-t border-mustard pt-7 sm:pt-9">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-7">
 
-      {/* EXPLORE SARAIKISTAN */}
-      <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
+            {person.profileImage && (
+              <img
+                src={profileImage}
+                alt={person.name}
+                width={240}
+                height={240}
+                loading="lazy"
+                decoding="async"
+                className="h-24 w-24 shrink-0 rounded-full border-4 border-cream object-cover shadow-sm sm:h-32 sm:w-32"
+              />
+            )}
 
-        <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
-
-          <div>
-            <p className="font-body text-xs text-shawl sm:text-sm">
-              Discover
-            </p>
-
-            <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
-              Explore Saraikistan
-            </h2>
-
-            <div className="mt-3 h-[2px] w-12 bg-mustard" />
-          </div>
-
-          <p className="max-w-md font-body text-xs leading-5 text-navy/60 sm:text-sm sm:leading-6">
-            Explore the people, places, culture and stories that make the
-            Saraiki region unique.
-          </p>
-
-        </div>
-
-        {exploreCards?.length > 0 ? (
-
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-
-            {exploreCards.map((card: any) => {
-
-              const description =
-                card.description ||
-                defaultDescriptions[card.title] ||
-                'Discover more about Saraikistan.'
-
-              return (
-                <Link
-                  key={card._id}
-                  href={card.link || '#'}
-                  className="group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-navy"
-                >
-
-                  {card.image ? (
-                    <ResponsiveImage
-                      source={card.image}
-                      alt={card.title}
-                      ratio={5 / 4}
-                      widths={[320, 480, 640, 900]}
-                      sizes="(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
-                      className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-shawl" />
-                  )}
-
-                  <div className="absolute inset-0 bg-gradient-to-b from-navy/10 via-navy/10 to-navy/95" />
-
-                  <div className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center border border-mustard/90 bg-navy/25 font-body text-sm font-light leading-none text-mustard backdrop-blur-[2px] transition duration-300 group-hover:bg-mustard group-hover:text-cream sm:left-4 sm:top-4">
-                    +
-                  </div>
-
-                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 lg:p-5">
-
-                    <h3 className="font-display text-xl leading-none text-cream sm:text-2xl lg:text-3xl">
-                      {card.title}
-                    </h3>
-
-                    <p className="mt-2 max-w-[95%] font-body text-[11px] leading-4 text-cream/80 sm:mt-2.5 sm:text-xs sm:leading-5">
-                      {description}
-                    </p>
-
-                    <span className="mt-3 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-mustard transition group-hover:tracking-[0.18em] sm:mt-4 sm:text-[11px]">
-                      Explore →
-                    </span>
-
-                  </div>
-
-                </Link>
-              )
-            })}
-
-          </div>
-
-        ) : (
-
-          <div className="border-t border-mustard pt-6">
-            <p className="max-w-3xl font-body text-sm leading-6 text-navy/55 sm:text-base">
-              Add Explore Cards from the Studio to display them here.
-            </p>
-          </div>
-
-        )}
-
-      </section>
-
-      {/* FEATURED PEOPLE */}
-      {featuredPeople?.length > 0 && (
-        <section className="bg-navy text-cream">
-
-          <div className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
-
-            <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
-
-              <div>
-                <p className="font-body text-xs text-mustard sm:text-sm">
-                  People
-                </p>
-
-                <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
-                  Featured People
-                </h2>
-
-                <div className="mt-3 h-[2px] w-12 bg-mustard" />
-              </div>
-
+            <div className="min-w-0">
               <Link
                 href="/celebrities"
-                className="font-body text-[11px] uppercase tracking-[0.12em] text-cream/65 transition hover:text-mustard sm:text-xs"
+                className="font-body text-xs uppercase tracking-[0.14em] text-shawl transition hover:text-mustard"
               >
-                View all →
+                People of Saraikistan
               </Link>
 
+              {person.category && (
+                <p className="mt-3 font-body text-sm font-medium text-shawl">
+                  {person.category.title}
+                </p>
+              )}
+
+              <h1 className="mt-2 break-words font-display text-3xl leading-tight text-navy sm:text-4xl lg:text-5xl">
+                {person.name}
+              </h1>
             </div>
 
-            <div
-              className={
-                singleFeaturedPerson
-                  ? 'mx-auto grid max-w-2xl grid-cols-1'
-                  : twoFeaturedPeople
-                    ? 'mx-auto grid max-w-3xl grid-cols-2 gap-3 sm:gap-5'
-                    : 'grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4'
-              }
-            >
+          </div>
+        </div>
 
-              {featuredPeople.map((person: any) => (
-
-                <Link
-                  key={person.slug?.current || person.name}
-                  href={`/celebrities/${person.slug?.current || ''}`}
-                  className={
-                    singleFeaturedPerson
-                      ? 'group relative block aspect-[4/3] overflow-hidden rounded-[2px] bg-navy'
-                      : 'group relative block aspect-[4/5] overflow-hidden rounded-[2px] bg-navy'
-                  }
-                >
-
-                  {person.profileImage ? (
-                    <ResponsiveImage
-                      source={person.profileImage}
-                      alt={person.name}
-                      ratio={5 / 4}
-                      widths={[320, 480, 640, 900, 1400]}
-                      sizes={
-                        singleFeaturedPerson
-                          ? '(min-width: 1024px) 768px, 100vw'
-                          : twoFeaturedPeople
-                            ? '(min-width: 768px) 360px, 45vw'
-                            : '(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)'
-                      }
-                      className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-shawl" />
-                  )}
-
-                  <div className="absolute inset-0 bg-gradient-to-b from-navy/5 via-navy/10 to-navy/95" />
-
-                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 lg:p-5">
-
-                    {person.category?.title && (
-                      <p className="mb-1.5 font-body text-[9px] uppercase tracking-[0.16em] text-mustard sm:text-[10px]">
-                        {person.category.title}
-                      </p>
-                    )}
-
-                    <h3
-                      className={
-                        singleFeaturedPerson
-                          ? 'font-display text-2xl leading-tight text-cream sm:text-3xl lg:text-4xl'
-                          : 'font-display text-lg leading-tight text-cream sm:text-2xl'
-                      }
+        {/* Social Links */}
+        {person.socialLinks &&
+          person.socialLinks.length > 0 && (
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 border-b border-navy/10 pb-6 font-body text-sm">
+              {person.socialLinks.map(
+                (link: any, i: number) =>
+                  link.url && (
+                    <a
+                      key={i}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-all text-shawl underline underline-offset-4 transition hover:text-mustard"
                     >
-                      {person.name}
-                    </h3>
-
-                    <span className="mt-3 inline-block font-body text-[10px] uppercase tracking-[0.14em] text-cream/75 transition group-hover:text-mustard sm:text-[11px]">
-                      View profile →
-                    </span>
-
-                  </div>
-
-                </Link>
-
-              ))}
-
+                      {link.platform || 'Social Profile'}
+                    </a>
+                  )
+              )}
             </div>
+          )
+        }
 
-          </div>
+        {/* Editorial Content Layout */}
+        <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1fr)_320px]">
 
-          <div className="tile-rule" />
+          {/* Main Biography Column */}
+          <main className="min-w-0">
 
-        </section>
-      )}
-
-      {/* STORIES */}
-      {featuredStories?.length > 0 && (
-        <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
-
-          <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
-
-            <div>
-              <p className="font-body text-xs text-shawl sm:text-sm">
-                Long-form
-              </p>
-
-              <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
-                Stories
-              </h2>
-
-              <div className="mt-3 h-[2px] w-12 bg-mustard" />
-            </div>
-
-            <Link
-              href="/blog"
-              className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
-            >
-              View all →
-            </Link>
-
-          </div>
-
-          {/* Four cards: 2 columns on mobile, 4 on desktop */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-
-            {featuredStories.map((story: any) => (
-
-              <Link
-                key={story._id}
-                href={`/blog/${story.slug.current}`}
-                className="group flex min-w-0 flex-col overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
-
-                {/* Compact image */}
-                <div className="aspect-[16/9] overflow-hidden bg-shawl">
-
-                  {story.coverImage ? (
-                    <ResponsiveImage
-                      source={story.coverImage}
-                      alt={story.title}
-                      ratio={9 / 16}
-                      widths={[240, 320, 480, 640, 800]}
-                      sizes="(min-width: 1280px) 280px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center font-display text-xs text-cream/40 sm:text-sm">
-                      Saraikistan
-                    </div>
-                  )}
-
-                </div>
-
-                <div className="flex flex-1 flex-col border-t-2 border-mustard p-3 sm:p-4">
-
-                  {story.publishedAt && (
-                    <p className="font-body text-[8px] uppercase tracking-[0.08em] text-navy/45 sm:text-[10px] sm:tracking-[0.12em]">
-                      {formatDate(story.publishedAt)}
-                    </p>
-                  )}
-
-                  <h3 className="mt-1.5 line-clamp-3 font-display text-sm leading-snug transition group-hover:text-shawl sm:mt-2 sm:text-lg sm:leading-tight lg:text-xl">
-                    {story.title}
-                  </h3>
-
-                  {story.summary && (
-                    <p className="mt-2 line-clamp-3 font-body text-[10px] leading-4 text-navy/60 sm:text-xs sm:leading-5">
-                      {story.summary}
-                    </p>
-                  )}
-
-                  <span className="mt-auto pt-3 font-body text-[9px] uppercase tracking-[0.08em] text-shawl transition group-hover:text-mustard sm:pt-4 sm:text-[10px] sm:tracking-[0.12em]">
-                    Read story →
-                  </span>
-
-                </div>
-
-              </Link>
-
-            ))}
-
-          </div>
-
-        </section>
-      )}
-
-      {/* LATEST NEWS */}
-      {latestNews?.length > 0 && (
-        <section className="border-t border-navy/10">
-
-          <div className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
-
-            <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
-
-              <div>
-                <p className="font-body text-xs text-shawl sm:text-sm">
-                  Latest updates
+            {/* Biography Heading */}
+            {(person.bio || person.bioUrdu) && (
+              <div className="mb-6 border-b border-navy/10 pb-5">
+                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
+                  Biography
                 </p>
 
-                <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
-                  News
+                <h2 className="mt-2 font-display text-3xl leading-tight text-navy sm:text-4xl">
+                  The Life and Legacy of {person.name}
                 </h2>
 
-                <div className="mt-3 h-[2px] w-12 bg-mustard" />
+                <p className="mt-3 max-w-2xl font-body text-sm leading-6 text-navy/60">
+                  Discover the life, work, and cultural contributions of{' '}
+                  {person.name} and their place in Saraiki heritage.
+                </p>
               </div>
+            )}
 
-              <Link
-                href="/news"
-                className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
-              >
-                View all →
-              </Link>
+            {/* Original Biography + Language Switcher */}
+            {(person.bio || person.bioUrdu) && (
+              <div className="min-w-0">
+                <LanguageSwitcher
+                  english={person.bio}
+                  urdu={person.bioUrdu}
+                />
+              </div>
+            )}
 
-            </div>
+            {/* Interactive Photo Gallery */}
+            {person.gallery &&
+              person.gallery.length > 0 && (
+                <div className="mt-14 border-t border-navy/10 pt-8">
 
-            {/* Four cards: 2 columns on mobile, 4 on desktop */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+                  <div className="mb-6">
+                    <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                      Photo Archive
+                    </p>
 
-              {latestNews.map((item: any) => (
+                    <h2 className="mt-2 font-display text-3xl text-navy sm:text-4xl">
+                      Gallery
+                    </h2>
+
+                    <p className="mt-3 font-body text-sm leading-6 text-navy/60">
+                      Photographs and memories documenting the life and work of{' '}
+                      {person.name}.
+                    </p>
+                  </div>
+
+                  <PhotoGallery
+                    images={person.gallery}
+                    personName={person.name}
+                  />
+
+                </div>
+              )
+            }
+
+            {/* Image Credits */}
+            {person.imageCredits && (
+              <div className="mt-14 border-t border-navy/10 pt-6">
+                <details className="group">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
+                    <span>Image Credits</span>
+
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-navy/15 text-lg leading-none text-shawl transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
+                      +
+                    </span>
+                  </summary>
+
+                  <div className="mt-5 border-l-2 border-mustard/60 pl-4">
+                    <p className="whitespace-pre-line break-words font-body text-xs leading-6 text-navy/55">
+                      {person.imageCredits}
+                    </p>
+                  </div>
+                </details>
+              </div>
+            )}
+
+          </main>
+
+          {/* Sidebar - Related People and Explore */}
+          <aside className="min-w-0 space-y-10 lg:sticky lg:top-8">
+
+            {/* Related People */}
+            {relatedPeople.length > 0 && (
+              <div className="border-t-2 border-navy pt-5">
+
+                <div className="mb-6">
+                  <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                    Discover More
+                  </p>
+
+                  <h2 className="mt-2 font-display text-2xl leading-tight text-navy sm:text-3xl">
+                    Related People
+                  </h2>
+
+                  <p className="mt-2 font-body text-sm leading-6 text-navy/60">
+                    Explore more personalities from the same field.
+                  </p>
+                </div>
+
+                <div className="divide-y divide-navy/10">
+                  {relatedPeople.map((related: any) => {
+                    const relatedImage = related.profileImage
+                      ? urlFor(related.profileImage)
+                          .width(180)
+                          .height(180)
+                          .fit('crop')
+                          .auto('format')
+                          .quality(75)
+                          .url()
+                      : undefined
+
+                    return (
+                      <Link
+                        key={related.slug}
+                        href={`/celebrities/${related.slug}`}
+                        className="group flex gap-4 py-5 first:pt-0"
+                      >
+                        {relatedImage ? (
+                          <img
+                            src={relatedImage}
+                            alt={related.name}
+                            width={100}
+                            height={100}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-20 w-20 shrink-0 rounded-full object-cover transition duration-300 group-hover:opacity-80 sm:h-24 sm:w-24"
+                          />
+                        ) : (
+                          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-shawl/10 font-display text-2xl text-shawl sm:h-24 sm:w-24">
+                            {related.name?.charAt(0)}
+                          </div>
+                        )}
+
+                        <div className="min-w-0 self-center">
+                          {related.category?.title && (
+                            <p className="mb-1 font-body text-[11px] uppercase tracking-[0.1em] text-shawl">
+                              {related.category.title}
+                            </p>
+                          )}
+
+                          <h3 className="break-words font-display text-lg leading-snug text-navy transition group-hover:text-shawl sm:text-xl">
+                            {related.name}
+                          </h3>
+
+                          <span className="mt-2 inline-block font-body text-xs text-shawl underline underline-offset-4 transition group-hover:text-mustard">
+                            Read biography
+                          </span>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
 
                 <Link
-                  key={item._id}
-                  href={`/news/${item.slug.current}`}
-                  className="group flex min-w-0 flex-col overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  href="/celebrities"
+                  className="mt-5 inline-flex w-full items-center justify-between border border-navy/15 px-4 py-3 font-body text-sm text-navy transition hover:border-mustard hover:text-mustard"
                 >
-
-                  {/* Compact image */}
-                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
-
-                    {item.coverImage ? (
-                      <ResponsiveImage
-                        source={item.coverImage}
-                        alt={item.title}
-                        ratio={9 / 16}
-                        widths={[240, 320, 480, 640, 800]}
-                        sizes="(min-width: 1280px) 280px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center font-display text-xs text-cream/40 sm:text-sm">
-                        Saraikistan
-                      </div>
-                    )}
-
-                  </div>
-
-                  <div className="flex flex-1 flex-col border-t-2 border-mustard p-3 sm:p-4">
-
-                    {item.category?.title && (
-                      <p className="font-body text-[8px] uppercase tracking-[0.08em] text-shawl sm:text-[10px] sm:tracking-[0.12em]">
-                        {item.category.title}
-                      </p>
-                    )}
-
-                    {item.publishedAt && (
-                      <p className="mt-1 font-body text-[8px] uppercase tracking-[0.08em] text-navy/45 sm:mt-1.5 sm:text-[10px] sm:tracking-[0.12em]">
-                        {formatDate(item.publishedAt)}
-                      </p>
-                    )}
-
-                    <h3 className="mt-1.5 line-clamp-3 font-display text-sm leading-snug transition group-hover:text-shawl sm:mt-2 sm:text-lg sm:leading-tight lg:text-xl">
-                      {item.title}
-                    </h3>
-
-                    {item.summary && (
-                      <p className="mt-2 line-clamp-3 font-body text-[10px] leading-4 text-navy/60 sm:text-xs sm:leading-5">
-                        {item.summary}
-                      </p>
-                    )}
-
-                    {item.author && (
-                      <p className="mt-2 font-body text-[9px] text-navy/45 sm:mt-3 sm:text-[11px]">
-                        By {item.author}
-                      </p>
-                    )}
-
-                    <span className="mt-auto pt-3 font-body text-[9px] uppercase tracking-[0.08em] text-shawl transition group-hover:text-mustard sm:pt-4 sm:text-[10px] sm:tracking-[0.12em]">
-                      Read news →
-                    </span>
-
-                  </div>
-
+                  <span>Explore All People</span>
+                  <span aria-hidden="true">→</span>
                 </Link>
 
-              ))}
+              </div>
+            )}
+
+            {/* Explore Saraikistan */}
+            <div className="border-t-2 border-mustard bg-white/40 p-5 sm:p-6">
+
+              <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                Explore Saraikistan
+              </p>
+
+              <h2 className="mt-2 font-display text-2xl leading-tight text-navy">
+                Discover Our Heritage
+              </h2>
+
+              <p className="mt-3 font-body text-sm leading-6 text-navy/65">
+                Explore the people, places, traditions, and stories that shape Saraiki identity.
+              </p>
+
+              <div className="mt-5 divide-y divide-navy/10">
+
+                <Link
+                  href="/region"
+                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                >
+                  <span>Places & Region</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+
+                <Link
+                  href="/culture"
+                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                >
+                  <span>Culture & Heritage</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+
+                <Link
+                  href="/stories"
+                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                >
+                  <span>Stories</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+
+                <Link
+                  href="/news"
+                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                >
+                  <span>Latest News</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
+
+              </div>
 
             </div>
 
-          </div>
+            {/* About Saraikistan */}
+            <div className="border-t border-navy/15 pt-5">
+              <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+                Our Mission
+              </p>
 
-        </section>
-      )}
+              <p className="mt-3 font-display text-xl leading-relaxed text-navy">
+                Preserving Saraiki culture, celebrating its people, and sharing our heritage with the world.
+              </p>
 
-      {/* PURPOSE */}
-      <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-14 lg:px-12">
+              <Link
+                href="/about"
+                className="mt-4 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
+              >
+                About Saraikistan
+              </Link>
+            </div>
 
-        <div className="grid gap-6 lg:grid-cols-2 lg:items-center">
-
-          <div>
-            <p className="font-body text-xs text-shawl sm:text-sm">
-              Our purpose
-            </p>
-
-            <h2 className="mt-3 font-display text-2xl leading-tight sm:text-4xl lg:text-5xl">
-              A digital home for
-              <br />
-              Saraiki culture.
-            </h2>
-          </div>
-
-          <div>
-            <p className="font-body text-sm leading-6 text-navy/65 sm:text-lg sm:leading-7">
-              Saraikistan brings together the people, places, language,
-              traditions and stories of the Saraiki region in one growing
-              cultural archive.
-            </p>
-
-            <Link
-              href="/about"
-              className="mt-5 inline-block border-b border-mustard pb-1 font-body text-xs uppercase tracking-[0.12em] text-navy transition hover:text-mustard sm:text-sm"
-            >
-              Learn about Saraikistan →
-            </Link>
-          </div>
+          </aside>
 
         </div>
 
-      </section>
-
-    </main>
+      </div>
+    </section>
   )
 }
