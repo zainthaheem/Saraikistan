@@ -2,7 +2,9 @@
 import type { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
 
-const baseUrl = 'https://saraikistan.org'
+export const revalidate = 3600
+
+const BASE_URL = 'https://saraikistan.org'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = await client.fetch(`
@@ -11,18 +13,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "slug": slug.current,
         "_updatedAt": _updatedAt
       },
+
       "places": *[_type == "place" && defined(slug.current)]{
         "slug": slug.current,
         "_updatedAt": _updatedAt
       },
+
       "culture": *[_type == "culture" && defined(slug.current)]{
         "slug": slug.current,
         "_updatedAt": _updatedAt
       },
+
       "stories": *[_type == "story" && defined(slug.current)]{
         "slug": slug.current,
         "_updatedAt": _updatedAt
       },
+
       "news": *[_type == "newsPost" && defined(slug.current)]{
         "slug": slug.current,
         "_updatedAt": _updatedAt
@@ -32,103 +38,116 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
-      changeFrequency: 'weekly',
+      url: BASE_URL,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: `${baseUrl}/culture`,
+      url: `${BASE_URL}/celebrities`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/region`,
+      url: `${BASE_URL}/region`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/celebrities`,
+      url: `${BASE_URL}/culture`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.9,
     },
     {
-      url: `${baseUrl}/blog`,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/news`,
+      url: `${BASE_URL}/news`,
+      lastModified: new Date(),
       changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/stories`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${BASE_URL}/about`,
+      lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${BASE_URL}/contact`,
+      lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/privacy-policy`,
-      changeFrequency: 'yearly',
-      priority: 0.3,
+      priority: 0.4,
     },
   ]
 
   const peopleRoutes: MetadataRoute.Sitemap = content.people.map(
-    (item: any) => ({
-      url: `${baseUrl}/celebrities/${item.slug}`,
-      lastModified: item._updatedAt,
+    (item: { slug: string; _updatedAt?: string }) => ({
+      url: `${BASE_URL}/celebrities/${item.slug}`,
+      lastModified: item._updatedAt
+        ? new Date(item._updatedAt)
+        : new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     })
   )
 
-  const placeRoutes: MetadataRoute.Sitemap = content.places.map(
-    (item: any) => ({
-      url: `${baseUrl}/region/${item.slug}`,
-      lastModified: item._updatedAt,
+  const placesRoutes: MetadataRoute.Sitemap = content.places.map(
+    (item: { slug: string; _updatedAt?: string }) => ({
+      url: `${BASE_URL}/region/${item.slug}`,
+      lastModified: item._updatedAt
+        ? new Date(item._updatedAt)
+        : new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     })
   )
 
   const cultureRoutes: MetadataRoute.Sitemap = content.culture.map(
-    (item: any) => ({
-      url: `${baseUrl}/culture/${item.slug}`,
-      lastModified: item._updatedAt,
+    (item: { slug: string; _updatedAt?: string }) => ({
+      url: `${BASE_URL}/culture/${item.slug}`,
+      lastModified: item._updatedAt
+        ? new Date(item._updatedAt)
+        : new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     })
   )
 
-  const storyRoutes: MetadataRoute.Sitemap = content.stories.map(
-    (item: any) => ({
-      url: `${baseUrl}/blog/${item.slug}`,
-      lastModified: item._updatedAt,
+  const storiesRoutes: MetadataRoute.Sitemap = content.stories.map(
+    (item: { slug: string; _updatedAt?: string }) => ({
+      url: `${BASE_URL}/stories/${item.slug}`,
+      lastModified: item._updatedAt
+        ? new Date(item._updatedAt)
+        : new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     })
   )
 
   const newsRoutes: MetadataRoute.Sitemap = content.news.map(
-    (item: any) => ({
-      url: `${baseUrl}/news/${item.slug}`,
-      lastModified: item._updatedAt,
+    (item: { slug: string; _updatedAt?: string }) => ({
+      url: `${BASE_URL}/news/${item.slug}`,
+      lastModified: item._updatedAt
+        ? new Date(item._updatedAt)
+        : new Date(),
       changeFrequency: 'weekly',
-      priority: 0.7,
+      priority: 0.8,
     })
   )
 
   return [
     ...staticRoutes,
     ...peopleRoutes,
-    ...placeRoutes,
+    ...placesRoutes,
     ...cultureRoutes,
-    ...storyRoutes,
+    ...storiesRoutes,
     ...newsRoutes,
   ]
 }
