@@ -3,7 +3,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { urlFor } from '@/sanity/lib/image'
 
 const links = [
@@ -27,23 +27,28 @@ export default function Nav({ initialLogo }: NavProps) {
 
   const isHome = pathname === '/'
 
-  // Generate responsive logo images through Sanity.
-  // The browser selects the appropriate size for the screen.
-  const logoSrc = initialLogo?.asset
-    ? urlFor(initialLogo)
-        .width(490)
+  // Generate responsive logo URLs only when the logo changes.
+  const logoImages = useMemo(() => {
+    if (!initialLogo?.asset) {
+      return null
+    }
+
+    const getLogoUrl = (width: number) =>
+      urlFor(initialLogo)
+        .width(width)
         .quality(75)
         .format('webp')
         .url()
-    : null
 
-  const logoSrcSet = initialLogo?.asset
-    ? [
-        `${urlFor(initialLogo).width(320).quality(75).format('webp').url()} 320w`,
-        `${urlFor(initialLogo).width(400).quality(75).format('webp').url()} 400w`,
-        `${urlFor(initialLogo).width(490).quality(75).format('webp').url()} 490w`,
-      ].join(', ')
-    : undefined
+    return {
+      src: getLogoUrl(490),
+      srcSet: [
+        `${getLogoUrl(320)} 320w`,
+        `${getLogoUrl(400)} 400w`,
+        `${getLogoUrl(490)} 490w`,
+      ].join(', '),
+    }
+  }, [initialLogo])
 
   useEffect(() => {
     setMobileMenuOpen(false)
@@ -109,16 +114,16 @@ export default function Nav({ initialLogo }: NavProps) {
           onClick={closeMobileMenu}
           className="flex shrink-0 items-center transition-opacity hover:opacity-90"
         >
-          {logoSrc ? (
+          {logoImages ? (
             <img
-              src={logoSrc}
-              srcSet={logoSrcSet}
+              src={logoImages.src}
+              srcSet={logoImages.srcSet}
               sizes="(min-width: 1024px) 245px, (min-width: 640px) 225px, 190px"
               alt="Saraikistan"
               width={600}
               height={200}
+              loading="eager"
               decoding="async"
-              fetchPriority="high"
               className="h-12 w-auto max-w-[190px] object-contain sm:h-14 sm:max-w-[225px] lg:h-16 lg:max-w-[245px]"
             />
           ) : (
