@@ -149,7 +149,7 @@ export default async function Home() {
             source={settings.headerImage}
             alt="Saraikistan landscape"
             ratio={1000 / 1800}
-            widths={[480, 800, 1200, 1600, 1800]}
+            widths={[480, 640, 768, 1024, 1280, 1600]}
             sizes="100vw"
             loading="eager"
             priority
@@ -254,7 +254,7 @@ export default async function Home() {
                       source={card.image}
                       alt={card.title}
                       ratio={5 / 4}
-                      widths={[320, 480, 640, 900]}
+                      widths={[240, 320, 480, 640]}
                       sizes="(min-width: 1280px) 288px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
                       className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
                     />
@@ -358,7 +358,7 @@ export default async function Home() {
                       source={person.profileImage}
                       alt={person.name}
                       ratio={5 / 4}
-                      widths={[320, 480, 640, 900, 1400]}
+                      widths={[320, 480, 640, 768, 960]}
                       sizes={
                         singleFeaturedPerson
                           ? '(min-width: 1024px) 768px, 100vw'
@@ -457,7 +457,7 @@ export default async function Home() {
                       source={story.coverImage}
                       alt={story.title}
                       ratio={9 / 16}
-                      widths={[240, 320, 480, 640, 800]}
+                      widths={[240, 320, 480, 640]}
                       sizes="(min-width: 1280px) 280px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
@@ -550,7 +550,7 @@ export default async function Home() {
                         source={item.coverImage}
                         alt={item.title}
                         ratio={9 / 16}
-                        widths={[240, 320, 480, 640, 800]}
+                        widths={[240, 320, 480, 640]}
                         sizes="(min-width: 1280px) 280px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
                         className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                       />
