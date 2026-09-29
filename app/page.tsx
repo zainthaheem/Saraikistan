@@ -1,4 +1,4 @@
-
+```tsx
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -446,7 +446,8 @@ export default async function Home() {
                 className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
 
-                <div className="aspect-[16/9] overflow-hidden bg-shawl">
+                {/* Desktop image height reduced; mobile unchanged */}
+                <div className="aspect-[16/9] overflow-hidden bg-shawl lg:aspect-[16/7]">
 
                   {story.coverImage ? (
                     <ResponsiveImage
@@ -537,7 +538,8 @@ export default async function Home() {
                   className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
 
-                  <div className="aspect-[16/9] overflow-hidden bg-shawl">
+                  {/* Desktop image height reduced; mobile unchanged */}
+                  <div className="aspect-[16/9] overflow-hidden bg-shawl lg:aspect-[16/7]">
 
                     {item.coverImage ? (
                       <ResponsiveImage
@@ -642,3 +644,4 @@ export default async function Home() {
     </main>
   )
 }
+```
