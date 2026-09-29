@@ -52,7 +52,7 @@ function formatDate(date: string) {
 }
 
 // Responsive Sanity image helper.
-// All candidates maintain the correct 16:10 aspect ratio.
+// Images use a consistent 16:10 aspect ratio.
 function StoryImage({
   source,
   alt,
@@ -73,7 +73,7 @@ function StoryImage({
   const makeUrl = (width: number) =>
     urlFor(source)
       .width(width)
-      .height(Math.round(width * 10 / 16))
+      .height(Math.round((width * 10) / 16))
       .fit('crop')
       .quality(65)
       .format('webp')
@@ -92,7 +92,7 @@ function StoryImage({
       sizes={sizes}
       alt={alt}
       width={largestWidth}
-      height={Math.round(largestWidth * 10 / 16)}
+      height={Math.round((largestWidth * 10) / 16)}
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'auto'}
       decoding="async"
@@ -167,7 +167,7 @@ export default async function Blog() {
                     <StoryImage
                       source={featured.coverImage}
                       alt={featured.title}
-                      widths={[480, 640, 800, 1000, 1200]}
+                      widths={[480, 640, 800, 1000]}
                       sizes="(min-width: 1280px) 576px, (min-width: 1024px) 50vw, calc(100vw - 48px)"
                       priority
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
@@ -242,7 +242,7 @@ export default async function Blog() {
                           <StoryImage
                             source={post.coverImage}
                             alt={post.title}
-                            widths={[320, 400, 560, 700, 900]}
+                            widths={[320, 400, 560, 700, 800]}
                             sizes="(min-width: 1280px) 384px, (min-width: 1024px) calc(33.333vw - 48px), (min-width: 640px) calc(50vw - 56px), calc(100vw - 48px)"
                             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                           />
