@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -184,11 +185,10 @@ export default async function PersonPage({
         .url()
     : undefined
 
+  // Preserve the original cover image proportions.
   const coverImage = person.coverImage
     ? urlFor(person.coverImage)
         .width(1800)
-        .height(700)
-        .fit('crop')
         .auto('format')
         .quality(85)
         .url()
@@ -228,18 +228,17 @@ export default async function PersonPage({
         }}
       />
 
-      {/* FULL-WIDTH COVER IMAGE */}
+      {/* FULL-WIDTH COVER IMAGE — NO CROPPING */}
       {coverImage && (
-        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
+        <div className="w-full overflow-hidden bg-navy">
           <img
             src={coverImage}
             alt={person.name}
             width={1800}
-            height={700}
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="h-full w-full object-cover"
+            className="mx-auto block h-auto max-h-[75vh] w-full object-contain object-center"
           />
         </div>
       )}
