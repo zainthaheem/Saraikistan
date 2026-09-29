@@ -2,55 +2,6 @@
 import {defineType, defineField} from 'sanity'
 import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
 
-const newsInlineImage = defineType({
-  name: 'newsInlineImage',
-  title: 'In-Content Image',
-  type: 'object',
-  fields: [
-    defineField({
-      name: 'image',
-      title: 'Picture',
-      type: 'image',
-      options: {hotspot: true},
-      validation: (Rule) => Rule.required(),
-    }),
-
-    defineField({
-      name: 'alt',
-      title: 'Alternative Text (SEO)',
-      type: 'string',
-      description:
-        'Describe the image for Google and screen readers.',
-    }),
-
-    defineField({
-      name: 'caption',
-      title: 'Image Caption',
-      type: 'string',
-    }),
-
-    defineField({
-      name: 'credit',
-      title: 'Image Credit',
-      type: 'string',
-      description:
-        'Photographer, source, or copyright information.',
-    }),
-  ],
-  preview: {
-    select: {
-      title: 'caption',
-      media: 'image',
-    },
-    prepare({title, media}) {
-      return {
-        title: title || 'In-Content Image',
-        media,
-      }
-    },
-  },
-})
-
 export const newsPost = defineType({
   name: 'newsPost',
   title: 'News',
@@ -87,16 +38,12 @@ export const newsPost = defineType({
       name: 'author',
       title: 'Author / Reporter',
       type: 'string',
-      description:
-        'Name of the person who wrote or reported this news article.',
     }),
 
     defineField({
       name: 'source',
       title: 'Source',
       type: 'string',
-      description:
-        'Original source of the information, such as Saraikistan, a news organization, government department or official statement.',
     }),
 
     defineField({
@@ -115,7 +62,6 @@ export const newsPost = defineType({
       },
     }),
 
-    // MAIN COVER IMAGE
     defineField({
       name: 'coverImage',
       title: 'Cover Picture',
@@ -128,11 +74,8 @@ export const newsPost = defineType({
       title: 'Image Credits',
       type: 'text',
       rows: 8,
-      description:
-        'Credit and license information for cover and gallery images. Include photographer, source and license details where applicable.',
     }),
 
-    // ADDITIONAL GALLERY IMAGES
     defineField({
       name: 'gallery',
       title: 'More Pictures',
@@ -152,28 +95,26 @@ export const newsPost = defineType({
       type: 'text',
     }),
 
-    // ENGLISH CONTENT WITH INLINE IMAGES
     defineField({
       name: 'body',
       title: 'Content',
       type: 'array',
       of: [
         {type: 'block'},
-        newsInlineImage,
+        {type: 'newsInlineImage'},
       ],
       components: {
         input: MarkdownPortableTextInput,
       },
     }),
 
-    // URDU CONTENT WITH INLINE IMAGES
     defineField({
       name: 'bodyUrdu',
       title: 'Content (Urdu)',
       type: 'array',
       of: [
         {type: 'block'},
-        newsInlineImage,
+        {type: 'newsInlineImage'},
       ],
       components: {
         input: MarkdownPortableTextInput,
@@ -187,13 +128,10 @@ export const newsPost = defineType({
       initialValue: false,
     }),
 
-    // SEO SETTINGS
     defineField({
       name: 'seoTitle',
       title: 'SEO Title',
       type: 'string',
-      description:
-        'Title shown in search engine results. Keep it around 50–60 characters.',
       validation: (Rule) => Rule.max(60),
     }),
 
@@ -202,12 +140,9 @@ export const newsPost = defineType({
       title: 'SEO Description',
       type: 'text',
       rows: 3,
-      description:
-        'Short description shown in search engine results. Keep it around 140–160 characters.',
       validation: (Rule) => Rule.max(160),
     }),
 
-    // SEO / SOCIAL SHARE COVER
     defineField({
       name: 'seoImage',
       title: 'SEO / Social Share Image',
