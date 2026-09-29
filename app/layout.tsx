@@ -63,6 +63,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(baseUrl),
 
+    // Website icon
+    icons: {
+      icon: [
+        {
+          url: '/icon.png',
+          type: 'image/png',
+        },
+      ],
+      shortcut: '/icon.png',
+    },
+
     alternates: {
       canonical: '/',
     },
