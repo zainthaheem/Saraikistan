@@ -1,10 +1,61 @@
+
 import {defineType, defineField} from 'sanity'
 import MarkdownPortableTextInput from '../components/MarkdownPortableTextInput'
+
+const newsInlineImage = defineType({
+  name: 'newsInlineImage',
+  title: 'In-Content Image',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'image',
+      title: 'Picture',
+      type: 'image',
+      options: {hotspot: true},
+      validation: (Rule) => Rule.required(),
+    }),
+
+    defineField({
+      name: 'alt',
+      title: 'Alternative Text (SEO)',
+      type: 'string',
+      description:
+        'Describe the image for Google and screen readers.',
+    }),
+
+    defineField({
+      name: 'caption',
+      title: 'Image Caption',
+      type: 'string',
+    }),
+
+    defineField({
+      name: 'credit',
+      title: 'Image Credit',
+      type: 'string',
+      description:
+        'Photographer, source, or copyright information.',
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'caption',
+      media: 'image',
+    },
+    prepare({title, media}) {
+      return {
+        title: title || 'In-Content Image',
+        media,
+      }
+    },
+  },
+})
 
 export const newsPost = defineType({
   name: 'newsPost',
   title: 'News',
   type: 'document',
+
   fields: [
     defineField({
       name: 'title',
@@ -64,6 +115,7 @@ export const newsPost = defineType({
       },
     }),
 
+    // MAIN COVER IMAGE
     defineField({
       name: 'coverImage',
       title: 'Cover Picture',
@@ -80,6 +132,7 @@ export const newsPost = defineType({
         'Credit and license information for cover and gallery images. Include photographer, source and license details where applicable.',
     }),
 
+    // ADDITIONAL GALLERY IMAGES
     defineField({
       name: 'gallery',
       title: 'More Pictures',
@@ -99,21 +152,29 @@ export const newsPost = defineType({
       type: 'text',
     }),
 
+    // ENGLISH CONTENT WITH INLINE IMAGES
     defineField({
       name: 'body',
       title: 'Content',
       type: 'array',
-      of: [{type: 'block'}],
+      of: [
+        {type: 'block'},
+        newsInlineImage,
+      ],
       components: {
         input: MarkdownPortableTextInput,
       },
     }),
 
+    // URDU CONTENT WITH INLINE IMAGES
     defineField({
       name: 'bodyUrdu',
       title: 'Content (Urdu)',
       type: 'array',
-      of: [{type: 'block'}],
+      of: [
+        {type: 'block'},
+        newsInlineImage,
+      ],
       components: {
         input: MarkdownPortableTextInput,
       },
@@ -146,13 +207,14 @@ export const newsPost = defineType({
       validation: (Rule) => Rule.max(160),
     }),
 
+    // SEO / SOCIAL SHARE COVER
     defineField({
       name: 'seoImage',
       title: 'SEO / Social Share Image',
       type: 'image',
       options: {hotspot: true},
       description:
-        'Image used when this page is shared on social media.',
+        'Image used for search engine and social media previews.',
     }),
   ],
 })
