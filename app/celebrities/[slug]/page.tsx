@@ -8,23 +8,12 @@ import PhotoGallery from '@/components/PhotoGallery'
 
 export const revalidate = 60
 
-type PageParams = {
-  slug: string
-}
-
-// Fetch one person from Sanity.
 async function getPerson(slug: string) {
-  if (!slug || typeof slug !== 'string') {
-    return null
-  }
-
   return client.fetch(
     `*[_type == "person" && slug.current == $slug][0] {
       name,
-      "category": category->{
-        _id,
-        title
-      },
+      "category": category->{title},
+      "categoryId": category._ref,
       profileImage,
       coverImage,
       gallery[]{
@@ -42,37 +31,22 @@ async function getPerson(slug: string) {
       seoImage,
       imageCredits
     }`,
-    {
-      slug: slug,
-    }
+    { slug }
   )
 }
 
-// Fetch related people from the same category.
-async function getRelatedPeople(
-  categoryId: string | undefined,
-  currentSlug: string
-) {
-  if (!categoryId || !currentSlug) {
-    return []
-  }
-
+async function getRelatedPeople(categoryId: string | undefined, slug: string) {
   return client.fetch(
-    `*[
-      _type == "person" &&
-      defined(slug.current) &&
-      slug.current != $currentSlug &&
-      category._ref == $categoryId
-    ]
-    | order(name asc)[0...4] {
-      name,
-      "slug": slug.current,
-      profileImage,
-      "category": category->{title}
-    }`,
+    `*[_type == "person" && slug.current != $slug && (!defined($categoryId) || category._ref == $categoryId)]
+      | order(_createdAt desc)[0...4] {
+        name,
+        "slug": slug.current,
+        "category": category->{title},
+        profileImage
+      }`,
     {
-      categoryId: categoryId,
-      currentSlug: currentSlug,
+      slug,
+      categoryId: categoryId || null,
     }
   )
 }
@@ -80,20 +54,9 @@ async function getRelatedPeople(
 export async function generateMetadata({
   params,
 }: {
-  params: PageParams | Promise<PageParams>
+  params: { slug: string }
 }): Promise<Metadata> {
-  const resolvedParams = await params
-  const slug = resolvedParams?.slug
-
-  if (!slug) {
-    return {
-      title: 'Person Not Found | Saraikistan',
-      description:
-        'The requested person could not be found on Saraikistan.',
-    }
-  }
-
-  const person = await getPerson(slug)
+  const person = await getPerson(params.slug)
 
   if (!person) {
     return {
@@ -130,7 +93,7 @@ export async function generateMetadata({
       : undefined
 
   const pageUrl =
-    `https://saraikistan.org/celebrities/${slug}`
+    `https://saraikistan.org/celebrities/${params.slug}`
 
   return {
     title,
@@ -170,33 +133,9 @@ export async function generateMetadata({
 export default async function PersonPage({
   params,
 }: {
-  params: PageParams | Promise<PageParams>
+  params: { slug: string }
 }) {
-  const resolvedParams = await params
-  const slug = resolvedParams?.slug
-
-  if (!slug) {
-    return (
-      <section className="min-h-screen bg-cream text-navy">
-        <div className="mx-auto max-w-7xl px-6 pb-20 pt-6 sm:px-10 sm:pt-8 lg:px-12">
-          <div className="border-t border-mustard pt-7">
-            <p className="font-body text-base leading-7 text-navy/65 sm:text-lg">
-              Person not found.
-            </p>
-
-            <Link
-              href="/celebrities"
-              className="mt-5 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
-            >
-              Back to People
-            </Link>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  const person = await getPerson(slug)
+  const person = await getPerson(params.slug)
 
   if (!person) {
     return (
@@ -209,7 +148,7 @@ export default async function PersonPage({
 
             <Link
               href="/celebrities"
-              className="mt-5 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
+              className="mt-6 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
             >
               Back to People
             </Link>
@@ -220,8 +159,8 @@ export default async function PersonPage({
   }
 
   const relatedPeople = await getRelatedPeople(
-    person.category?._id,
-    slug
+    person.categoryId,
+    params.slug
   )
 
   const profileImage = person.profileImage
@@ -245,12 +184,10 @@ export default async function PersonPage({
     : undefined
 
   const socialLinks =
-    person.socialLinks
-      ?.map((link: any) => link.url)
-      .filter(Boolean) || []
+    person.socialLinks?.map((link: any) => link.url).filter(Boolean) || []
 
   const pageUrl =
-    `https://saraikistan.org/celebrities/${slug}`
+    `https://saraikistan.org/celebrities/${params.slug}`
 
   const personSchema = {
     '@context': 'https://schema.org',
@@ -262,10 +199,7 @@ export default async function PersonPage({
       person.seoDescription ||
       `Explore the life, work and cultural contribution of ${person.name} on Saraikistan.`,
     jobTitle: person.category?.title || undefined,
-    sameAs:
-      socialLinks.length > 0
-        ? socialLinks
-        : undefined,
+    sameAs: socialLinks.length > 0 ? socialLinks : undefined,
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': pageUrl,
@@ -285,7 +219,7 @@ export default async function PersonPage({
 
       {/* Full-Width Cover Image */}
       {person.coverImage && (
-        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-[440px]">
+        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
             src={coverImage}
             alt={person.name}
@@ -293,102 +227,70 @@ export default async function PersonPage({
             height={700}
             loading="eager"
             decoding="async"
-            fetchPriority="high"
             className="h-full w-full object-cover"
           />
         </div>
       )}
 
-      {/* Main Page Container */}
-      <div className="mx-auto max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:px-12">
+      {/* Main Editorial Layout */}
+      <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 sm:px-10 sm:pt-10 lg:px-12">
 
-        {/* Profile Header */}
-        <div className="border-t border-mustard pt-7 sm:pt-9">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-7">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-14">
 
-            {person.profileImage && (
-              <img
-                src={profileImage}
-                alt={person.name}
-                width={240}
-                height={240}
-                loading="lazy"
-                decoding="async"
-                className="h-24 w-24 shrink-0 rounded-full border-4 border-cream object-cover shadow-sm sm:h-32 sm:w-32"
-              />
-            )}
-
-            <div className="min-w-0">
-              <Link
-                href="/celebrities"
-                className="font-body text-xs uppercase tracking-[0.14em] text-shawl transition hover:text-mustard"
-              >
-                People of Saraikistan
-              </Link>
-
-              {person.category && (
-                <p className="mt-3 font-body text-sm font-medium text-shawl">
-                  {person.category.title}
-                </p>
-              )}
-
-              <h1 className="mt-2 break-words font-display text-3xl leading-tight text-navy sm:text-4xl lg:text-5xl">
-                {person.name}
-              </h1>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Social Links */}
-        {person.socialLinks &&
-          person.socialLinks.length > 0 && (
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 border-b border-navy/10 pb-6 font-body text-sm">
-              {person.socialLinks.map(
-                (link: any, i: number) =>
-                  link.url && (
-                    <a
-                      key={i}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="break-all text-shawl underline underline-offset-4 transition hover:text-mustard"
-                    >
-                      {link.platform || 'Social Profile'}
-                    </a>
-                  )
-              )}
-            </div>
-          )
-        }
-
-        {/* Editorial Content Layout */}
-        <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1fr)_320px]">
-
-          {/* Main Biography Column */}
+          {/* LEFT: Biography and Gallery */}
           <main className="min-w-0">
 
-            {/* Biography Heading */}
-            {(person.bio || person.bioUrdu) && (
-              <div className="mb-6 border-b border-navy/10 pb-5">
-                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-                  Biography
-                </p>
+            {/* Profile Header */}
+            <div className="border-t border-mustard pt-7">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
 
-                <h2 className="mt-2 font-display text-3xl leading-tight text-navy sm:text-4xl">
-                  The Life and Legacy of {person.name}
-                </h2>
+                {person.profileImage && (
+                  <img
+                    src={profileImage}
+                    alt={person.name}
+                    width={240}
+                    height={240}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-28 w-28 shrink-0 rounded-full border-4 border-cream object-cover sm:h-32 sm:w-32"
+                  />
+                )}
 
-                <p className="mt-3 max-w-2xl font-body text-sm leading-6 text-navy/60">
-                  Discover the life, work, and cultural contributions of{' '}
-                  {person.name} and their place in Saraiki heritage.
-                </p>
+                <div className="min-w-0">
+                  {person.category && (
+                    <p className="font-body text-sm text-shawl">
+                      {person.category.title}
+                    </p>
+                  )}
+
+                  <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
+                    {person.name}
+                  </h1>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Social Links */}
+            {person.socialLinks && person.socialLinks.length > 0 && (
+              <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 border-b border-navy/10 pb-6 font-body text-sm">
+                {person.socialLinks.map((link: any, i: number) => (
+                  <a
+                    key={i}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-shawl underline underline-offset-4 transition hover:text-mustard"
+                  >
+                    {link.platform}
+                  </a>
+                ))}
               </div>
             )}
 
-            {/* English / Urdu Biography */}
+            {/* Biography + Language Switcher */}
             {(person.bio || person.bioUrdu) && (
-              <div className="min-w-0">
+              <div className="mt-8 min-w-0">
                 <LanguageSwitcher
                   english={person.bio}
                   urdu={person.bioUrdu}
@@ -397,33 +299,30 @@ export default async function PersonPage({
             )}
 
             {/* Interactive Photo Gallery */}
-            {person.gallery &&
-              person.gallery.length > 0 && (
-                <div className="mt-14 border-t border-navy/10 pt-8">
+            {person.gallery && person.gallery.length > 0 && (
+              <div className="mt-14 border-t border-navy/10 pt-8">
 
-                  <div className="mb-6">
-                    <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
-                      Photo Archive
-                    </p>
+                <div className="mb-6">
+                  <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
+                    Photo Archive
+                  </p>
 
-                    <h2 className="mt-2 font-display text-3xl text-navy sm:text-4xl">
-                      Gallery
-                    </h2>
+                  <h2 className="mt-2 font-display text-3xl text-navy sm:text-4xl">
+                    Gallery
+                  </h2>
 
-                    <p className="mt-3 font-body text-sm leading-6 text-navy/60">
-                      Photographs and memories documenting the life and work of{' '}
-                      {person.name}.
-                    </p>
-                  </div>
-
-                  <PhotoGallery
-                    images={person.gallery}
-                    personName={person.name}
-                  />
-
+                  <p className="mt-3 font-body text-sm leading-6 text-navy/60">
+                    Photographs and memories documenting the life and work of {person.name}.
+                  </p>
                 </div>
-              )
-            }
+
+                <PhotoGallery
+                  images={person.gallery}
+                  personName={person.name}
+                />
+
+              </div>
+            )}
 
             {/* Image Credits */}
             {person.imageCredits && (
@@ -448,70 +347,71 @@ export default async function PersonPage({
 
           </main>
 
-          {/* Right Sidebar */}
-          <aside className="min-w-0 space-y-10 lg:sticky lg:top-8">
+          {/* RIGHT: Sticky Sidebar */}
+          <aside className="min-w-0 self-start lg:sticky lg:top-8">
 
-            {/* Related People */}
-            {relatedPeople.length > 0 && (
-              <div className="border-t-2 border-navy pt-5">
+            <div className="border-t-2 border-navy pt-5">
 
-                <div className="mb-6">
-                  <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
-                    Discover More
-                  </p>
+              {/* Related People */}
+              <div>
+                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
+                  Discover More
+                </p>
 
-                  <h2 className="mt-2 font-display text-2xl leading-tight text-navy sm:text-3xl">
-                    Related People
-                  </h2>
+                <h2 className="mt-2 font-display text-3xl leading-tight text-navy">
+                  Related People
+                </h2>
 
-                  <p className="mt-2 font-body text-sm leading-6 text-navy/60">
-                    Explore more personalities from the same field.
-                  </p>
-                </div>
+                <p className="mt-3 font-body text-sm leading-6 text-navy/60">
+                  Explore more personalities from the same field.
+                </p>
+              </div>
 
-                <div className="divide-y divide-navy/10">
-                  {relatedPeople.map((related: any) => {
-                    const relatedImage = related.profileImage
-                      ? urlFor(related.profileImage)
-                          .width(180)
-                          .height(180)
+              {relatedPeople && relatedPeople.length > 0 ? (
+                <div className="mt-6 divide-y divide-navy/10">
+
+                  {relatedPeople.map((item: any) => {
+                    const image = item.profileImage
+                      ? urlFor(item.profileImage)
+                          .width(200)
+                          .height(200)
                           .fit('crop')
                           .auto('format')
-                          .quality(75)
+                          .quality(80)
                           .url()
                       : undefined
 
                     return (
                       <Link
-                        key={related.slug}
-                        href={`/celebrities/${related.slug}`}
-                        className="group flex gap-4 py-5 first:pt-0"
+                        key={item.slug}
+                        href={`/celebrities/${item.slug}`}
+                        className="group flex min-w-0 gap-4 py-5 first:pt-0"
                       >
-                        {relatedImage ? (
+                        {image ? (
                           <img
-                            src={relatedImage}
-                            alt={related.name}
-                            width={100}
-                            height={100}
+                            src={image}
+                            alt={item.name}
+                            width={200}
+                            height={200}
                             loading="lazy"
                             decoding="async"
-                            className="h-20 w-20 shrink-0 rounded-full object-cover transition duration-300 group-hover:opacity-80 sm:h-24 sm:w-24"
+                            className="h-20 w-20 shrink-0 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-shawl/10 font-display text-2xl text-shawl sm:h-24 sm:w-24">
-                            {related.name?.charAt(0)}
+                          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-navy/5 font-display text-2xl text-shawl">
+                            {item.name?.charAt(0)}
                           </div>
                         )}
 
-                        <div className="min-w-0 self-center">
-                          {related.category?.title && (
-                            <p className="mb-1 font-body text-[11px] uppercase tracking-[0.1em] text-shawl">
-                              {related.category.title}
+                        <div className="min-w-0 pt-1">
+                          {item.category?.title && (
+                            <p className="font-body text-[11px] uppercase tracking-[0.12em] text-shawl">
+                              {item.category.title}
                             </p>
                           )}
 
-                          <h3 className="break-words font-display text-lg leading-snug text-navy transition group-hover:text-shawl sm:text-xl">
-                            {related.name}
+                          <h3 className="mt-1 break-words font-display text-xl leading-snug text-navy transition group-hover:text-shawl">
+                            {item.name}
                           </h3>
 
                           <span className="mt-2 inline-block font-body text-xs text-shawl underline underline-offset-4 transition group-hover:text-mustard">
@@ -521,23 +421,31 @@ export default async function PersonPage({
                       </Link>
                     )
                   })}
+
                 </div>
+              ) : (
+                <p className="mt-6 font-body text-sm leading-6 text-navy/60">
+                  Discover more people and personalities from Saraikistan.
+                </p>
+              )}
 
-                <Link
-                  href="/celebrities"
-                  className="mt-5 inline-flex w-full items-center justify-between border border-navy/15 px-4 py-3 font-body text-sm text-navy transition hover:border-mustard hover:text-mustard"
-                >
-                  <span>Explore All People</span>
-                  <span aria-hidden="true">→</span>
-                </Link>
+              {/* Explore All People */}
+              <Link
+                href="/celebrities"
+                className="mt-5 flex items-center justify-between border border-navy/15 px-4 py-3 font-body text-sm text-navy transition hover:border-mustard hover:text-shawl"
+              >
+                <span>Explore All People</span>
+                <span className="text-lg text-navy transition group-hover:text-mustard">
+                  →
+                </span>
+              </Link>
 
-              </div>
-            )}
+            </div>
 
-            {/* Explore Saraikistan */}
-            <div className="border-t-2 border-mustard bg-white/40 p-5 sm:p-6">
+            {/* Explore Saraikistan — Matching Stories Theme */}
+            <div className="mt-10 border-t-2 border-mustard bg-[#F1EADD] p-6">
 
-              <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
+              <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
                 Explore Saraikistan
               </p>
 
@@ -549,60 +457,42 @@ export default async function PersonPage({
                 Explore the people, places, traditions, and stories that shape Saraiki identity.
               </p>
 
-              <div className="mt-5 divide-y divide-navy/10">
+              <div className="mt-6 divide-y divide-navy/10">
 
                 <Link
                   href="/region"
-                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                  className="flex items-center justify-between gap-4 py-3 font-body text-sm text-navy transition hover:text-shawl"
                 >
                   <span>Places & Region</span>
-                  <span aria-hidden="true">→</span>
+                  <span className="shrink-0 text-lg text-mustard">→</span>
                 </Link>
 
                 <Link
                   href="/culture"
-                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                  className="flex items-center justify-between gap-4 py-3 font-body text-sm text-navy transition hover:text-shawl"
                 >
                   <span>Culture & Heritage</span>
-                  <span aria-hidden="true">→</span>
+                  <span className="shrink-0 text-lg text-mustard">→</span>
                 </Link>
 
                 <Link
-                  href="/stories"
-                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                  href="/blog"
+                  className="flex items-center justify-between gap-4 py-3 font-body text-sm text-navy transition hover:text-shawl"
                 >
                   <span>Stories</span>
-                  <span aria-hidden="true">→</span>
+                  <span className="shrink-0 text-lg text-mustard">→</span>
                 </Link>
 
                 <Link
                   href="/news"
-                  className="flex items-center justify-between gap-3 py-3 font-body text-sm text-navy transition hover:text-shawl"
+                  className="flex items-center justify-between gap-4 py-3 font-body text-sm text-navy transition hover:text-shawl"
                 >
                   <span>Latest News</span>
-                  <span aria-hidden="true">→</span>
+                  <span className="shrink-0 text-lg text-mustard">→</span>
                 </Link>
 
               </div>
 
-            </div>
-
-            {/* About Saraikistan */}
-            <div className="border-t border-navy/15 pt-5">
-              <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
-                Our Mission
-              </p>
-
-              <p className="mt-3 font-display text-xl leading-relaxed text-navy">
-                Preserving Saraiki culture, celebrating its people, and sharing our heritage with the world.
-              </p>
-
-              <Link
-                href="/about"
-                className="mt-4 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
-              >
-                About Saraikistan
-              </Link>
             </div>
 
           </aside>
