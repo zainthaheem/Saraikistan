@@ -29,6 +29,22 @@ async function getStory(slug: string) {
   )
 }
 
+async function getRelatedStories(slug: string) {
+  return client.fetch(
+    `*[
+      _type == "story" &&
+      slug.current != $slug
+    ] | order(publishedAt desc)[0...4] {
+      title,
+      publishedAt,
+      coverImage,
+      "slug": slug.current,
+      "category": category->{title}
+    }`,
+    { slug }
+  )
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -104,7 +120,10 @@ export default async function StoryPage({
 }: {
   params: { slug: string }
 }) {
-  const story = await getStory(params.slug)
+  const [story, relatedStories] = await Promise.all([
+    getStory(params.slug),
+    getRelatedStories(params.slug),
+  ])
 
   if (!story) {
     return (
@@ -196,7 +215,7 @@ export default async function StoryPage({
         }}
       />
 
-      {/* COVER IMAGE */}
+      {/* FULL-WIDTH COVER IMAGE */}
       {coverImage && (
         <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
           <img
@@ -212,117 +231,263 @@ export default async function StoryPage({
         </div>
       )}
 
-      {/* MAIN CONTENT */}
+      {/* EDITORIAL CONTENT LAYOUT */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 sm:px-10 sm:pt-10 lg:px-12">
-        {/* STORY HEADER */}
-        <div className="border-t border-mustard pt-7">
-          {story.category && (
-            <p className="font-body text-sm text-shawl">
-              {story.category.title}
-            </p>
-          )}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
 
-          <h1 className="mt-2 max-w-4xl font-display text-4xl leading-tight text-navy sm:text-5xl">
-            {story.title}
-          </h1>
+          {/* MAIN ARTICLE COLUMN */}
+          <article className="min-w-0">
 
-          {story.publishedAt && (
-            <p className="mt-4 font-body text-sm text-navy/50">
-              {new Date(story.publishedAt).toLocaleDateString()}
-            </p>
-          )}
+            {/* STORY HEADER */}
+            <div className="border-t border-mustard pt-7">
+              {story.category && (
+                <p className="font-body text-sm uppercase tracking-[0.12em] text-shawl">
+                  {story.category.title}
+                </p>
+              )}
 
-          {story.relatedPersonName && story.relatedPersonSlug && (
-            <Link
-              href={`/celebrities/${story.relatedPersonSlug}`}
-              className="mt-3 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
-            >
-              About {story.relatedPersonName} →
-            </Link>
-          )}
-        </div>
+              <h1 className="mt-3 max-w-4xl font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-[3.25rem]">
+                {story.title}
+              </h1>
 
-        {/* VIDEO */}
-        {story.videoUrl && (
-          <div className="mt-10 aspect-video w-full overflow-hidden bg-navy">
-            <iframe
-              src={story.videoUrl.replace('watch?v=', 'embed/')}
-              className="h-full w-full"
-              title={story.title}
-              loading="lazy"
-              allowFullScreen
-            />
-          </div>
-        )}
+              {story.publishedAt && (
+                <p className="mt-4 font-body text-sm text-navy/50">
+                  {new Date(story.publishedAt).toLocaleDateString()}
+                </p>
+              )}
 
-        {/* STORY BODY */}
-        {(story.body || story.bodyUrdu) && (
-          <div className="mt-10 max-w-3xl">
-            <LanguageSwitcher
-              english={story.body}
-              urdu={story.bodyUrdu}
-            />
-          </div>
-        )}
-
-        {/* GALLERY */}
-        {story.gallery && story.gallery.length > 0 && (
-          <div className="mt-14">
-            <div className="mb-6">
-              <p className="font-body text-sm text-shawl">
-                Gallery
-              </p>
-
-              <h2 className="mt-2 font-display text-3xl text-navy sm:text-4xl">
-                Photos
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {story.gallery.map((img: any, i: number) => (
-                <div
-                  key={i}
-                  className="aspect-square overflow-hidden bg-shawl"
+              {story.relatedPersonName && story.relatedPersonSlug && (
+                <Link
+                  href={`/celebrities/${story.relatedPersonSlug}`}
+                  className="mt-3 inline-block font-body text-sm text-shawl underline underline-offset-4 transition hover:text-mustard"
                 >
-                  <img
-                    src={urlFor(img)
-                      .width(500)
-                      .height(500)
-                      .fit('crop')
-                      .quality(65)
-                      .format('webp')
-                      .url()}
-                    alt={`${story.title} — photo ${i + 1}`}
-                    width={500}
-                    height={500}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover transition duration-500 hover:scale-105"
-                  />
-                </div>
-              ))}
+                  About {story.relatedPersonName} →
+                </Link>
+              )}
             </div>
-          </div>
-        )}
 
-        {/* IMAGE CREDITS */}
-        {story.imageCredits && (
-          <details className="group mt-14 border-t border-navy/10 pt-5">
-            <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
-              <span>Image Credits</span>
+            {/* VIDEO */}
+            {story.videoUrl && (
+              <div className="mt-10 aspect-video w-full overflow-hidden bg-navy">
+                <iframe
+                  src={story.videoUrl.replace('watch?v=', 'embed/')}
+                  className="h-full w-full"
+                  title={story.title}
+                  loading="lazy"
+                  allowFullScreen
+                />
+              </div>
+            )}
 
-              <span className="flex h-7 w-7 items-center justify-center border border-navy/15 text-lg leading-none transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
-                +
-              </span>
-            </summary>
+            {/* STORY BODY */}
+            {(story.body || story.bodyUrdu) && (
+              <div className="mt-10 w-full max-w-3xl">
+                <LanguageSwitcher
+                  english={story.body}
+                  urdu={story.bodyUrdu}
+                />
+              </div>
+            )}
 
-            <div className="mt-5 max-w-3xl border-l-2 border-mustard pl-5">
-              <p className="whitespace-pre-line font-body text-sm leading-6 text-navy/60">
-                {story.imageCredits}
+            {/* GALLERY */}
+            {story.gallery && story.gallery.length > 0 && (
+              <div className="mt-14">
+                <div className="mb-6">
+                  <p className="font-body text-sm uppercase tracking-[0.12em] text-shawl">
+                    Gallery
+                  </p>
+
+                  <h2 className="mt-2 font-display text-3xl text-navy sm:text-4xl">
+                    Photos
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                  {story.gallery.map((img: any, i: number) => (
+                    <div
+                      key={i}
+                      className="aspect-square overflow-hidden bg-shawl"
+                    >
+                      <img
+                        src={urlFor(img)
+                          .width(500)
+                          .height(500)
+                          .fit('crop')
+                          .quality(65)
+                          .format('webp')
+                          .url()}
+                        alt={`${story.title} — photo ${i + 1}`}
+                        width={500}
+                        height={500}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* IMAGE CREDITS */}
+            {story.imageCredits && (
+              <details className="group mt-14 border-t border-navy/10 pt-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
+                  <span>Image Credits</span>
+
+                  <span className="flex h-7 w-7 items-center justify-center border border-navy/15 text-lg leading-none transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
+                    +
+                  </span>
+                </summary>
+
+                <div className="mt-5 max-w-3xl border-l-2 border-mustard pl-5">
+                  <p className="whitespace-pre-line font-body text-sm leading-6 text-navy/60">
+                    {story.imageCredits}
+                  </p>
+                </div>
+              </details>
+            )}
+          </article>
+
+          {/* EDITORIAL SIDEBAR */}
+          <aside className="min-w-0 lg:border-l lg:border-navy/10 lg:pl-8 xl:pl-10">
+
+            {/* SIDEBAR HEADING */}
+            <div className="border-t border-mustard pt-5">
+              <p className="font-body text-xs uppercase tracking-[0.18em] text-shawl">
+                Explore Saraikistan
+              </p>
+
+              <h2 className="mt-2 font-display text-2xl text-navy">
+                Discover More
+              </h2>
+
+              <p className="mt-3 font-body text-sm leading-6 text-navy/60">
+                Explore more stories, people, places, and cultural heritage from the Saraiki region.
               </p>
             </div>
-          </details>
-        )}
+
+            {/* RELATED STORIES */}
+            {relatedStories && relatedStories.length > 0 && (
+              <div className="mt-8">
+                <div className="mb-5 flex items-center justify-between border-b border-navy/10 pb-3">
+                  <h3 className="font-display text-xl text-navy">
+                    More Stories
+                  </h3>
+
+                  <Link
+                    href="/blog"
+                    className="font-body text-xs text-shawl transition hover:text-mustard"
+                  >
+                    View All →
+                  </Link>
+                </div>
+
+                <div className="space-y-6">
+                  {relatedStories.map((item: any) => {
+                    const thumbnail = item.coverImage
+                      ? urlFor(item.coverImage)
+                          .width(400)
+                          .height(260)
+                          .fit('crop')
+                          .quality(65)
+                          .format('webp')
+                          .url()
+                      : undefined
+
+                    return (
+                      <Link
+                        key={item.slug}
+                        href={`/blog/${item.slug}`}
+                        className="group block"
+                      >
+                        {thumbnail && (
+                          <div className="mb-3 aspect-[16/10] overflow-hidden bg-shawl">
+                            <img
+                              src={thumbnail}
+                              alt={item.title}
+                              width={400}
+                              height={260}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                            />
+                          </div>
+                        )}
+
+                        {item.category?.title && (
+                          <p className="font-body text-[11px] uppercase tracking-[0.12em] text-shawl">
+                            {item.category.title}
+                          </p>
+                        )}
+
+                        <h4 className="mt-1 font-display text-lg leading-snug text-navy transition group-hover:text-shawl">
+                          {item.title}
+                        </h4>
+
+                        {item.publishedAt && (
+                          <p className="mt-2 font-body text-xs text-navy/45">
+                            {new Date(item.publishedAt).toLocaleDateString()}
+                          </p>
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* SECTION EXPLORATION LINKS */}
+            <div className="mt-10 border-t border-navy/10 pt-6">
+              <h3 className="font-display text-xl text-navy">
+                Explore More
+              </h3>
+
+              <nav className="mt-4 space-y-0">
+                {[
+                  { label: 'Stories & Heritage', href: '/blog' },
+                  { label: 'Latest News', href: '/news' },
+                  { label: 'People of Saraikistan', href: '/celebrities' },
+                  { label: 'Places & Destinations', href: '/region' },
+                  { label: 'Culture & Traditions', href: '/culture' },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center justify-between border-b border-navy/10 py-3 font-body text-sm text-navy/75 transition hover:text-shawl"
+                  >
+                    <span>{item.label}</span>
+                    <span className="text-mustard">→</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* FEATURED RELATED PERSON */}
+            {story.relatedPersonName && story.relatedPersonSlug && (
+              <div className="mt-10 border-t border-navy/10 pt-6">
+                <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
+                  Featured Personality
+                </p>
+
+                <h3 className="mt-3 font-display text-xl leading-snug text-navy">
+                  {story.relatedPersonName}
+                </h3>
+
+                <p className="mt-2 font-body text-sm leading-6 text-navy/60">
+                  Discover the life and contributions of {story.relatedPersonName}.
+                </p>
+
+                <Link
+                  href={`/celebrities/${story.relatedPersonSlug}`}
+                  className="mt-4 inline-flex items-center gap-2 border-b border-mustard pb-1 font-body text-sm text-shawl transition hover:text-mustard"
+                >
+                  Read Biography <span>→</span>
+                </Link>
+              </div>
+            )}
+          </aside>
+        </div>
       </div>
     </section>
   )
