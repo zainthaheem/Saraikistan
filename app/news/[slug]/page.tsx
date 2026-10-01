@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -16,7 +15,10 @@ async function getNewsPost(slug: string) {
       author,
       source,
       newsType,
-      coverImage,
+      coverImage {
+        ...,
+        "dimensions": asset->metadata.dimensions
+      },
       imageCredits,
       gallery,
       videoUrl,
@@ -224,6 +226,23 @@ export default async function NewsPostPage({
     },
   }
 
+  /*
+   * The cover image is now displayed using its original aspect ratio.
+   * We no longer force a 1400x550 crop or a fixed-height container.
+   * This prevents important text at the top/bottom of news covers
+   * from being cut off on individual article pages.
+   */
+  const coverWidth = post.coverImage?.dimensions?.width || 1600
+  const coverHeight = post.coverImage?.dimensions?.height || 900
+
+  const coverImageUrl = post.coverImage
+    ? urlFor(post.coverImage)
+        .width(1600)
+        .quality(78)
+        .format('webp')
+        .url()
+    : undefined
+
   return (
     <section className="min-h-screen bg-cream text-navy">
 
@@ -238,24 +257,18 @@ export default async function NewsPostPage({
         }}
       />
 
-      {/* FULL-WIDTH COVER IMAGE */}
-      {post.coverImage && (
-        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
+      {/* FULL COVER IMAGE — PRESERVE ORIGINAL ASPECT RATIO */}
+      {coverImageUrl && (
+        <div className="w-full overflow-hidden bg-shawl">
           <img
-            src={urlFor(post.coverImage)
-              .width(1400)
-              .height(550)
-              .fit('crop')
-              .quality(72)
-              .format('webp')
-              .url()}
+            src={coverImageUrl}
             alt={post.title}
-            width={1400}
-            height={550}
+            width={coverWidth}
+            height={coverHeight}
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="h-full w-full object-cover"
+            className="block h-auto w-full"
           />
         </div>
       )}
