@@ -404,7 +404,7 @@ export default async function PersonPage({
 
                   <p className="mt-4 max-w-3xl font-body text-sm leading-7 text-navy/60 sm:text-base">
                     Explore the life, work, and cultural contributions of{' '}
-                    {person.name} and their place in Saraiki heritage.
+                    {person.name} and his place in Saraiki heritage.
                   </p>
 
                 </div>
