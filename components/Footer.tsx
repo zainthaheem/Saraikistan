@@ -1,4 +1,3 @@
-
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -150,6 +149,15 @@ export default async function Footer() {
                 className="block font-body text-sm text-cream/60 transition-colors duration-200 hover:text-mustard"
               >
                 +92 312 6789412
+              </a>
+
+              <a
+                href="https://www.linkedin.com/company/saraikistan-org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block font-body text-sm text-cream/60 transition-colors duration-200 hover:text-mustard"
+              >
+                LinkedIn →
               </a>
 
               <Link
