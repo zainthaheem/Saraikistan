@@ -2,6 +2,14 @@
 
 import { useState } from 'react'
 
+type MapImage = {
+  url: string
+  alt?: string
+  altUr?: string
+  caption?: string
+  captionUr?: string
+}
+
 type MapLanguageContentProps = {
   title: string
   titleUr?: string
@@ -9,18 +17,9 @@ type MapLanguageContentProps = {
   summaryUr?: string
   content?: string
   contentUr?: string
-  mainMapUrl: string
-  mainMapAlt: string
-  mainMapAltUr?: string
-  mainMapCaption?: string
-  mainMapCaptionUr?: string
-  additionalImages: {
-    url: string
-    alt?: string
-    altUr?: string
-    caption?: string
-    captionUr?: string
-  }[]
+  mainImageUrl: string
+  mainImageAlt: string
+  additionalImages: MapImage[]
 }
 
 export default function MapLanguageContent({
@@ -30,11 +29,8 @@ export default function MapLanguageContent({
   summaryUr,
   content,
   contentUr,
-  mainMapUrl,
-  mainMapAlt,
-  mainMapAltUr,
-  mainMapCaption,
-  mainMapCaptionUr,
+  mainImageUrl,
+  mainImageAlt,
   additionalImages,
 }: MapLanguageContentProps) {
   const [language, setLanguage] = useState<'en' | 'ur'>('en')
@@ -47,12 +43,6 @@ export default function MapLanguageContent({
   const displayedContent = isUrdu
     ? contentUr || content
     : content
-  const displayedMapAlt = isUrdu
-    ? mainMapAltUr || mainMapAlt
-    : mainMapAlt
-  const displayedMapCaption = isUrdu
-    ? mainMapCaptionUr || mainMapCaption
-    : mainMapCaption
 
   return (
     <div
@@ -118,15 +108,17 @@ export default function MapLanguageContent({
       <section className="border-t border-mustard pt-6 sm:pt-8">
         <figure>
           <a
-            href={mainMapUrl}
+            href={mainImageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={isUrdu ? 'مکمل نقشہ دیکھیں' : 'View full map'}
+            aria-label={
+              isUrdu ? 'مکمل نقشہ دیکھیں' : 'View full map'
+            }
             className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
           >
             <img
-              src={mainMapUrl}
-              alt={displayedMapAlt}
+              src={mainImageUrl}
+              alt={mainImageAlt}
               width={1536}
               height={1024}
               fetchPriority="high"
@@ -134,16 +126,10 @@ export default function MapLanguageContent({
               className="block h-auto w-full"
             />
           </a>
-
-          {displayedMapCaption && (
-            <figcaption className="mt-3 whitespace-pre-line font-body text-sm leading-7 text-navy/65 sm:text-base">
-              {displayedMapCaption}
-            </figcaption>
-          )}
         </figure>
 
         <a
-          href={mainMapUrl}
+          href={mainImageUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-5 inline-flex min-h-12 items-center justify-center bg-mustard px-5 py-3 font-body text-sm font-semibold text-navy transition-colors hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
@@ -161,8 +147,11 @@ export default function MapLanguageContent({
           <div className="mt-6 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {additionalImages.map((image, index) => {
               const imageAlt = isUrdu
-                ? image.altUr || image.alt || 'سرائیکی ثقافتی تصویر'
-                : image.alt || `Saraikistan cultural image ${index + 1}`
+                ? image.altUr ||
+                  image.alt ||
+                  'سرائیکی ثقافتی تصویر'
+                : image.alt ||
+                  `Saraikistan cultural image ${index + 1}`
 
               const imageCaption = isUrdu
                 ? image.captionUr || image.caption
