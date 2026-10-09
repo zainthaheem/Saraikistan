@@ -1,5 +1,8 @@
+
 'use client'
+
 import { useState } from 'react'
+
 type MapImage = {
   url: string
   alt?: string
@@ -7,6 +10,7 @@ type MapImage = {
   caption?: string
   captionUr?: string
 }
+
 type MapLanguageContentProps = {
   title: string
   titleUr?: string
@@ -18,6 +22,7 @@ type MapLanguageContentProps = {
   mainImageAlt: string
   additionalImages: MapImage[]
 }
+
 export default function MapLanguageContent({
   title,
   titleUr,
@@ -31,25 +36,22 @@ export default function MapLanguageContent({
 }: MapLanguageContentProps) {
   const [language, setLanguage] = useState<'en' | 'ur'>('en')
   const isUrdu = language === 'ur'
+
   const displayedTitle = isUrdu ? titleUr || title : title
-  const displayedSummary = isUrdu
-    ? summaryUr || summary
-    : summary
-  const displayedContent = isUrdu
-    ? contentUr || content
-    : content
+  const displayedSummary = isUrdu ? summaryUr || summary : summary
+  const displayedContent = isUrdu ? contentUr || content : content
+
   return (
     <div
-      dir={isUrdu ? 'rtl' : 'ltr'}
       lang={isUrdu ? 'ur' : 'en'}
-      className={isUrdu ? 'text-right' : 'text-left'}
+      className="w-full min-w-0"
     >
-      {/* LANGUAGE SWITCHER */}
-      <div
-        dir="ltr"
-        className="mb-8 flex w-full justify-start border-b border-navy/10 sm:mb-10"
-      >
-        <div className="flex items-center font-body text-sm">
+      {/* LANGUAGE SWITCHER - ALIGNED TO THE RIGHT */}
+      <div className="mb-8 flex w-full justify-end border-b border-navy/10 sm:mb-10">
+        <div
+          dir="ltr"
+          className="flex items-center font-body text-sm sm:text-base"
+        >
           <button
             type="button"
             onClick={() => setLanguage('en')}
@@ -62,9 +64,11 @@ export default function MapLanguageContent({
           >
             English
           </button>
+
           <span aria-hidden="true" className="text-navy/30">
             |
           </span>
+
           <button
             type="button"
             onClick={() => setLanguage('ur')}
@@ -79,75 +83,91 @@ export default function MapLanguageContent({
           </button>
         </div>
       </div>
-      {/* TITLE, SUMMARY AND CONTENT */}
-      <header className="pb-8 sm:pb-10">
-        <h1 className="font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
+
+      {/* TITLE, SUMMARY AND MAIN CONTENT */}
+      <header
+        dir={isUrdu ? 'rtl' : 'ltr'}
+        className={`pb-8 sm:pb-10 ${
+          isUrdu ? 'text-right' : 'text-left'
+        }`}
+      >
+        <h1 className="break-words font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
           {displayedTitle}
         </h1>
+
         {displayedSummary && (
-          <p className="mt-5 max-w-3xl whitespace-pre-line font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
+          <p className="mt-5 max-w-4xl whitespace-pre-line break-words font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
             {displayedSummary}
           </p>
         )}
+
         {displayedContent && (
-          <div className="mt-5 max-w-4xl whitespace-pre-line font-body text-base leading-8 text-navy/80 sm:text-lg sm:leading-9">
+          <div className="mt-5 max-w-4xl whitespace-pre-line break-words font-body text-base leading-8 text-navy/80 sm:text-lg sm:leading-9">
             {displayedContent}
           </div>
         )}
       </header>
-      {/* MAIN MAP */}
+
+      {/* MAIN MAP - NO DECORATIVE WHITE FRAME */}
       <section className="border-t border-mustard pt-6 sm:pt-8">
-        <figure>
+        <figure className="m-0 w-full min-w-0">
           <a
             href={mainImageUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={
-              isUrdu ? 'مکمل نقشہ دیکھیں' : 'View full map'
-            }
-            className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
+            aria-label={isUrdu ? 'مکمل نقشہ دیکھیں' : 'View full map'}
+            className="block w-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
           >
             <img
               src={mainImageUrl}
-              alt={mainImageAlt}
+              alt={isUrdu ? 'سرائیکستان کا ثقافتی نقشہ' : mainImageAlt}
               width={1536}
               height={1024}
               fetchPriority="high"
               decoding="async"
-              className="block h-auto w-full"
+              className="block h-auto w-full max-w-full"
             />
           </a>
         </figure>
-        <a
-          href={mainImageUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 inline-flex min-h-12 items-center justify-center bg-mustard px-5 py-3 font-body text-sm font-semibold text-navy transition-colors hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
-        >
-          {isUrdu ? 'مکمل نقشہ دیکھیں' : 'View Full Map'}
-        </a>
+
+        <div className={isUrdu ? 'text-right' : 'text-left'}>
+          <a
+            href={mainImageUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex min-h-12 items-center justify-center bg-mustard px-5 py-3 font-body text-sm font-semibold text-navy transition-colors hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+          >
+            {isUrdu ? 'مکمل نقشہ دیکھیں' : 'View Full Map'}
+          </a>
+        </div>
       </section>
+
       {/* ADDITIONAL PICTURES */}
       {additionalImages.length > 0 && (
         <section className="mt-10 border-t border-navy/15 pt-6 sm:mt-12 sm:pt-8">
-          <h2 className="font-display text-2xl leading-tight text-navy sm:text-3xl">
+          <h2
+            dir={isUrdu ? 'rtl' : 'ltr'}
+            className={`font-display text-2xl leading-tight text-navy sm:text-3xl ${
+              isUrdu ? 'text-right' : 'text-left'
+            }`}
+          >
             {isUrdu ? 'مزید تصاویر' : 'More Pictures'}
           </h2>
-          <div className="mt-6 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+
+          <div className="mt-6 grid min-w-0 grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {additionalImages.map((image, index) => {
               const imageAlt = isUrdu
-                ? image.altUr ||
-                  image.alt ||
-                  'سرائیکی ثقافتی تصویر'
-                : image.alt ||
-                  `Saraikistan cultural image ${index + 1}`
+                ? image.altUr || image.alt || 'سرائیکی ثقافتی تصویر'
+                : image.alt || `Saraikistan cultural image ${index + 1}`
+
               const imageCaption = isUrdu
                 ? image.captionUr || image.caption
                 : image.caption
+
               return (
                 <figure
                   key={`${image.url}-${index}`}
-                  className="min-w-0"
+                  className="m-0 min-w-0"
                 >
                   <a
                     href={image.url}
@@ -163,11 +183,17 @@ export default function MapLanguageContent({
                       height={700}
                       loading="lazy"
                       decoding="async"
-                      className="block h-auto w-full"
+                      className="block h-auto w-full max-w-full"
                     />
                   </a>
+
                   {imageCaption && (
-                    <figcaption className="mt-3 whitespace-pre-line font-body text-sm leading-7 text-navy/65">
+                    <figcaption
+                      dir={isUrdu ? 'rtl' : 'ltr'}
+                      className={`mt-3 whitespace-pre-line break-words font-body text-sm leading-7 text-navy/65 ${
+                        isUrdu ? 'text-right' : 'text-left'
+                      }`}
+                    >
                       {imageCaption}
                     </figcaption>
                   )}
