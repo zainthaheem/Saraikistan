@@ -1,161 +1,143 @@
 
 import type { Metadata } from 'next'
-import { client } from '@/sanity/lib/client'
-import { urlFor } from '@/sanity/lib/image'
 import MapLanguageContent from './MapLanguageContent'
 
-export const revalidate = 60
-
-type GalleryItem = {
-  asset?: {
-    _ref?: string
-  }
-  alt?: string
-  caption?: string
-}
-
-type MapDocument = {
-  title?: string
-  titleUr?: string
-  summary?: string
-  summaryUr?: string
-  content?: unknown
-  contentUr?: unknown
-  mainImage?: {
-    asset?: {
-      _ref?: string
-    }
-    alt?: string
-  }
-  gallery?: GalleryItem[]
-  seoTitle?: string
-  seoDescription?: string
-  seoImage?: {
-    asset?: {
-      _ref?: string
-    }
-  }
-}
-
-const mapQuery = `*[_type == "saraikistanMap" && published == true][0]{
-  title,
-  titleUr,
-  summary,
-  summaryUr,
-  content,
-  contentUr,
-  mainImage{
-    asset,
-    alt
+export const metadata: Metadata = {
+  title: 'Saraikistan Map | Saraiki Cultural Region & Cities',
+  description:
+    'Explore the Saraiki cultural and linguistic region through an illustrated map highlighting its cities, heritage and cultural identity.',
+  alternates: {
+    canonical: 'https://saraikistan.org/saraikistan-map',
   },
-  gallery[]{
-    asset,
-    alt,
-    caption
+  openGraph: {
+    title: 'Saraikistan Map | Saraiki Cultural Region',
+    description:
+      'Discover the cities, cultural centres and heritage of the Saraiki region through the Saraikistan cultural map.',
+    url: 'https://saraikistan.org/saraikistan-map',
+    siteName: 'Saraikistan',
+    type: 'website',
+    images: [
+      {
+        url: 'https://saraikistan.org/images/saraikistan-cultural-map.webp',
+        alt: 'Saraikistan cultural and linguistic region map',
+      },
+    ],
   },
-  seoTitle,
-  seoDescription,
-  seoImage{
-    asset
-  }
-}`
-
-export async function generateMetadata(): Promise<Metadata> {
-  const map = await client.fetch<MapDocument | null>(mapQuery)
-
-  const title =
-    map?.seoTitle || 'Saraikistan Map | Saraiki Cultural Region'
-
-  const description =
-    map?.seoDescription ||
-    'Explore the Saraiki cultural region through its cities, cultural centres, language and heritage.'
-
-  const seoImageUrl = map?.seoImage?.asset
-    ? urlFor(map.seoImage).width(1200).height(630).url()
-    : undefined
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: 'https://saraikistan.org/saraikistan-map',
-    },
-    openGraph: {
-      title,
-      description,
-      url: 'https://saraikistan.org/saraikistan-map',
-      siteName: 'Saraikistan',
-      type: 'website',
-      ...(seoImageUrl
-        ? {
-            images: [
-              {
-                url: seoImageUrl,
-                width: 1200,
-                height: 630,
-                alt: title,
-              },
-            ],
-          }
-        : {}),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      ...(seoImageUrl ? { images: [seoImageUrl] } : {}),
-    },
-  }
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Saraikistan Map | Saraiki Cultural Region',
+    description:
+      'Explore Saraiki cities, heritage and cultural identity through the Saraikistan map.',
+    images: [
+      'https://saraikistan.org/images/saraikistan-cultural-map.webp',
+    ],
+  },
 }
 
-export default async function SaraikistanMapPage() {
-  const map = await client.fetch<MapDocument | null>(mapQuery)
+const englishContent = [
+  {
+    _type: 'block',
+    _key: 'english-introduction',
+    style: 'normal',
+    markDefs: [],
+    children: [
+      {
+        _type: 'span',
+        _key: 'english-introduction-text',
+        marks: [],
+        text: 'Saraikistan represents the historic cultural and linguistic region associated with the Saraiki language and its communities. Its cultural landscape includes cities, towns, historic sites, shrines, river plains and traditions that have shaped generations of Saraiki people.',
+      },
+    ],
+  },
+  {
+    _type: 'block',
+    _key: 'english-geography',
+    style: 'normal',
+    markDefs: [],
+    children: [
+      {
+        _type: 'span',
+        _key: 'english-geography-text',
+        marks: [],
+        text: 'The map highlights important centres such as Multan, Bahawalpur, Dera Ghazi Khan, Rahim Yar Khan, Muzaffargarh, Layyah, Bhakkar and neighbouring areas with significant Saraiki-speaking communities. The extent of Saraiki language and cultural identity varies across localities.',
+      },
+    ],
+  },
+  {
+    _type: 'block',
+    _key: 'english-note',
+    style: 'normal',
+    markDefs: [],
+    children: [
+      {
+        _type: 'span',
+        _key: 'english-note-text',
+        marks: [],
+        text: 'A cultural and linguistic illustration, this map is intended for educational and heritage exploration. It does not represent an official administrative boundary, and language use may extend beyond the areas shown.',
+      },
+    ],
+  },
+]
 
-  if (!map) {
-    return (
-      <main className="min-h-screen bg-cream px-6 py-20 text-navy sm:px-10">
-        <div className="mx-auto max-w-4xl border-t border-mustard pt-8">
-          <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-            Saraikistan
-          </p>
+const urduContent = [
+  {
+    _type: 'block',
+    _key: 'urdu-introduction',
+    style: 'normal',
+    markDefs: [],
+    children: [
+      {
+        _type: 'span',
+        _key: 'urdu-introduction-text',
+        marks: [],
+        text: 'سرائیکستان اس تاریخی ثقافتی اور لسانی خطے کی نمائندگی کرتا ہے جو سرائیکی زبان اور اس سے وابستہ برادریوں کی پہچان ہے۔ اس خطے کی ثقافت میں شہر، قصبے، تاریخی مقامات، مزارات، دریائی میدان اور وہ روایات شامل ہیں جنہوں نے نسل در نسل سرائیکی لوگوں کی زندگی کو تشکیل دیا ہے۔',
+      },
+    ],
+  },
+  {
+    _type: 'block',
+    _key: 'urdu-geography',
+    style: 'normal',
+    markDefs: [],
+    children: [
+      {
+        _type: 'span',
+        _key: 'urdu-geography-text',
+        marks: [],
+        text: 'اس نقشے میں ملتان، بہاولپور، ڈیرہ غازی خان، رحیم یار خان، مظفرگڑھ، لیہ، بھکر اور ان کے آس پاس کے ایسے علاقوں کو نمایاں کیا گیا ہے جہاں سرائیکی زبان بولنے والی نمایاں آبادیاں موجود ہیں۔ مختلف علاقوں میں سرائیکی زبان اور ثقافتی شناخت کی موجودگی اور وسعت مختلف ہو سکتی ہے۔',
+      },
+    ],
+  },
+  {
+    _type: 'block',
+    _key: 'urdu-note',
+    style: 'normal',
+    markDefs: [],
+    children: [
+      {
+        _type: 'span',
+        _key: 'urdu-note-text',
+        marks: [],
+        text: 'یہ نقشہ ثقافتی، لسانی اور تعلیمی معلومات کے لیے تیار کیا گیا ہے۔ اسے کسی سرکاری انتظامی یا سیاسی حد بندی کا نقشہ نہ سمجھا جائے۔ سرائیکی زبان کا استعمال نقشے میں دکھائے گئے علاقوں سے باہر بھی پایا جا سکتا ہے۔',
+      },
+    ],
+  },
+]
 
-          <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-            Saraikistan Map
-          </h1>
-
-          <p className="mt-6 font-body text-base leading-8 text-navy/70">
-            The map is currently unavailable. Please check back soon.
-          </p>
-        </div>
-      </main>
-    )
-  }
-
-  const mainImageUrl = map.mainImage?.asset
-    ? urlFor(map.mainImage).width(2000).quality(85).format('webp').url()
-    : ''
-
-  const galleryImages = (map.gallery || [])
-    .filter((image) => Boolean(image.asset))
-    .map((image) => ({
-      url: urlFor(image).width(1200).quality(80).format('webp').url(),
-      alt: image.alt || '',
-      caption: image.caption || '',
-    }))
-
+export default function SaraikistanMapPage() {
   return (
     <main className="min-h-screen bg-cream text-navy">
-      <section className="mx-auto w-full max-w-7xl px-5 py-10 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
+      <section className="mx-auto max-w-7xl px-6 pb-16 pt-12 sm:px-10 sm:pb-20 sm:pt-16 lg:px-12 lg:pt-20">
         <MapLanguageContent
-          title={map.title || 'Saraikistan Map'}
-          titleUr={map.titleUr || ''}
-          summary={map.summary || ''}
-          summaryUr={map.summaryUr || ''}
-          content={map.content}
-          contentUr={map.contentUr}
-          mainImageUrl={mainImageUrl}
-          mainImageAlt={map.mainImage?.alt || map.title || 'Saraikistan cultural map'}
-          galleryImages={galleryImages}
+          title="Saraikistan Map"
+          titleUr="سرائیکستان کا نقشہ"
+          summary="Explore the Saraiki cultural region through an illustrated map highlighting its cities, cultural centres, language and heritage."
+          summaryUr="سرائیکی ثقافتی خطے کا ایک وضاحتی نقشہ دیکھیں، جس میں اس کے شہر، ثقافتی مراکز، زبان اور ورثے کو نمایاں کیا گیا ہے۔"
+          content={englishContent}
+          contentUr={urduContent}
+          mainImageUrl="/images/saraikistan-cultural-map.webp"
+          mainImageAlt="Illustrated map of the Saraiki cultural and linguistic region"
+          galleryImages={[]}
         />
       </section>
     </main>
