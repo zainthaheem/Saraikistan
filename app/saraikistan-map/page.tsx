@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import MapLanguageContent from './MapLanguageContent'
 export const revalidate = 60
@@ -11,10 +10,8 @@ const fallbackMap = {
   intro:
     'Explore the Saraiki cultural region through our illustrative Saraikistan map. Discover the wider geographical context of Saraiki-speaking communities, important cultural centres and the heritage that connects them.',
   mainMap: null,
-  regionDescription:
+  regionContent:
     'The Saraiki cultural region is associated with the Saraiki language and a rich heritage of folk music, poetry, Sufi traditions, literature and local customs. Its cultural landscape is particularly associated with southern Punjab and extends into adjoining areas where Saraiki-speaking communities live.',
-  regionExtra: '',
-  regionClosing: '',
   boundaryDisclaimer:
     'This is an illustrative cultural and linguistic map. It does not represent official administrative boundaries.',
   additionalImages: [],
@@ -46,26 +43,14 @@ async function getMapContent() {
             caption,
             captionUr
           },
-          regionDescription,
-          regionDescriptionUr,
-          regionExtra,
-          regionExtraUr,
-          regionClosing,
-          regionClosingUr,
+          regionContent,
+          regionContentUr,
+          placesCardContent,
+          placesCardContentUr,
+          cultureCardContent,
+          cultureCardContentUr,
           boundaryDisclaimer,
-          boundaryDisclaimerUr,
-          placesCardTitle,
-          placesCardTitleUr,
-          placesCardDescription,
-          placesCardDescriptionUr,
-          placesCardLinkLabel,
-          placesCardLinkLabelUr,
-          cultureCardTitle,
-          cultureCardTitleUr,
-          cultureCardDescription,
-          cultureCardDescriptionUr,
-          cultureCardLinkLabel,
-          cultureCardLinkLabelUr
+          boundaryDisclaimerUr
         }
     `)
     return map || fallbackMap
@@ -91,26 +76,14 @@ type MapContent = {
   introUr?: string
   mainMap?: MapImage | null
   additionalImages?: MapImage[]
-  regionDescription?: string
-  regionDescriptionUr?: string
-  regionExtra?: string
-  regionExtraUr?: string
-  regionClosing?: string
-  regionClosingUr?: string
+  regionContent?: string
+  regionContentUr?: string
+  placesCardContent?: string
+  placesCardContentUr?: string
+  cultureCardContent?: string
+  cultureCardContentUr?: string
   boundaryDisclaimer?: string
   boundaryDisclaimerUr?: string
-  placesCardTitle?: string
-  placesCardTitleUr?: string
-  placesCardDescription?: string
-  placesCardDescriptionUr?: string
-  placesCardLinkLabel?: string
-  placesCardLinkLabelUr?: string
-  cultureCardTitle?: string
-  cultureCardTitleUr?: string
-  cultureCardDescription?: string
-  cultureCardDescriptionUr?: string
-  cultureCardLinkLabel?: string
-  cultureCardLinkLabelUr?: string
 }
 export async function generateMetadata(): Promise<Metadata> {
   const map = (await getMapContent()) as MapContent
@@ -175,15 +148,14 @@ export default async function SaraikistanMapPage() {
           titleUr={map.titleUr}
           intro={map.intro || fallbackMap.intro}
           introUr={map.introUr}
-          regionDescription={
-            map.regionDescription ||
-            fallbackMap.regionDescription
+          regionContent={
+            map.regionContent || fallbackMap.regionContent
           }
-          regionDescriptionUr={map.regionDescriptionUr}
-          regionExtra={map.regionExtra}
-          regionExtraUr={map.regionExtraUr}
-          regionClosing={map.regionClosing}
-          regionClosingUr={map.regionClosingUr}
+          regionContentUr={map.regionContentUr}
+          placesCardContent={map.placesCardContent}
+          placesCardContentUr={map.placesCardContentUr}
+          cultureCardContent={map.cultureCardContent}
+          cultureCardContentUr={map.cultureCardContentUr}
           boundaryDisclaimer={
             map.boundaryDisclaimer ||
             fallbackMap.boundaryDisclaimer
@@ -195,18 +167,6 @@ export default async function SaraikistanMapPage() {
           mainMapCaption={map.mainMap?.caption}
           mainMapCaptionUr={map.mainMap?.captionUr}
           additionalImages={additionalImages}
-          placesCardTitle={map.placesCardTitle}
-          placesCardTitleUr={map.placesCardTitleUr}
-          placesCardDescription={map.placesCardDescription}
-          placesCardDescriptionUr={map.placesCardDescriptionUr}
-          placesCardLinkLabel={map.placesCardLinkLabel}
-          placesCardLinkLabelUr={map.placesCardLinkLabelUr}
-          cultureCardTitle={map.cultureCardTitle}
-          cultureCardTitleUr={map.cultureCardTitleUr}
-          cultureCardDescription={map.cultureCardDescription}
-          cultureCardDescriptionUr={map.cultureCardDescriptionUr}
-          cultureCardLinkLabel={map.cultureCardLinkLabel}
-          cultureCardLinkLabelUr={map.cultureCardLinkLabelUr}
         />
       </section>
     </main>
