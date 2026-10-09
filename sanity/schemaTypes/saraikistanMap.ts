@@ -64,8 +64,6 @@ export const saraikistanMap = defineType({
       title: 'Introduction (English)',
       type: 'text',
       rows: 4,
-      initialValue:
-        'Explore the Saraiki cultural region through this illustrative Saraikistan map.',
     }),
     defineField({
       name: 'introUr',
@@ -147,113 +145,52 @@ export const saraikistanMap = defineType({
       ],
     }),
     defineField({
-      name: 'regionDescription',
-      title: 'About the Saraiki Cultural Region (English)',
+      name: 'regionContent',
+      title: 'Regional Information (English)',
       type: 'text',
-      rows: 8,
-      initialValue:
-        'The Saraiki cultural region is associated with the Saraiki language, folk music, poetry, Sufi traditions and a rich cultural heritage. It is particularly associated with southern Punjab and adjoining areas where Saraiki-speaking communities live. Cultural and linguistic identities vary across localities, and the region has no universally agreed official administrative boundary.',
-    }),
-    defineField({
-      name: 'regionDescriptionUr',
-      title: 'About the Saraiki Cultural Region (Urdu)',
-      type: 'text',
-      rows: 8,
-      description: 'اردو میں خطے کی ثقافتی اور لسانی وضاحت لکھیں۔',
-    }),
-    defineField({
-      name: 'regionExtra',
-      title: 'Additional Regional Information (English)',
-      type: 'text',
-      rows: 6,
+      rows: 14,
       description:
-        'Additional regional paragraphs displayed below the main regional description.',
+        'Write the complete regional section here. Separate paragraphs with a blank line.',
     }),
     defineField({
-      name: 'regionExtraUr',
-      title: 'Additional Regional Information (Urdu)',
+      name: 'regionContentUr',
+      title: 'Regional Information (Urdu)',
       type: 'text',
-      rows: 6,
-      description: 'خطے کے بارے میں اضافی معلومات اردو میں لکھیں۔',
-    }),
-    defineField({
-      name: 'regionClosing',
-      title: 'Regional Section Closing Paragraph (English)',
-      type: 'text',
-      rows: 4,
+      rows: 14,
       description:
-        'The concluding paragraph of the regional information section.',
+        'خطے کی مکمل وضاحت یہاں لکھیں۔ پیراگراف الگ کرنے کے لیے ایک خالی سطر چھوڑیں۔',
     }),
     defineField({
-      name: 'regionClosingUr',
-      title: 'Regional Section Closing Paragraph (Urdu)',
+      name: 'placesCardContent',
+      title: 'Places & Cities Card (English)',
       type: 'text',
-      rows: 4,
-      description: 'خطے کے تعارف کا اختتامی پیراگراف اردو میں لکھیں۔',
+      rows: 5,
+      description:
+        'Enter the card title, description and link label on separate lines, in that order.',
     }),
     defineField({
-      name: 'placesCardTitle',
-      title: 'Places Navigation Card Title (English)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'placesCardTitleUr',
-      title: 'Places Navigation Card Title (Urdu)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'placesCardDescription',
-      title: 'Places Navigation Card Description (English)',
+      name: 'placesCardContentUr',
+      title: 'Places & Cities Card (Urdu)',
       type: 'text',
-      rows: 3,
+      rows: 5,
+      description:
+        'کارڈ کا عنوان، تفصیل اور لنک کا متن الگ الگ سطروں میں لکھیں۔',
     }),
     defineField({
-      name: 'placesCardDescriptionUr',
-      title: 'Places Navigation Card Description (Urdu)',
+      name: 'cultureCardContent',
+      title: 'Saraiki Culture Card (English)',
       type: 'text',
-      rows: 3,
+      rows: 5,
+      description:
+        'Enter the card title, description and link label on separate lines, in that order.',
     }),
     defineField({
-      name: 'placesCardLinkLabel',
-      title: 'Places Navigation Card Link Label (English)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'placesCardLinkLabelUr',
-      title: 'Places Navigation Card Link Label (Urdu)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'cultureCardTitle',
-      title: 'Culture Navigation Card Title (English)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'cultureCardTitleUr',
-      title: 'Culture Navigation Card Title (Urdu)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'cultureCardDescription',
-      title: 'Culture Navigation Card Description (English)',
+      name: 'cultureCardContentUr',
+      title: 'Saraiki Culture Card (Urdu)',
       type: 'text',
-      rows: 3,
-    }),
-    defineField({
-      name: 'cultureCardDescriptionUr',
-      title: 'Culture Navigation Card Description (Urdu)',
-      type: 'text',
-      rows: 3,
-    }),
-    defineField({
-      name: 'cultureCardLinkLabel',
-      title: 'Culture Navigation Card Link Label (English)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'cultureCardLinkLabelUr',
-      title: 'Culture Navigation Card Link Label (Urdu)',
-      type: 'string',
+      rows: 5,
+      description:
+        'کارڈ کا عنوان، تفصیل اور لنک کا متن الگ الگ سطروں میں لکھیں۔',
     }),
     defineField({
       name: 'boundaryDisclaimer',
@@ -269,7 +206,7 @@ export const saraikistanMap = defineType({
       title: 'Map Disclaimer (Urdu)',
       type: 'text',
       rows: 3,
-      description: 'اردو میں نقشے سے متعلق وضاحت لکھیں۔',
+      description: 'اردو میں نقشے سے متعلق وضاحت۔',
     }),
     defineField({
       name: 'published',
