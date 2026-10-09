@@ -1,18 +1,15 @@
+
 'use client'
+
 import { useState } from 'react'
+
 type MapLanguageContentProps = {
   title: string
   titleUr?: string
-  intro: string
-  introUr?: string
-  regionDescription: string
-  regionDescriptionUr?: string
-  regionExtra?: string
-  regionExtraUr?: string
-  regionClosing?: string
-  regionClosingUr?: string
-  boundaryDisclaimer: string
-  boundaryDisclaimerUr?: string
+  summary?: string
+  summaryUr?: string
+  content?: string
+  contentUr?: string
   mainMapUrl: string
   mainMapAlt: string
   mainMapAltUr?: string
@@ -25,247 +22,157 @@ type MapLanguageContentProps = {
     caption?: string
     captionUr?: string
   }[]
-  placesCardTitle?: string
-  placesCardTitleUr?: string
-  placesCardDescription?: string
-  placesCardDescriptionUr?: string
-  placesCardLinkLabel?: string
-  placesCardLinkLabelUr?: string
-  cultureCardTitle?: string
-  cultureCardTitleUr?: string
-  cultureCardDescription?: string
-  cultureCardDescriptionUr?: string
-  cultureCardLinkLabel?: string
-  cultureCardLinkLabelUr?: string
 }
+
 export default function MapLanguageContent({
   title,
   titleUr,
-  intro,
-  introUr,
-  regionDescription,
-  regionDescriptionUr,
-  regionExtra,
-  regionExtraUr,
-  regionClosing,
-  regionClosingUr,
-  boundaryDisclaimer,
-  boundaryDisclaimerUr,
+  summary,
+  summaryUr,
+  content,
+  contentUr,
   mainMapUrl,
   mainMapAlt,
   mainMapAltUr,
   mainMapCaption,
   mainMapCaptionUr,
   additionalImages,
-  placesCardTitle,
-  placesCardTitleUr,
-  placesCardDescription,
-  placesCardDescriptionUr,
-  placesCardLinkLabel,
-  placesCardLinkLabelUr,
-  cultureCardTitle,
-  cultureCardTitleUr,
-  cultureCardDescription,
-  cultureCardDescriptionUr,
-  cultureCardLinkLabel,
-  cultureCardLinkLabelUr,
 }: MapLanguageContentProps) {
   const [language, setLanguage] = useState<'en' | 'ur'>('en')
   const isUrdu = language === 'ur'
-  const content = {
-    eyebrow: isUrdu
-      ? 'جغرافیہ، زبان اور ورثہ'
-      : 'Geography, Language & Heritage',
-    title: isUrdu ? titleUr || title : title,
-    intro: isUrdu ? introUr || intro : intro,
-    mapEyebrow: isUrdu ? 'ثقافتی نقشہ' : 'Cultural Atlas',
-    mapHeading: isUrdu
-      ? 'سرائیکی ثقافتی خطے کا جائزہ'
-      : 'Explore the Saraiki Cultural Region',
-    mapIntro: isUrdu
-      ? 'سرائیکی ثقافتی خطے اور اس سے وابستہ شہروں اور ثقافتی مراکز کو نقشے میں دیکھیں۔'
-      : 'Explore the Saraiki cultural region and discover its cities and cultural centres through this illustrative map.',
-    mapAlt: isUrdu ? mainMapAltUr || mainMapAlt : mainMapAlt,
-    mapCaption: isUrdu
-      ? mainMapCaptionUr || mainMapCaption
-      : mainMapCaption,
-    viewMap: isUrdu ? 'مکمل نقشہ دیکھیں' : 'View Full Map',
-    moreEyebrow: isUrdu ? 'مزید دریافت کریں' : 'Explore More',
-    moreHeading: isUrdu
-      ? 'مزید نقشے اور ثقافتی تصاویر'
-      : 'More Maps & Cultural Images',
-    moreIntro: isUrdu
-      ? 'سرائیکی خطے سے متعلق مزید نقشے، علاقائی خاکے اور ثقافتی تصاویر دیکھیں۔'
-      : 'Explore additional maps, regional illustrations and cultural photographs from the Saraiki region.',
-    disclaimer: isUrdu
-      ? boundaryDisclaimerUr || boundaryDisclaimer
-      : boundaryDisclaimer,
-    regionHeading: isUrdu
-      ? 'سرائیکی ثقافتی خطے کے بارے میں'
-      : 'About the Saraiki Cultural Region',
-    regionDescription: isUrdu
-      ? regionDescriptionUr || regionDescription
-      : regionDescription,
-    regionExtra: isUrdu ? regionExtraUr : regionExtra,
-    regionClosing: isUrdu ? regionClosingUr : regionClosing,
-    placesEyebrow: isUrdu
-      ? 'مقامات دریافت کریں'
-      : 'Discover Destinations',
-    placesTitle: isUrdu
-      ? placesCardTitleUr || placesCardTitle
-      : placesCardTitle,
-    placesDescription: isUrdu
-      ? placesCardDescriptionUr || placesCardDescription
-      : placesCardDescription,
-    placesLink: isUrdu
-      ? placesCardLinkLabelUr || placesCardLinkLabel
-      : placesCardLinkLabel,
-    cultureEyebrow: isUrdu
-      ? 'روایات دریافت کریں'
-      : 'Discover Traditions',
-    cultureTitle: isUrdu
-      ? cultureCardTitleUr || cultureCardTitle
-      : cultureCardTitle,
-    cultureDescription: isUrdu
-      ? cultureCardDescriptionUr || cultureCardDescription
-      : cultureCardDescription,
-    cultureLink: isUrdu
-      ? cultureCardLinkLabelUr || cultureCardLinkLabel
-      : cultureCardLinkLabel,
-  }
+
+  const displayedTitle = isUrdu ? titleUr || title : title
+  const displayedSummary = isUrdu
+    ? summaryUr || summary
+    : summary
+  const displayedContent = isUrdu
+    ? contentUr || content
+    : content
+  const displayedMapAlt = isUrdu
+    ? mainMapAltUr || mainMapAlt
+    : mainMapAlt
+  const displayedMapCaption = isUrdu
+    ? mainMapCaptionUr || mainMapCaption
+    : mainMapCaption
+
   return (
     <div
       dir={isUrdu ? 'rtl' : 'ltr'}
       lang={isUrdu ? 'ur' : 'en'}
       className={isUrdu ? 'text-right' : 'text-left'}
     >
-      {/* LANGUAGE SWITCHER */}
       <div
         dir="ltr"
-        className="mb-10 flex w-full flex-row items-center justify-start border-b border-navy/10 sm:mb-12"
+        className="mb-8 flex w-full justify-start border-b border-navy/10 sm:mb-10"
       >
-        <div className="flex min-w-0 flex-row items-center justify-start font-body text-sm">
+        <div className="flex items-center font-body text-sm">
           <button
             type="button"
             onClick={() => setLanguage('en')}
             aria-pressed={!isUrdu}
-            className={`min-h-12 shrink-0 border-b-2 px-4 py-3 transition-colors ${
+            className={`min-h-12 border-b-2 px-4 py-3 transition-colors ${
               !isUrdu
                 ? 'border-mustard font-semibold text-navy'
-                : 'border-transparent text-navy/50 hover:text-shawl'
+                : 'border-transparent text-navy/60 hover:text-shawl'
             }`}
           >
             English
           </button>
-          <span aria-hidden="true" className="text-navy/25">
+
+          <span aria-hidden="true" className="text-navy/30">
             |
           </span>
+
           <button
             type="button"
             onClick={() => setLanguage('ur')}
             aria-pressed={isUrdu}
-            className={`min-h-12 shrink-0 border-b-2 px-4 py-3 transition-colors ${
+            className={`min-h-12 border-b-2 px-4 py-3 transition-colors ${
               isUrdu
                 ? 'border-mustard font-semibold text-navy'
-                : 'border-transparent text-navy/50 hover:text-shawl'
+                : 'border-transparent text-navy/60 hover:text-shawl'
             }`}
           >
             اردو
           </button>
         </div>
       </div>
-      {/* PAGE INTRODUCTION */}
-      <section className="pb-12 sm:pb-16">
-        <div className="pb-8 sm:pb-10">
-          <p className="font-body text-sm text-shawl">
-            {content.eyebrow}
-          </p>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
-            {content.title}
-          </h1>
+
+      <header className="pb-8 sm:pb-10">
+        <h1 className="font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
+          {displayedTitle}
+        </h1>
+
+        {displayedSummary && (
           <p className="mt-5 max-w-3xl whitespace-pre-line font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
-            {content.intro}
+            {displayedSummary}
           </p>
-        </div>
-      </section>
-      {/* MAIN CULTURAL MAP */}
-      <section aria-labelledby="map-heading" className="pb-12 sm:pb-16">
-        <div className="border-t border-mustard pt-7 sm:pt-9">
-          <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-            {content.mapEyebrow}
-          </p>
-          <h2
-            id="map-heading"
-            className="mt-3 font-display text-3xl leading-tight text-navy sm:text-4xl"
-          >
-            {content.mapHeading}
-          </h2>
-          <p className="mt-4 max-w-3xl font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
-            {content.mapIntro}
-          </p>
-          <figure className="mt-7 sm:mt-9">
-            <a
-              href={mainMapUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={content.viewMap}
-              className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
-            >
-              <img
-                src={mainMapUrl}
-                alt={content.mapAlt}
-                width={1536}
-                height={1024}
-                fetchPriority="high"
-                decoding="async"
-                className="block h-auto w-full"
-              />
-            </a>
-            {content.mapCaption && (
-              <figcaption className="mt-4 whitespace-pre-line font-body text-sm leading-7 text-navy/65 sm:text-base">
-                {content.mapCaption}
-              </figcaption>
-            )}
-          </figure>
+        )}
+
+        {displayedContent && (
+          <div className="mt-5 max-w-4xl whitespace-pre-line font-body text-base leading-8 text-navy/80 sm:text-lg sm:leading-9">
+            {displayedContent}
+          </div>
+        )}
+      </header>
+
+      <section className="border-t border-mustard pt-6 sm:pt-8">
+        <figure>
           <a
             href={mainMapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 flex min-h-14 w-full items-center justify-center bg-mustard px-5 py-4 text-center font-body text-sm font-semibold text-navy transition-colors hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl sm:w-auto"
+            aria-label={isUrdu ? 'مکمل نقشہ دیکھیں' : 'View full map'}
+            className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
           >
-            {content.viewMap}
+            <img
+              src={mainMapUrl}
+              alt={displayedMapAlt}
+              width={1536}
+              height={1024}
+              fetchPriority="high"
+              decoding="async"
+              className="block h-auto w-full"
+            />
           </a>
-          <p className="mt-5 whitespace-pre-line font-body text-sm leading-7 text-navy/65 sm:text-base sm:leading-8">
-            {content.disclaimer}
-          </p>
-        </div>
+
+          {displayedMapCaption && (
+            <figcaption className="mt-3 whitespace-pre-line font-body text-sm leading-7 text-navy/65 sm:text-base">
+              {displayedMapCaption}
+            </figcaption>
+          )}
+        </figure>
+
+        <a
+          href={mainMapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex min-h-12 items-center justify-center bg-mustard px-5 py-3 font-body text-sm font-semibold text-navy transition-colors hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+        >
+          {isUrdu ? 'مکمل نقشہ دیکھیں' : 'View Full Map'}
+        </a>
       </section>
-      {/* ADDITIONAL CULTURAL IMAGES */}
+
       {additionalImages.length > 0 && (
-        <section className="pb-12 sm:pb-16">
-          <div className="border-t border-mustard pt-7 sm:pt-9">
-            <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-              {content.moreEyebrow}
-            </p>
-            <h2 className="mt-3 font-display text-3xl leading-tight text-navy sm:text-4xl">
-              {content.moreHeading}
-            </h2>
-            <p className="mt-4 max-w-3xl font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
-              {content.moreIntro}
-            </p>
-          </div>
-          <div className="mt-7 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="mt-10 border-t border-navy/15 pt-6 sm:mt-12 sm:pt-8">
+          <h2 className="font-display text-2xl leading-tight text-navy sm:text-3xl">
+            {isUrdu ? 'مزید تصاویر' : 'More Pictures'}
+          </h2>
+
+          <div className="mt-6 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {additionalImages.map((image, index) => {
               const imageAlt = isUrdu
                 ? image.altUr || image.alt || 'سرائیکی ثقافتی تصویر'
                 : image.alt || `Saraikistan cultural image ${index + 1}`
+
               const imageCaption = isUrdu
                 ? image.captionUr || image.caption
                 : image.caption
+
               return (
                 <figure
                   key={`${image.url}-${index}`}
-                  className="min-w-0 border-b border-navy/10 pb-5"
+                  className="min-w-0"
                 >
                   <a
                     href={image.url}
@@ -284,111 +191,15 @@ export default function MapLanguageContent({
                       className="block h-auto w-full"
                     />
                   </a>
+
                   {imageCaption && (
-                    <figcaption className="whitespace-pre-line pt-3 font-body text-sm leading-7 text-navy/65">
+                    <figcaption className="mt-3 whitespace-pre-line font-body text-sm leading-7 text-navy/65">
                       {imageCaption}
                     </figcaption>
                   )}
                 </figure>
               )
             })}
-          </div>
-        </section>
-      )}
-      {/* ABOUT THE REGION */}
-      {(content.regionDescription ||
-        content.regionExtra ||
-        content.regionClosing) && (
-        <section className="pb-12 sm:pb-16">
-          <div className="border-t border-mustard pt-7 sm:pt-9">
-            <h2 className="font-display text-3xl leading-tight text-navy sm:text-4xl">
-              {content.regionHeading}
-            </h2>
-            <div className="mt-5 max-w-4xl space-y-4 font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
-              {content.regionDescription && (
-                <p className="whitespace-pre-line">
-                  {content.regionDescription}
-                </p>
-              )}
-              {content.regionExtra && (
-                <p className="whitespace-pre-line">
-                  {content.regionExtra}
-                </p>
-              )}
-              {content.regionClosing && (
-                <p className="whitespace-pre-line">
-                  {content.regionClosing}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-      {/* RELATED SECTIONS */}
-      {(content.placesTitle ||
-        content.placesDescription ||
-        content.placesLink ||
-        content.cultureTitle ||
-        content.cultureDescription ||
-        content.cultureLink) && (
-        <section className="pb-10 pt-4 sm:pb-12 sm:pt-6">
-          <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
-            {(content.placesTitle ||
-              content.placesDescription ||
-              content.placesLink) && (
-              <a
-                href="/region"
-                className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
-              >
-                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-                  {content.placesEyebrow}
-                </p>
-                {content.placesTitle && (
-                  <h2 className="mt-4 font-display text-3xl leading-tight text-navy sm:text-4xl">
-                    {content.placesTitle}
-                  </h2>
-                )}
-                {content.placesDescription && (
-                  <p className="mt-4 whitespace-pre-line font-body text-base leading-8 text-navy/70">
-                    {content.placesDescription}
-                  </p>
-                )}
-                {content.placesLink && (
-                  <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
-                    {content.placesLink}
-                    <span aria-hidden="true">→</span>
-                  </span>
-                )}
-              </a>
-            )}
-            {(content.cultureTitle ||
-              content.cultureDescription ||
-              content.cultureLink) && (
-              <a
-                href="/culture"
-                className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
-              >
-                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-                  {content.cultureEyebrow}
-                </p>
-                {content.cultureTitle && (
-                  <h2 className="mt-4 font-display text-3xl leading-tight text-navy sm:text-4xl">
-                    {content.cultureTitle}
-                  </h2>
-                )}
-                {content.cultureDescription && (
-                  <p className="mt-4 whitespace-pre-line font-body text-base leading-8 text-navy/70">
-                    {content.cultureDescription}
-                  </p>
-                )}
-                {content.cultureLink && (
-                  <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
-                    {content.cultureLink}
-                    <span aria-hidden="true">→</span>
-                  </span>
-                )}
-              </a>
-            )}
           </div>
         </section>
       )}
