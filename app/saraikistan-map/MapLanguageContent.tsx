@@ -7,6 +7,10 @@ type MapLanguageContentProps = {
   introUr?: string
   regionDescription: string
   regionDescriptionUr?: string
+  regionExtra?: string
+  regionExtraUr?: string
+  regionClosing?: string
+  regionClosingUr?: string
   boundaryDisclaimer: string
   boundaryDisclaimerUr?: string
   mainMapUrl: string
@@ -21,6 +25,18 @@ type MapLanguageContentProps = {
     caption?: string
     captionUr?: string
   }[]
+  placesCardTitle?: string
+  placesCardTitleUr?: string
+  placesCardDescription?: string
+  placesCardDescriptionUr?: string
+  placesCardLinkLabel?: string
+  placesCardLinkLabelUr?: string
+  cultureCardTitle?: string
+  cultureCardTitleUr?: string
+  cultureCardDescription?: string
+  cultureCardDescriptionUr?: string
+  cultureCardLinkLabel?: string
+  cultureCardLinkLabelUr?: string
 }
 export default function MapLanguageContent({
   title,
@@ -29,6 +45,10 @@ export default function MapLanguageContent({
   introUr,
   regionDescription,
   regionDescriptionUr,
+  regionExtra,
+  regionExtraUr,
+  regionClosing,
+  regionClosingUr,
   boundaryDisclaimer,
   boundaryDisclaimerUr,
   mainMapUrl,
@@ -37,6 +57,18 @@ export default function MapLanguageContent({
   mainMapCaption,
   mainMapCaptionUr,
   additionalImages,
+  placesCardTitle,
+  placesCardTitleUr,
+  placesCardDescription,
+  placesCardDescriptionUr,
+  placesCardLinkLabel,
+  placesCardLinkLabelUr,
+  cultureCardTitle,
+  cultureCardTitleUr,
+  cultureCardDescription,
+  cultureCardDescriptionUr,
+  cultureCardLinkLabel,
+  cultureCardLinkLabelUr,
 }: MapLanguageContentProps) {
   const [language, setLanguage] = useState<'en' | 'ur'>('en')
   const isUrdu = language === 'ur'
@@ -74,24 +106,32 @@ export default function MapLanguageContent({
     regionDescription: isUrdu
       ? regionDescriptionUr || regionDescription
       : regionDescription,
-    regionExtra: isUrdu
-      ? 'ملتان، ڈیرہ غازی خان، بہاولپور اور دیگر ثقافتی مراکز اس خطے کی متنوع تاریخ اور شناخت میں اہم کردار ادا کرتے ہیں۔ مختلف علاقوں میں زبان اور ثقافتی وابستگی مختلف ہو سکتی ہے، اس لیے اس خطے کی کوئی ایک متفقہ سرکاری حد نہیں سمجھی جانی چاہیے۔'
-      : "Multan, Dera Ghazi Khan, Bahawalpur and other cultural centres contribute to the region's diverse history and identity. Language use and cultural affiliations vary across localities, so the region should not be understood as having one universally agreed official boundary.",
-    regionClosing: isUrdu
-      ? 'یہ نقشہ ثقافتی اور لسانی آگاہی کے لیے تیار کیا گیا ہے، سرکاری انتظامی حدود کی مستند نمائندگی کے لیے نہیں۔'
-      : 'This map is intended for cultural and linguistic awareness, not as an authoritative representation of official administrative boundaries.',
-    placesEyebrow: isUrdu ? 'مقامات دریافت کریں' : 'Discover Destinations',
-    placesTitle: isUrdu ? 'مقامات اور شہر' : 'Places & Cities',
+    regionExtra: isUrdu ? regionExtraUr : regionExtra,
+    regionClosing: isUrdu ? regionClosingUr : regionClosing,
+    placesEyebrow: isUrdu
+      ? 'مقامات دریافت کریں'
+      : 'Discover Destinations',
+    placesTitle: isUrdu
+      ? placesCardTitleUr || placesCardTitle
+      : placesCardTitle,
     placesDescription: isUrdu
-      ? 'سرائیکستان پر درج شہروں، تاریخی مقامات اور ثقافتی مراکز کو دریافت کریں۔'
-      : 'Explore the cities, historic sites, landmarks and cultural places documented on Saraikistan.',
-    placesLink: isUrdu ? 'مقامات دیکھیں' : 'Explore Places',
-    cultureEyebrow: isUrdu ? 'روایات دریافت کریں' : 'Discover Traditions',
-    cultureTitle: isUrdu ? 'سرائیکی ثقافت' : 'Saraiki Culture',
+      ? placesCardDescriptionUr || placesCardDescription
+      : placesCardDescription,
+    placesLink: isUrdu
+      ? placesCardLinkLabelUr || placesCardLinkLabel
+      : placesCardLinkLabel,
+    cultureEyebrow: isUrdu
+      ? 'روایات دریافت کریں'
+      : 'Discover Traditions',
+    cultureTitle: isUrdu
+      ? cultureCardTitleUr || cultureCardTitle
+      : cultureCardTitle,
     cultureDescription: isUrdu
-      ? 'سرائیکی زبان، لوک موسیقی، شاعری، روایات اور ثقافتی ورثے کے بارے میں جانیں۔'
-      : 'Discover Saraiki language, folk music, poetry, traditions and cultural heritage.',
-    cultureLink: isUrdu ? 'ثقافت دیکھیں' : 'Explore Culture',
+      ? cultureCardDescriptionUr || cultureCardDescription
+      : cultureCardDescription,
+    cultureLink: isUrdu
+      ? cultureCardLinkLabelUr || cultureCardLinkLabel
+      : cultureCardLinkLabel,
   }
   return (
     <div
@@ -256,61 +296,102 @@ export default function MapLanguageContent({
         </section>
       )}
       {/* ABOUT THE REGION */}
-      <section className="pb-12 sm:pb-16">
-        <div className="border-t border-mustard pt-7 sm:pt-9">
-          <h2 className="font-display text-3xl leading-tight text-navy sm:text-4xl">
-            {content.regionHeading}
-          </h2>
-          <div className="mt-5 max-w-4xl space-y-4 font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
-            <p className="whitespace-pre-line">
-              {content.regionDescription}
-            </p>
-            <p>{content.regionExtra}</p>
-            <p>{content.regionClosing}</p>
+      {(content.regionDescription ||
+        content.regionExtra ||
+        content.regionClosing) && (
+        <section className="pb-12 sm:pb-16">
+          <div className="border-t border-mustard pt-7 sm:pt-9">
+            <h2 className="font-display text-3xl leading-tight text-navy sm:text-4xl">
+              {content.regionHeading}
+            </h2>
+            <div className="mt-5 max-w-4xl space-y-4 font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
+              {content.regionDescription && (
+                <p className="whitespace-pre-line">
+                  {content.regionDescription}
+                </p>
+              )}
+              {content.regionExtra && (
+                <p className="whitespace-pre-line">
+                  {content.regionExtra}
+                </p>
+              )}
+              {content.regionClosing && (
+                <p className="whitespace-pre-line">
+                  {content.regionClosing}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       {/* RELATED SECTIONS */}
-      <section className="pb-10 pt-4 sm:pb-12 sm:pt-6">
-        <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
-          <a
-            href="/region"
-            className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
-          >
-            <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-              {content.placesEyebrow}
-            </p>
-            <h2 className="mt-4 font-display text-3xl leading-tight text-navy sm:text-4xl">
-              {content.placesTitle}
-            </h2>
-            <p className="mt-4 font-body text-base leading-8 text-navy/70">
-              {content.placesDescription}
-            </p>
-            <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
-              {content.placesLink}
-              <span aria-hidden="true">→</span>
-            </span>
-          </a>
-          <a
-            href="/culture"
-            className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
-          >
-            <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-              {content.cultureEyebrow}
-            </p>
-            <h2 className="mt-4 font-display text-3xl leading-tight text-navy sm:text-4xl">
-              {content.cultureTitle}
-            </h2>
-            <p className="mt-4 font-body text-base leading-8 text-navy/70">
-              {content.cultureDescription}
-            </p>
-            <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
-              {content.cultureLink}
-              <span aria-hidden="true">→</span>
-            </span>
-          </a>
-        </div>
-      </section>
+      {(content.placesTitle ||
+        content.placesDescription ||
+        content.placesLink ||
+        content.cultureTitle ||
+        content.cultureDescription ||
+        content.cultureLink) && (
+        <section className="pb-10 pt-4 sm:pb-12 sm:pt-6">
+          <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
+            {(content.placesTitle ||
+              content.placesDescription ||
+              content.placesLink) && (
+              <a
+                href="/region"
+                className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
+              >
+                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
+                  {content.placesEyebrow}
+                </p>
+                {content.placesTitle && (
+                  <h2 className="mt-4 font-display text-3xl leading-tight text-navy sm:text-4xl">
+                    {content.placesTitle}
+                  </h2>
+                )}
+                {content.placesDescription && (
+                  <p className="mt-4 whitespace-pre-line font-body text-base leading-8 text-navy/70">
+                    {content.placesDescription}
+                  </p>
+                )}
+                {content.placesLink && (
+                  <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
+                    {content.placesLink}
+                    <span aria-hidden="true">→</span>
+                  </span>
+                )}
+              </a>
+            )}
+            {(content.cultureTitle ||
+              content.cultureDescription ||
+              content.cultureLink) && (
+              <a
+                href="/culture"
+                className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
+              >
+                <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
+                  {content.cultureEyebrow}
+                </p>
+                {content.cultureTitle && (
+                  <h2 className="mt-4 font-display text-3xl leading-tight text-navy sm:text-4xl">
+                    {content.cultureTitle}
+                  </h2>
+                )}
+                {content.cultureDescription && (
+                  <p className="mt-4 whitespace-pre-line font-body text-base leading-8 text-navy/70">
+                    {content.cultureDescription}
+                  </p>
+                )}
+                {content.cultureLink && (
+                  <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
+                    {content.cultureLink}
+                    <span aria-hidden="true">→</span>
+                  </span>
+                )}
+              </a>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
