@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -8,14 +9,14 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Saraiki Region | Places, Cities & Heritage',
   description:
-    'Explore cities, historic sites, landmarks and cultural places across the Saraiki region. Discover the heritage and destinations of Saraiki-speaking communities.',
+    'Explore Saraiki cities, historic sites, shrines, landmarks and cultural destinations across the Saraiki region.',
   alternates: {
     canonical: 'https://saraikistan.org/region',
   },
   openGraph: {
     title: 'Saraiki Region | Places, Cities & Heritage',
     description:
-      'Explore cities, historic sites, landmarks and cultural places across the Saraiki region.',
+      'Explore Saraiki cities, historic sites, landmarks and cultural heritage across the region.',
     type: 'website',
     url: 'https://saraikistan.org/region',
     siteName: 'Saraikistan',
@@ -45,51 +46,26 @@ export default async function Region() {
 
   return (
     <main className="min-h-screen bg-cream text-navy">
-      <section className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:px-10 sm:pb-10 sm:pt-20 lg:px-12">
+      <section className="mx-auto max-w-7xl px-6 pb-10 pt-14 sm:px-10 sm:pb-12 sm:pt-16 lg:px-12 lg:pt-20">
         <div className="max-w-4xl">
-          <p className="font-body text-xs uppercase tracking-[0.18em] text-mustard">
+          <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
             Discover the land and its heritage
           </p>
 
-          <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
+          <h1 className="mt-3 font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
             Places &amp; Cities
           </h1>
 
-          <p className="mt-5 max-w-3xl font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
-            Explore the cities, historic sites, shrines, landmarks
-            and landscapes that shape the cultural heritage of
-            the Saraiki region. Discover the places, stories and
-            traditions that connect communities across this
-            diverse part of Pakistan.
-          </p>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-14 lg:px-12">
-        <div className="border-t border-mustard pt-7">
-          <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-center">
-            <div className="max-w-3xl">
-              <p className="font-body text-xs uppercase tracking-[0.16em] text-mustard">
-                Geography &amp; cultural identity
-              </p>
-
-              <h2 className="mt-2 font-display text-2xl text-navy sm:text-3xl">
-                Discover the Saraiki Region
-              </h2>
-
-              <p className="mt-3 font-body text-sm leading-7 text-navy/65 sm:text-base sm:leading-7">
-                From historic cities and Sufi heritage to local
-                landscapes and cultural centres, the Saraiki
-                region has a rich and varied history. Explore
-                individual destinations or view our illustrated
-                map to understand the wider cultural and
-                linguistic landscape.
-              </p>
-            </div>
+          <div className="mt-7 border-t border-mustard pt-6 sm:mt-8 sm:pt-7">
+            <p className="max-w-3xl font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
+              Explore the cities, historic sites, shrines and
+              landscapes that shape the cultural heritage of the
+              Saraiki region.
+            </p>
 
             <Link
               href="/saraikistan-map"
-              className="inline-flex min-h-10 items-center justify-center self-start border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl sm:self-center"
+              className="mt-6 inline-flex min-h-12 w-full items-center justify-center border border-mustard bg-mustard px-6 py-3 text-center font-body text-xs font-semibold uppercase tracking-[0.12em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl sm:w-auto"
             >
               View Saraikistan Map
             </Link>
@@ -100,7 +76,7 @@ export default async function Region() {
       {places.length === 0 ? (
         <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
           <div className="border border-navy/10 bg-[#F3EBDD] p-8 sm:p-12">
-            <p className="font-body text-xs uppercase tracking-[0.14em] text-mustard">
+            <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
               Places archive
             </p>
 
@@ -111,13 +87,11 @@ export default async function Region() {
             <p className="mt-4 max-w-2xl font-body text-base leading-7 text-navy/60 sm:text-lg">
               No places have been added yet. Publish your first
               place through Sanity Studio and it will appear here.
-              You can also explore the Saraikistan map for a
-              broader view of the cultural region.
             </p>
 
             <Link
               href="/saraikistan-map"
-              className="mt-6 inline-flex min-h-10 items-center justify-center border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+              className="mt-6 inline-flex min-h-12 items-center justify-center border border-mustard bg-mustard px-5 py-3 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
             >
               View Saraikistan Map
             </Link>
