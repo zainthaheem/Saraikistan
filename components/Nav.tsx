@@ -1,4 +1,3 @@
-
 'use client'
 
 import Link from 'next/link'
@@ -9,6 +8,7 @@ import { urlFor } from '@/sanity/lib/image'
 const links = [
   { href: '/culture', label: 'Culture' },
   { href: '/region', label: 'Places' },
+  { href: '/saraikistan-map', label: 'Map' },
   { href: '/celebrities', label: 'People' },
   { href: '/blog', label: 'Stories' },
   { href: '/news', label: 'News' },
