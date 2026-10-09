@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
-import { urlFor } from '@/sanity/lib/image'
 
 export const revalidate = 60
 
@@ -30,13 +28,13 @@ async function getMapContent() {
           seoTitle,
           seoDescription,
           intro,
-          mainMap {
-            asset,
+          "mainMap": mainMap {
+            "url": asset->url,
             alt,
             caption
           },
-          additionalImages[] {
-            asset,
+          "additionalImages": additionalImages[] {
+            "url": asset->url,
             alt,
             caption
           },
@@ -51,27 +49,19 @@ async function getMapContent() {
   }
 }
 
+type MapImage = {
+  url?: string
+  alt?: string
+  caption?: string
+}
+
 type MapContent = {
   title?: string
   seoTitle?: string
   seoDescription?: string
   intro?: string
-  mainMap?: {
-    asset?: {
-      _ref?: string
-      _type?: string
-    }
-    alt?: string
-    caption?: string
-  } | null
-  additionalImages?: Array<{
-    asset?: {
-      _ref?: string
-      _type?: string
-    }
-    alt?: string
-    caption?: string
-  }>
+  mainMap?: MapImage | null
+  additionalImages?: MapImage[]
   regionDescription?: string
   boundaryDisclaimer?: string
 }
@@ -85,9 +75,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     map.seoDescription || fallbackMap.seoDescription
 
-  const mainImageUrl = map.mainMap?.asset
-    ? urlFor(map.mainMap as never).width(1200).url()
-    : 'https://saraikistan.org/images/saraikistan-cultural-map.webp'
+  const imageUrl =
+    map.mainMap?.url ||
+    'https://saraikistan.org/images/saraikistan-cultural-map.webp'
 
   return {
     title,
@@ -103,7 +93,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: mainImageUrl,
+          url: imageUrl,
           alt: map.mainMap?.alt || 'Saraikistan cultural region map',
         },
       ],
@@ -112,7 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: [mainImageUrl],
+      images: [imageUrl],
     },
   }
 }
@@ -120,21 +110,21 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SaraikistanMapPage() {
   const map = (await getMapContent()) as MapContent
 
-  const mainMapUrl = map.mainMap?.asset
-    ? urlFor(map.mainMap as never).width(2000).url()
-    : '/images/saraikistan-cultural-map.webp'
+  const mainMapUrl =
+    map.mainMap?.url ||
+    '/images/saraikistan-cultural-map.webp'
 
   const mainMapAlt =
     map.mainMap?.alt ||
     'Saraikistan map illustrating the Saraiki cultural region and selected cities in Pakistan.'
 
   const additionalImages = (map.additionalImages || []).filter(
-    (image) => image.asset?._ref
+    (image) => image.url
   )
 
   return (
     <main className="min-h-screen bg-cream text-navy">
-      <section className="mx-auto max-w-7xl px-6 pb-8 pt-14 sm:px-10 sm:pb-12 sm:pt-20 lg:px-12">
+      <section className="mx-auto max-w-7xl px-6 pb-8 pt-12 sm:px-10 sm:pb-10 sm:pt-16 lg:px-12">
         <div className="max-w-4xl">
           <p className="font-body text-xs uppercase tracking-[0.18em] text-mustard">
             Geography, language &amp; heritage
@@ -152,65 +142,58 @@ export default async function SaraikistanMapPage() {
 
       <section
         aria-labelledby="map-heading"
-        className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12"
+        className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-14 lg:px-12"
       >
         <div className="border border-navy/10 bg-[#F3EBDD] p-3 sm:p-6 lg:p-8">
           <div className="mb-5">
+            <p className="font-body text-xs uppercase tracking-[0.16em] text-mustard">
+              Cultural atlas
+            </p>
+
             <h2
               id="map-heading"
-              className="font-display text-2xl text-navy sm:text-3xl"
+              className="mt-2 font-display text-2xl text-navy sm:text-3xl"
             >
               Explore the Saraiki Cultural Region
             </h2>
 
             <p className="mt-2 font-body text-sm leading-6 text-navy/65 sm:text-base">
-              View the map in detail or open the original image
-              in a separate browser tab.
+              View the full-size map or save a copy for reference.
             </p>
           </div>
 
-          <a
-            href={mainMapUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View the full-size Saraikistan cultural map"
-            className="group block overflow-hidden border border-navy/10 bg-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
-          >
-            {map.mainMap?.asset ? (
-              <Image
-                src={mainMapUrl}
-                alt={mainMapAlt}
-                width={1536}
-                height={1024}
-                priority
-                sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) calc(100vw - 112px), 1152px"
-                className="block h-auto w-full transition-opacity duration-300 group-hover:opacity-90"
-              />
-            ) : (
-              <Image
-                src="/images/saraikistan-cultural-map.webp"
-                alt={mainMapAlt}
-                width={1536}
-                height={1024}
-                priority
-                sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) calc(100vw - 112px), 1152px"
-                className="block h-auto w-full transition-opacity duration-300 group-hover:opacity-90"
-              />
-            )}
-          </a>
-
-          {map.mainMap?.caption && (
-            <p className="mt-3 font-body text-sm leading-6 text-navy/65">
-              {map.mainMap.caption}
-            </p>
-          )}
-
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <figure className="overflow-hidden border border-navy/10 bg-cream">
             <a
               href={mainMapUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#1E3A8A] px-6 py-3 font-body text-sm font-medium text-white transition hover:bg-[#0F172A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+              aria-label="Open the full-size Saraikistan cultural map"
+              className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+            >
+              <img
+                src={mainMapUrl}
+                alt={mainMapAlt}
+                width={1536}
+                height={1024}
+                fetchPriority="high"
+                decoding="async"
+                className="block h-auto w-full"
+              />
+            </a>
+
+            {map.mainMap?.caption && (
+              <figcaption className="border-t border-navy/10 px-4 py-3 font-body text-sm leading-6 text-navy/65 sm:px-5">
+                {map.mainMap.caption}
+              </figcaption>
+            )}
+          </figure>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <a
+              href={mainMapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-10 items-center justify-center gap-2 border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
             >
               View Full Map
               <span aria-hidden="true">↗</span>
@@ -219,7 +202,7 @@ export default async function SaraikistanMapPage() {
             <a
               href={mainMapUrl}
               download="saraikistan-cultural-map"
-              className="inline-flex min-h-12 items-center justify-center gap-2 border border-navy/20 px-6 py-3 font-body text-sm font-medium text-navy transition hover:bg-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+              className="inline-flex min-h-10 items-center justify-center gap-2 border border-navy/20 bg-transparent px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-mustard hover:bg-white/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
             >
               Download Map
               <span aria-hidden="true">↓</span>
@@ -234,53 +217,52 @@ export default async function SaraikistanMapPage() {
       </section>
 
       {additionalImages.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 pb-14 sm:px-10 sm:pb-16 lg:px-12">
+        <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-14 lg:px-12">
           <div className="mb-6">
-            <h2 className="font-display text-3xl text-navy sm:text-4xl">
+            <p className="font-body text-xs uppercase tracking-[0.16em] text-mustard">
+              More to discover
+            </p>
+
+            <h2 className="mt-2 font-display text-3xl text-navy sm:text-4xl">
               More Maps &amp; Cultural Images
             </h2>
 
             <p className="mt-3 max-w-3xl font-body text-base leading-7 text-navy/65">
-              Explore additional maps, illustrations and images
-              documenting the Saraiki cultural region.
+              Explore additional maps, regional illustrations and
+              cultural photographs from the Saraiki region.
             </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {additionalImages.map((image, index) => {
-              const imageUrl = urlFor(image as never)
-                .width(1000)
-                .url()
-
-              return (
-                <figure
-                  key={image.asset?._ref || index}
-                  className="overflow-hidden border border-navy/10 bg-[#F3EBDD]"
+            {additionalImages.map((image, index) => (
+              <figure
+                key={`${image.url}-${index}`}
+                className="overflow-hidden border border-navy/10 bg-[#F3EBDD]"
+              >
+                <a
+                  href={image.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View ${image.alt || `cultural image ${index + 1}`}`}
                 >
-                  <a
-                    href={imageUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`View image: ${image.alt || `Cultural map ${index + 1}`}`}
-                  >
-                    <Image
-                      src={imageUrl}
-                      alt={image.alt || 'Saraikistan cultural image'}
-                      width={1000}
-                      height={700}
-                      sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 1023px) calc(50vw - 56px), 384px"
-                      className="block h-auto w-full"
-                    />
-                  </a>
+                  <img
+                    src={image.url}
+                    alt={image.alt || 'Saraikistan cultural image'}
+                    width={1000}
+                    height={700}
+                    loading="lazy"
+                    decoding="async"
+                    className="block h-auto w-full"
+                  />
+                </a>
 
-                  {image.caption && (
-                    <figcaption className="p-4 font-body text-sm leading-6 text-navy/65">
-                      {image.caption}
-                    </figcaption>
-                  )}
-                </figure>
-              )
-            })}
+                {image.caption && (
+                  <figcaption className="p-4 font-body text-sm leading-6 text-navy/65">
+                    {image.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
           </div>
         </section>
       )}
@@ -317,10 +299,10 @@ export default async function SaraikistanMapPage() {
       </section>
 
       <section className="border-y border-navy/10 bg-[#F3EBDD]">
-        <div className="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-2 sm:px-10 sm:py-14 lg:px-12">
+        <div className="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-2 sm:px-10 sm:py-12 lg:px-12">
           <Link
             href="/region"
-            className="group border border-navy/10 bg-cream p-6 transition hover:border-mustard sm:p-8"
+            className="group border border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
           >
             <p className="font-body text-xs uppercase tracking-[0.15em] text-mustard">
               Discover destinations
@@ -335,14 +317,14 @@ export default async function SaraikistanMapPage() {
               cultural places documented on Saraikistan.
             </p>
 
-            <span className="mt-5 inline-block font-body text-sm text-shawl group-hover:text-mustard">
+            <span className="mt-5 inline-block font-body text-xs font-semibold uppercase tracking-[0.1em] text-shawl transition-colors group-hover:text-mustard">
               Explore places →
             </span>
           </Link>
 
           <Link
             href="/culture"
-            className="group border border-navy/10 bg-cream p-6 transition hover:border-mustard sm:p-8"
+            className="group border border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
           >
             <p className="font-body text-xs uppercase tracking-[0.15em] text-mustard">
               Discover traditions
@@ -357,7 +339,7 @@ export default async function SaraikistanMapPage() {
               traditions and cultural heritage.
             </p>
 
-            <span className="mt-5 inline-block font-body text-sm text-shawl group-hover:text-mustard">
+            <span className="mt-5 inline-block font-body text-xs font-semibold uppercase tracking-[0.1em] text-shawl transition-colors group-hover:text-mustard">
               Explore culture →
             </span>
           </Link>
