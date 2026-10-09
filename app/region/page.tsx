@@ -51,6 +51,7 @@ export default async function Region() {
           <p className="font-body text-xs uppercase tracking-[0.18em] text-mustard">
             Where Saraiki culture comes from
           </p>
+
           <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
             Places
           </h1>
@@ -98,12 +99,12 @@ export default async function Region() {
 
           <figure className="overflow-hidden border border-navy/10 bg-[#F3EBDD]">
             <Image
-              src="/images/saraikistan-map.svg"
-              alt="Illustrative map of the Saraiki cultural and linguistic region, showing selected districts, cities and adjoining areas of Pakistan."
+              src="/images/saraikistan-cultural-map.webp"
+              alt="Saraikistan cultural map illustrating the Saraiki cultural region and selected cities."
               width={1536}
               height={1024}
               sizes="(max-width: 767px) calc(100vw - 64px), (max-width: 1279px) calc(100vw - 112px), 1152px"
-              className="h-auto w-full"
+              className="block h-auto w-full"
             />
 
             <figcaption className="border-t border-navy/10 px-4 py-3 font-body text-xs leading-5 text-navy/60 sm:px-5">
