@@ -40,7 +40,11 @@ const places = await getPlaces()
 
 return (
 Where Saraiki culture comes from
-Places
+      <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
+        Places
+      </h1>
+    </div>
+  </section>
   <section className="mx-auto max-w-7xl px-6 pb-10 sm:px-10 sm:pb-12 lg:px-12">
     <div className="border-t border-mustard pt-7">
       <div className="max-w-3xl">
