@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -41,7 +42,7 @@ export default function MapLanguageContent({
     : title
 
   const displayedSummary = isUrdu
-    ? summaryUr
+    ? summaryUr || summary
     : summary
 
   const displayedContent = isUrdu
@@ -60,20 +61,21 @@ export default function MapLanguageContent({
     >
       <div
         dir="ltr"
-        className="mb-8 flex w-full justify-end"
+        className="mb-8 flex w-full justify-start sm:mb-10"
       >
         <div
-          className="inline-flex items-center gap-1"
+          className="inline-flex items-center gap-0 border border-mustard/60 bg-[#F3EBDD]"
+          role="group"
           aria-label="Choose language"
         >
           <button
             type="button"
             onClick={() => setLanguage('en')}
             aria-pressed={!isUrdu}
-            className={`min-h-10 px-4 py-2 font-body text-sm transition-colors ${
+            className={`min-h-10 border-r border-mustard/40 px-4 py-2 font-body text-xs uppercase tracking-[0.12em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl ${
               !isUrdu
                 ? 'bg-navy text-cream'
-                : 'border border-navy/20 text-navy hover:border-shawl'
+                : 'bg-transparent text-navy hover:bg-mustard/10'
             }`}
           >
             English
@@ -84,10 +86,10 @@ export default function MapLanguageContent({
             onClick={() => setLanguage('ur')}
             aria-pressed={isUrdu}
             lang="ur"
-            className={`min-h-10 px-4 py-2 font-body text-sm transition-colors ${
+            className={`min-h-10 px-4 py-2 font-body text-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl ${
               isUrdu
                 ? 'bg-navy text-cream'
-                : 'border border-navy/20 text-navy hover:border-shawl'
+                : 'bg-transparent text-navy hover:bg-mustard/10'
             }`}
           >
             اردو
@@ -167,7 +169,9 @@ export default function MapLanguageContent({
                   className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
                   aria-label={
                     image.alt ||
-                    (isUrdu ? 'تصویر مکمل کھولیں' : 'Open full-size image')
+                    (isUrdu
+                      ? 'تصویر مکمل کھولیں'
+                      : 'Open full-size image')
                   }
                 >
                   <img
