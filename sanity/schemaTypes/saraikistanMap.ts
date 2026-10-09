@@ -1,6 +1,4 @@
-
 import { defineField, defineType } from 'sanity'
-
 export const saraikistanMap = defineType({
   name: 'saraikistanMap',
   title: 'Saraikistan Map',
@@ -162,6 +160,100 @@ export const saraikistanMap = defineType({
       type: 'text',
       rows: 8,
       description: 'اردو میں خطے کی ثقافتی اور لسانی وضاحت لکھیں۔',
+    }),
+    defineField({
+      name: 'regionExtra',
+      title: 'Additional Regional Information (English)',
+      type: 'text',
+      rows: 6,
+      description:
+        'Additional regional paragraphs displayed below the main regional description.',
+    }),
+    defineField({
+      name: 'regionExtraUr',
+      title: 'Additional Regional Information (Urdu)',
+      type: 'text',
+      rows: 6,
+      description: 'خطے کے بارے میں اضافی معلومات اردو میں لکھیں۔',
+    }),
+    defineField({
+      name: 'regionClosing',
+      title: 'Regional Section Closing Paragraph (English)',
+      type: 'text',
+      rows: 4,
+      description:
+        'The concluding paragraph of the regional information section.',
+    }),
+    defineField({
+      name: 'regionClosingUr',
+      title: 'Regional Section Closing Paragraph (Urdu)',
+      type: 'text',
+      rows: 4,
+      description: 'خطے کے تعارف کا اختتامی پیراگراف اردو میں لکھیں۔',
+    }),
+    defineField({
+      name: 'placesCardTitle',
+      title: 'Places Navigation Card Title (English)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'placesCardTitleUr',
+      title: 'Places Navigation Card Title (Urdu)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'placesCardDescription',
+      title: 'Places Navigation Card Description (English)',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'placesCardDescriptionUr',
+      title: 'Places Navigation Card Description (Urdu)',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'placesCardLinkLabel',
+      title: 'Places Navigation Card Link Label (English)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'placesCardLinkLabelUr',
+      title: 'Places Navigation Card Link Label (Urdu)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'cultureCardTitle',
+      title: 'Culture Navigation Card Title (English)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'cultureCardTitleUr',
+      title: 'Culture Navigation Card Title (Urdu)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'cultureCardDescription',
+      title: 'Culture Navigation Card Description (English)',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'cultureCardDescriptionUr',
+      title: 'Culture Navigation Card Description (Urdu)',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'cultureCardLinkLabel',
+      title: 'Culture Navigation Card Link Label (English)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'cultureCardLinkLabelUr',
+      title: 'Culture Navigation Card Link Label (Urdu)',
+      type: 'string',
     }),
     defineField({
       name: 'boundaryDisclaimer',
