@@ -102,10 +102,9 @@ export default function MapLanguageContent({
       {/* LANGUAGE SWITCHER */}
       <div
         dir="ltr"
-        className="mb-10 grid w-full grid-cols-[1fr_auto] items-center border-b border-navy/10 sm:mb-12"
+        className="mb-10 flex w-full flex-row items-center justify-start border-b border-navy/10 sm:mb-12"
       >
-        <div aria-hidden="true" />
-        <div className="flex min-w-0 flex-row items-center justify-end font-body text-sm">
+        <div className="flex min-w-0 flex-row items-center justify-start font-body text-sm">
           <button
             type="button"
             onClick={() => setLanguage('en')}
@@ -118,10 +117,7 @@ export default function MapLanguageContent({
           >
             English
           </button>
-          <span
-            aria-hidden="true"
-            className="text-navy/25"
-          >
+          <span aria-hidden="true" className="text-navy/25">
             |
           </span>
           <button
@@ -153,10 +149,7 @@ export default function MapLanguageContent({
         </div>
       </section>
       {/* MAIN CULTURAL MAP */}
-      <section
-        aria-labelledby="map-heading"
-        className="pb-12 sm:pb-16"
-      >
+      <section aria-labelledby="map-heading" className="pb-12 sm:pb-16">
         <div className="border-t border-mustard pt-7 sm:pt-9">
           <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
             {content.mapEyebrow}
