@@ -156,7 +156,8 @@ export default async function SaraikistanMapPage() {
             </h2>
 
             <p className="mt-2 font-body text-sm leading-6 text-navy/65 sm:text-base">
-              View the full-size map or save a copy for reference.
+              View the full-size map for a closer look at the
+              Saraiki cultural region.
             </p>
           </div>
 
@@ -186,7 +187,7 @@ export default async function SaraikistanMapPage() {
             )}
           </figure>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="mt-5">
             <a
               href={mainMapUrl}
               target="_blank"
@@ -194,14 +195,6 @@ export default async function SaraikistanMapPage() {
               className="inline-flex min-h-10 items-center justify-center border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
             >
               View Full Map
-            </a>
-
-            <a
-              href={mainMapUrl}
-              download="saraikistan-cultural-map"
-              className="inline-flex min-h-10 items-center justify-center border border-navy/20 bg-transparent px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-mustard hover:bg-white/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
-            >
-              Download Map
             </a>
           </div>
 
