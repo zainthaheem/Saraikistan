@@ -39,14 +39,8 @@ export default async function Region() {
 const places = await getPlaces()
 
 return (
-{/* PAGE HEADER */}
 Where Saraiki culture comes from
-      <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
-        Places
-      </h1>
-    </div>
-  </section>
-  {/* INTRO */}
+Places
   <section className="mx-auto max-w-7xl px-6 pb-10 sm:px-10 sm:pb-12 lg:px-12">
     <div className="border-t border-mustard pt-7">
       <div className="max-w-3xl">
@@ -58,7 +52,6 @@ Where Saraiki culture comes from
       </div>
     </div>
   </section>
-  {/* SARAIKI CULTURAL MAP */}
   <section
     aria-labelledby="region-map-heading"
     className="mx-auto max-w-7xl px-6 pb-14 sm:px-10 sm:pb-16 lg:px-12"
@@ -83,7 +76,6 @@ Where Saraiki culture comes from
           diverse environments.
         </p>
       </div>
-      {/* LOCALLY HOSTED MAP */}
       <figure className="overflow-hidden border border-navy/10 bg-[#F3EBDD]">
         <Image
           src="/images/saraikistan-cultural-map.webp"
@@ -92,7 +84,6 @@ Where Saraiki culture comes from
           height={1024}
           sizes="(max-width: 767px) calc(100vw - 64px), (max-width: 1279px) calc(100vw - 112px), 1152px"
           quality={85}
-          priority={false}
           className="h-auto w-full"
         />
         <figcaption className="border-t border-navy/10 px-4 py-3 font-body text-xs leading-5 text-navy/60 sm:px-5">
@@ -102,7 +93,6 @@ Where Saraiki culture comes from
           administrative boundaries.
         </figcaption>
       </figure>
-      {/* CULTURAL CONTEXT */}
       <div className="mt-6 grid gap-6 sm:grid-cols-2">
         <div className="border-l-2 border-mustard pl-4">
           <h3 className="font-display text-xl text-navy">
@@ -131,7 +121,6 @@ Where Saraiki culture comes from
     </div>
   </section>
   {places.length === 0 ? (
-    /* EMPTY STATE */
     <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
       <div className="border border-navy/10 bg-cream p-8 sm:p-12">
         <p className="font-body text-sm uppercase tracking-[0.14em] text-mustard">
@@ -147,7 +136,6 @@ Where Saraiki culture comes from
       </div>
     </section>
   ) : (
-    /* PLACES GRID */
     <section className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {places.map((place: any, index: number) => {
@@ -175,7 +163,6 @@ Where Saraiki culture comes from
               href={`/region/${place.slug.current}`}
               className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              {/* RESPONSIVE OPTIMIZED IMAGE */}
               <div className="aspect-[16/9] overflow-hidden bg-shawl">
                 {imageUrl ? (
                   <img
@@ -196,7 +183,6 @@ Where Saraiki culture comes from
                   </div>
                 )}
               </div>
-              {/* CONTENT */}
               <div className="border-t-2 border-mustard p-6">
                 {place.category && (
                   <p className="font-body text-xs uppercase tracking-[0.14em] text-shawl">
