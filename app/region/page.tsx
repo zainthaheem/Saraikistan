@@ -60,7 +60,7 @@ export default async function Region() {
       </section>
 
       {/* INTRO */}
-      <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-16 lg:px-12">
+      <section className="mx-auto max-w-7xl px-6 pb-10 sm:px-10 sm:pb-12 lg:px-12">
         <div className="border-t border-mustard pt-7">
           <div className="max-w-3xl">
             <p className="font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
@@ -69,6 +69,107 @@ export default async function Region() {
               the Saraiki region.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* SARAIKI LANGUAGE MAP */}
+      <section
+        aria-labelledby="region-map-heading"
+        className="mx-auto max-w-7xl px-6 pb-14 sm:px-10 sm:pb-16 lg:px-12"
+      >
+        <div className="border border-navy/10 bg-[#F3EBDD] p-4 sm:p-7 lg:p-9">
+          <div className="mb-6 max-w-3xl">
+            <p className="font-body text-xs uppercase tracking-[0.18em] text-mustard">
+              Geography & language
+            </p>
+
+            <h2
+              id="region-map-heading"
+              className="mt-3 font-display text-3xl leading-tight text-navy sm:text-4xl"
+            >
+              The Saraiki-speaking region
+            </h2>
+
+            <p className="mt-4 font-body text-sm leading-7 text-navy/70 sm:text-base sm:leading-8">
+              Saraiki is spoken across a region that extends beyond
+              administrative boundaries. This census-based map shows
+              the share of each Pakistani district’s population
+              reporting Saraiki as their mother tongue in the 2023
+              census.
+            </p>
+          </div>
+
+          <div className="overflow-hidden border border-navy/10 bg-white">
+            <a
+              href="https://commons.wikimedia.org/wiki/File:Saraiki-speakers_by_Pakistani_District_-_2023_Census.svg"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open the original 2023 census map on Wikimedia Commons"
+            >
+              <img
+                src="https://commons.wikimedia.org/wiki/Special:FilePath/Saraiki-speakers_by_Pakistani_District_-_2023_Census.svg?width=1600"
+                alt="Map showing the proportion of people reporting Saraiki as their mother tongue in each Pakistani district according to the 2023 census."
+                width={1600}
+                height={1000}
+                loading="lazy"
+                decoding="async"
+                className="h-auto w-full"
+              />
+            </a>
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="border-l-2 border-mustard pl-4">
+              <h3 className="font-display text-xl text-navy">
+                The core cultural region
+              </h3>
+              <p className="mt-2 font-body text-sm leading-6 text-navy/65">
+                Southern Punjab is a central part of Saraiki
+                cultural life. Our cultural interpretation also
+                includes Mianwali and recognises the northern
+                Saraiki-speaking areas.
+              </p>
+            </div>
+
+            <div className="border-l-2 border-shawl pl-4">
+              <h3 className="font-display text-xl text-navy">
+                A wider linguistic landscape
+              </h3>
+              <p className="mt-2 font-body text-sm leading-6 text-navy/65">
+                Saraiki-speaking communities extend into adjoining
+                areas, including parts of Khyber Pakhtunkhwa and
+                Sindh. Language use can vary within individual
+                districts.
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-6 border-t border-navy/10 pt-4 font-body text-xs leading-5 text-navy/55">
+            Map source: Abbasi786786, “Saraiki-speakers by Pakistani
+            District – 2023 Census,” Wikimedia Commons, licensed
+            under CC BY 4.0. The map is reproduced without
+            modification. The census shows reported mother-tongue
+            distribution; it does not define an official boundary
+            for Saraikistan.
+            {' '}
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-shawl"
+            >
+              License details
+            </a>
+            {' · '}
+            <a
+              href="https://commons.wikimedia.org/wiki/File:Saraiki-speakers_by_Pakistani_District_-_2023_Census.svg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-shawl"
+            >
+              Original map and author
+            </a>
+          </p>
         </div>
       </section>
 
@@ -103,7 +204,6 @@ export default async function Region() {
                     .format('webp')
                 : null
 
-              // Generate only the image sizes needed for the cards.
               const imageUrl = imageBuilder
                 ? imageBuilder.width(480).url()
                 : null
