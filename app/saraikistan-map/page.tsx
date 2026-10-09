@@ -69,9 +69,7 @@ type MapContent = {
 export async function generateMetadata(): Promise<Metadata> {
   const map = (await getMapContent()) as MapContent
 
-  const title =
-    map.seoTitle || fallbackMap.seoTitle
-
+  const title = map.seoTitle || fallbackMap.seoTitle
   const description =
     map.seoDescription || fallbackMap.seoDescription
 
@@ -193,19 +191,17 @@ export default async function SaraikistanMapPage() {
               href={mainMapUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-10 items-center justify-center gap-2 border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+              className="inline-flex min-h-10 items-center justify-center border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
             >
               View Full Map
-              <span aria-hidden="true">↗</span>
             </a>
 
             <a
               href={mainMapUrl}
               download="saraikistan-cultural-map"
-              className="inline-flex min-h-10 items-center justify-center gap-2 border border-navy/20 bg-transparent px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-mustard hover:bg-white/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+              className="inline-flex min-h-10 items-center justify-center border border-navy/20 bg-transparent px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-mustard hover:bg-white/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
             >
               Download Map
-              <span aria-hidden="true">↓</span>
             </a>
           </div>
 
@@ -318,7 +314,7 @@ export default async function SaraikistanMapPage() {
             </p>
 
             <span className="mt-5 inline-block font-body text-xs font-semibold uppercase tracking-[0.1em] text-shawl transition-colors group-hover:text-mustard">
-              Explore places →
+              Explore places
             </span>
           </Link>
 
@@ -340,7 +336,7 @@ export default async function SaraikistanMapPage() {
             </p>
 
             <span className="mt-5 inline-block font-body text-xs font-semibold uppercase tracking-[0.1em] text-shawl transition-colors group-hover:text-mustard">
-              Explore culture →
+              Explore culture
             </span>
           </Link>
         </div>
