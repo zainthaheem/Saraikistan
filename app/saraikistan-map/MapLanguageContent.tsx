@@ -1,139 +1,182 @@
-import type { Metadata } from 'next'
-import { client } from '@/sanity/lib/client'
-import MapLanguageContent from './MapLanguageContent'
-export const revalidate = 60
-const fallbackMap = {
-  title: 'Saraikistan Map',
-  seoTitle: 'Saraikistan Map | Saraiki Cultural Region & Cities',
-  seoDescription:
-    'Explore the Saraikistan map and discover the Saraiki cultural region, its cities and cultural heritage.',
-}
+'use client'
+import { useState } from 'react'
 type MapImage = {
-  url?: string
+  url: string
   alt?: string
   altUr?: string
   caption?: string
   captionUr?: string
 }
-type MapContent = {
-  title?: string
+type MapLanguageContentProps = {
+  title: string
   titleUr?: string
   summary?: string
   summaryUr?: string
   content?: string
   contentUr?: string
-  mainImage?: MapImage | null
-  mainImageAlt?: string
-  additionalImages?: MapImage[]
-  seoTitle?: string
-  seoDescription?: string
-  seoImage?: MapImage | null
+  mainImageUrl: string
+  mainImageAlt: string
+  additionalImages: MapImage[]
 }
-async function getMapContent(): Promise<MapContent> {
-  try {
-    const map = await client.fetch(`
-      *[_type == "saraikistanMap" && published == true]
-        | order(_updatedAt desc)[0] {
-          title,
-          titleUr,
-          summary,
-          summaryUr,
-          content,
-          contentUr,
-          "mainImage": mainImage {
-            "url": asset->url,
-            "alt": alt,
-            "caption": caption
-          },
-          mainImageAlt,
-          "additionalImages": additionalImages[] {
-            "url": asset->url,
-            "alt": alt,
-            "caption": caption
-          },
-          seoTitle,
-          seoDescription,
-          "seoImage": seoImage {
-            "url": asset->url
-          }
-        }
-    `)
-    return map || {}
-  } catch {
-    return {}
-  }
-}
-export async function generateMetadata(): Promise<Metadata> {
-  const map = await getMapContent()
-  const title = map.seoTitle || fallbackMap.seoTitle
-  const description =
-    map.seoDescription || fallbackMap.seoDescription
-  const imageUrl =
-    map.seoImage?.url ||
-    map.mainImage?.url ||
-    'https://saraikistan.org/images/saraikistan-cultural-map.webp'
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: 'https://saraikistan.org/saraikistan-map',
-    },
-    openGraph: {
-      title,
-      description,
-      url: 'https://saraikistan.org/saraikistan-map',
-      siteName: 'Saraikistan',
-      type: 'website',
-      images: [
-        {
-          url: imageUrl,
-          alt: map.mainImageAlt || 'Saraikistan cultural region map',
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [imageUrl],
-    },
-  }
-}
-export default async function SaraikistanMapPage() {
-  const map = await getMapContent()
-  const mainImageUrl =
-    map.mainImage?.url ||
-    '/images/saraikistan-cultural-map.webp'
-  const additionalImages = (map.additionalImages || [])
-    .filter(
-      (image): image is MapImage & { url: string } =>
-        Boolean(image.url)
-    )
-    .map((image) => ({
-      url: image.url as string,
-      alt: image.alt,
-      caption: image.caption,
-    }))
+export default function MapLanguageContent({
+  title,
+  titleUr,
+  summary,
+  summaryUr,
+  content,
+  contentUr,
+  mainImageUrl,
+  mainImageAlt,
+  additionalImages,
+}: MapLanguageContentProps) {
+  const [language, setLanguage] = useState<'en' | 'ur'>('en')
+  const isUrdu = language === 'ur'
+  const displayedTitle = isUrdu ? titleUr || title : title
+  const displayedSummary = isUrdu
+    ? summaryUr || summary
+    : summary
+  const displayedContent = isUrdu
+    ? contentUr || content
+    : content
   return (
-    <main className="min-h-screen bg-cream text-navy">
-      <section className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
-        <MapLanguageContent
-          title={map.title || fallbackMap.title}
-          titleUr={map.titleUr}
-          summary={map.summary || ''}
-          summaryUr={map.summaryUr}
-          content={map.content || ''}
-          contentUr={map.contentUr}
-          mainImageUrl={mainImageUrl}
-          mainImageAlt={
-            map.mainImageAlt ||
-            map.mainImage?.alt ||
-            map.title ||
-            fallbackMap.title
-          }
-          additionalImages={additionalImages}
-        />
+    <div
+      dir={isUrdu ? 'rtl' : 'ltr'}
+      lang={isUrdu ? 'ur' : 'en'}
+      className={isUrdu ? 'text-right' : 'text-left'}
+    >
+      {/* LANGUAGE SWITCHER */}
+      <div
+        dir="ltr"
+        className="mb-8 flex w-full justify-start border-b border-navy/10 sm:mb-10"
+      >
+        <div className="flex items-center font-body text-sm">
+          <button
+            type="button"
+            onClick={() => setLanguage('en')}
+            aria-pressed={!isUrdu}
+            className={`min-h-12 border-b-2 px-4 py-3 transition-colors ${
+              !isUrdu
+                ? 'border-mustard font-semibold text-navy'
+                : 'border-transparent text-navy/60 hover:text-shawl'
+            }`}
+          >
+            English
+          </button>
+          <span aria-hidden="true" className="text-navy/30">
+            |
+          </span>
+          <button
+            type="button"
+            onClick={() => setLanguage('ur')}
+            aria-pressed={isUrdu}
+            className={`min-h-12 border-b-2 px-4 py-3 transition-colors ${
+              isUrdu
+                ? 'border-mustard font-semibold text-navy'
+                : 'border-transparent text-navy/60 hover:text-shawl'
+            }`}
+          >
+            اردو
+          </button>
+        </div>
+      </div>
+      {/* TITLE, SUMMARY AND CONTENT */}
+      <header className="pb-8 sm:pb-10">
+        <h1 className="font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
+          {displayedTitle}
+        </h1>
+        {displayedSummary && (
+          <p className="mt-5 max-w-3xl whitespace-pre-line font-body text-base leading-8 text-navy/70 sm:text-lg sm:leading-9">
+            {displayedSummary}
+          </p>
+        )}
+        {displayedContent && (
+          <div className="mt-5 max-w-4xl whitespace-pre-line font-body text-base leading-8 text-navy/80 sm:text-lg sm:leading-9">
+            {displayedContent}
+          </div>
+        )}
+      </header>
+      {/* MAIN MAP */}
+      <section className="border-t border-mustard pt-6 sm:pt-8">
+        <figure>
+          <a
+            href={mainImageUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={
+              isUrdu ? 'مکمل نقشہ دیکھیں' : 'View full map'
+            }
+            className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
+          >
+            <img
+              src={mainImageUrl}
+              alt={mainImageAlt}
+              width={1536}
+              height={1024}
+              fetchPriority="high"
+              decoding="async"
+              className="block h-auto w-full"
+            />
+          </a>
+        </figure>
+        <a
+          href={mainImageUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex min-h-12 items-center justify-center bg-mustard px-5 py-3 font-body text-sm font-semibold text-navy transition-colors hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+        >
+          {isUrdu ? 'مکمل نقشہ دیکھیں' : 'View Full Map'}
+        </a>
       </section>
-    </main>
+      {/* ADDITIONAL PICTURES */}
+      {additionalImages.length > 0 && (
+        <section className="mt-10 border-t border-navy/15 pt-6 sm:mt-12 sm:pt-8">
+          <h2 className="font-display text-2xl leading-tight text-navy sm:text-3xl">
+            {isUrdu ? 'مزید تصاویر' : 'More Pictures'}
+          </h2>
+          <div className="mt-6 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {additionalImages.map((image, index) => {
+              const imageAlt = isUrdu
+                ? image.altUr ||
+                  image.alt ||
+                  'سرائیکی ثقافتی تصویر'
+                : image.alt ||
+                  `Saraikistan cultural image ${index + 1}`
+              const imageCaption = isUrdu
+                ? image.captionUr || image.caption
+                : image.caption
+              return (
+                <figure
+                  key={`${image.url}-${index}`}
+                  className="min-w-0"
+                >
+                  <a
+                    href={image.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={imageAlt}
+                    className="block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-shawl"
+                  >
+                    <img
+                      src={image.url}
+                      alt={imageAlt}
+                      width={1000}
+                      height={700}
+                      loading="lazy"
+                      decoding="async"
+                      className="block h-auto w-full"
+                    />
+                  </a>
+                  {imageCaption && (
+                    <figcaption className="mt-3 whitespace-pre-line font-body text-sm leading-7 text-navy/65">
+                      {imageCaption}
+                    </figcaption>
+                  )}
+                </figure>
+              )
+            })}
+          </div>
+        </section>
+      )}
+    </div>
   )
 }
