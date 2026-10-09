@@ -61,21 +61,21 @@ export default function MapLanguageContent({
     >
       <div
         dir="ltr"
-        className="mb-8 flex w-full justify-start sm:mb-10"
+        className="mb-8 w-full"
       >
         <div
-          className="inline-flex items-center gap-0 border border-mustard/60 bg-[#F3EBDD]"
-          role="group"
+          className="flex w-full items-center gap-5 border-b border-navy/10"
           aria-label="Choose language"
         >
           <button
             type="button"
             onClick={() => setLanguage('en')}
             aria-pressed={!isUrdu}
-            className={`min-h-10 border-r border-mustard/40 px-4 py-2 font-body text-xs uppercase tracking-[0.12em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl ${
+            lang="en"
+            className={`relative min-h-12 border-b-2 px-1 py-3 font-body text-sm transition-colors duration-200 sm:text-base ${
               !isUrdu
-                ? 'bg-navy text-cream'
-                : 'bg-transparent text-navy hover:bg-mustard/10'
+                ? 'border-mustard text-navy'
+                : 'border-transparent text-navy/50 hover:text-navy'
             }`}
           >
             English
@@ -86,10 +86,10 @@ export default function MapLanguageContent({
             onClick={() => setLanguage('ur')}
             aria-pressed={isUrdu}
             lang="ur"
-            className={`min-h-10 px-4 py-2 font-body text-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl ${
+            className={`relative min-h-12 border-b-2 px-1 py-3 font-body text-sm transition-colors duration-200 sm:text-base ${
               isUrdu
-                ? 'bg-navy text-cream'
-                : 'bg-transparent text-navy hover:bg-mustard/10'
+                ? 'border-mustard text-navy'
+                : 'border-transparent text-navy/50 hover:text-navy'
             }`}
           >
             اردو
@@ -108,13 +108,21 @@ export default function MapLanguageContent({
         </p>
 
         {displayedTitle && (
-          <h1 className="mt-3 font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
+          <h1
+            className={`mt-3 font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl ${
+              isUrdu ? 'text-right' : 'text-left'
+            }`}
+          >
             {displayedTitle}
           </h1>
         )}
 
         {displayedSummary && (
-          <p className="mt-6 max-w-4xl font-body text-base leading-8 text-navy/75 sm:text-lg sm:leading-9">
+          <p
+            className={`mt-6 max-w-4xl font-body text-base leading-8 text-navy/75 sm:text-lg sm:leading-9 ${
+              isUrdu ? 'text-right' : 'text-left'
+            }`}
+          >
             {displayedSummary}
           </p>
         )}
@@ -145,7 +153,11 @@ export default function MapLanguageContent({
 
       {hasContent && (
         <section className="mb-10">
-          <div className="font-body text-base leading-8 text-navy/85 sm:text-lg sm:leading-9">
+          <div
+            className={`font-body text-base leading-8 text-navy/85 sm:text-lg sm:leading-9 ${
+              isUrdu ? 'text-right' : 'text-left'
+            }`}
+          >
             <PortableText value={displayedContent as never} />
           </div>
         </section>
@@ -184,7 +196,11 @@ export default function MapLanguageContent({
                 </a>
 
                 {image.caption && (
-                  <figcaption className="mt-3 font-body text-sm leading-6 text-navy/65">
+                  <figcaption
+                    className={`mt-3 font-body text-sm leading-6 text-navy/65 ${
+                      isUrdu ? 'text-right' : 'text-left'
+                    }`}
+                  >
                     {image.caption}
                   </figcaption>
                 )}
