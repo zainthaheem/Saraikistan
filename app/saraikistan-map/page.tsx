@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -122,17 +123,17 @@ export default async function SaraikistanMapPage() {
 
   return (
     <main className="min-h-screen bg-cream text-navy">
-      <section className="mx-auto max-w-7xl px-6 pb-8 pt-12 sm:px-10 sm:pb-10 sm:pt-16 lg:px-12">
+      <section className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
         <div className="max-w-4xl">
-          <p className="font-body text-xs uppercase tracking-[0.18em] text-mustard">
+          <p className="font-body text-sm text-shawl">
             Geography, language &amp; heritage
           </p>
 
-          <h1 className="mt-3 font-display text-4xl leading-tight text-navy sm:text-5xl lg:text-6xl">
+          <h1 className="mt-2 font-display text-4xl leading-tight text-navy sm:text-5xl">
             {map.title || fallbackMap.title}
           </h1>
 
-          <p className="mt-5 max-w-3xl font-body text-base leading-7 text-navy/70 sm:text-lg sm:leading-8">
+          <p className="mt-5 max-w-3xl font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
             {map.intro || fallbackMap.intro}
           </p>
         </div>
@@ -140,28 +141,28 @@ export default async function SaraikistanMapPage() {
 
       <section
         aria-labelledby="map-heading"
-        className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-14 lg:px-12"
+        className="mx-auto max-w-7xl px-6 pb-10 sm:px-10 sm:pb-12 lg:px-12"
       >
-        <div className="border border-navy/10 bg-[#F3EBDD] p-3 sm:p-6 lg:p-8">
-          <div className="mb-5">
-            <p className="font-body text-xs uppercase tracking-[0.16em] text-mustard">
+        <div className="border-t border-mustard pt-7">
+          <div className="mb-6 max-w-4xl">
+            <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
               Cultural atlas
             </p>
 
             <h2
               id="map-heading"
-              className="mt-2 font-display text-2xl text-navy sm:text-3xl"
+              className="mt-2 font-display text-2xl leading-tight text-navy sm:text-3xl"
             >
               Explore the Saraiki Cultural Region
             </h2>
 
-            <p className="mt-2 font-body text-sm leading-6 text-navy/65 sm:text-base">
+            <p className="mt-3 font-body text-sm leading-6 text-navy/65 sm:text-base sm:leading-7">
               View the full-size map for a closer look at the
               Saraiki cultural region.
             </p>
           </div>
 
-          <figure className="overflow-hidden border border-navy/10 bg-cream">
+          <figure>
             <a
               href={mainMapUrl}
               target="_blank"
@@ -181,7 +182,7 @@ export default async function SaraikistanMapPage() {
             </a>
 
             {map.mainMap?.caption && (
-              <figcaption className="border-t border-navy/10 px-4 py-3 font-body text-sm leading-6 text-navy/65 sm:px-5">
+              <figcaption className="mt-3 font-body text-sm leading-6 text-navy/65">
                 {map.mainMap.caption}
               </figcaption>
             )}
@@ -192,7 +193,7 @@ export default async function SaraikistanMapPage() {
               href={mainMapUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-10 items-center justify-center border border-mustard bg-mustard px-5 py-2.5 font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
+              className="inline-flex min-h-12 w-full items-center justify-center border border-mustard bg-mustard px-5 py-3 text-center font-body text-xs font-semibold uppercase tracking-[0.1em] text-navy transition-colors hover:border-[#B17B29] hover:bg-[#B17B29] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl sm:w-auto"
             >
               View Full Map
             </a>
@@ -207,8 +208,8 @@ export default async function SaraikistanMapPage() {
 
       {additionalImages.length > 0 && (
         <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-14 lg:px-12">
-          <div className="mb-6">
-            <p className="font-body text-xs uppercase tracking-[0.16em] text-mustard">
+          <div className="mb-6 border-t border-mustard pt-7">
+            <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
               More to discover
             </p>
 
@@ -226,13 +227,14 @@ export default async function SaraikistanMapPage() {
             {additionalImages.map((image, index) => (
               <figure
                 key={`${image.url}-${index}`}
-                className="overflow-hidden border border-navy/10 bg-[#F3EBDD]"
+                className="border-b border-navy/10 pb-5"
               >
                 <a
                   href={image.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`View ${image.alt || `cultural image ${index + 1}`}`}
+                  className="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl"
                 >
                   <img
                     src={image.url}
@@ -246,7 +248,7 @@ export default async function SaraikistanMapPage() {
                 </a>
 
                 {image.caption && (
-                  <figcaption className="p-4 font-body text-sm leading-6 text-navy/65">
+                  <figcaption className="pt-3 font-body text-sm leading-6 text-navy/65">
                     {image.caption}
                   </figcaption>
                 )}
@@ -256,13 +258,13 @@ export default async function SaraikistanMapPage() {
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-6 pb-14 sm:px-10 sm:pb-16 lg:px-12">
-        <div className="max-w-4xl">
+      <section className="mx-auto max-w-7xl px-6 pb-12 sm:px-10 sm:pb-14 lg:px-12">
+        <div className="max-w-4xl border-t border-mustard pt-7">
           <h2 className="font-display text-3xl leading-tight text-navy sm:text-4xl">
             About the Saraiki Cultural Region
           </h2>
 
-          <div className="mt-5 space-y-4 font-body text-base leading-7 text-navy/70 sm:text-lg sm:leading-8">
+          <div className="mt-5 space-y-4 font-body text-base leading-7 text-navy/65 sm:text-lg sm:leading-8">
             <p>
               {map.regionDescription ||
                 fallbackMap.regionDescription}
@@ -291,9 +293,9 @@ export default async function SaraikistanMapPage() {
         <div className="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-2 sm:px-10 sm:py-12 lg:px-12">
           <Link
             href="/region"
-            className="group border border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
+            className="group border-b border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
           >
-            <p className="font-body text-xs uppercase tracking-[0.15em] text-mustard">
+            <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
               Discover destinations
             </p>
 
@@ -313,9 +315,9 @@ export default async function SaraikistanMapPage() {
 
           <Link
             href="/culture"
-            className="group border border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
+            className="group border-b border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
           >
-            <p className="font-body text-xs uppercase tracking-[0.15em] text-mustard">
+            <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
               Discover traditions
             </p>
 
