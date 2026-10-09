@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -27,19 +28,21 @@ export default function SaraikistanMapContent() {
     >
       <div
         dir="ltr"
-        className="mb-10 border-b border-navy/15"
+        className="mb-10 w-full"
       >
         <div
-          className="flex items-center gap-7 sm:gap-9"
+          className="flex items-center gap-7 border-b border-navy/15 sm:gap-9"
+          role="group"
           aria-label="Choose language"
         >
           <button
             type="button"
             onClick={() => setLanguage('en')}
             aria-pressed={!isUrdu}
-            className={`relative -mb-px min-h-12 border-b-[3px] px-1 pb-3 pt-2 font-body text-sm transition-colors sm:text-base ${
+            lang="en"
+            className={`relative -mb-px min-h-12 border-b-[3px] px-1 pb-3 pt-2 font-body text-sm transition-colors duration-200 sm:text-base ${
               !isUrdu
-                ? 'border-gold text-navy'
+                ? 'border-[#C8923A] text-navy'
                 : 'border-transparent text-navy/50 hover:text-navy'
             }`}
           >
@@ -51,9 +54,9 @@ export default function SaraikistanMapContent() {
             onClick={() => setLanguage('ur')}
             aria-pressed={isUrdu}
             lang="ur"
-            className={`relative -mb-px min-h-12 border-b-[3px] px-1 pb-3 pt-2 font-body text-base transition-colors sm:text-lg ${
+            className={`relative -mb-px min-h-12 border-b-[3px] px-1 pb-3 pt-2 font-body text-base transition-colors duration-200 sm:text-lg ${
               isUrdu
-                ? 'border-gold text-navy'
+                ? 'border-[#C8923A] text-navy'
                 : 'border-transparent text-navy/50 hover:text-navy'
             }`}
           >
