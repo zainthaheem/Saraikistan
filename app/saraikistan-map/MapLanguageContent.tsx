@@ -108,7 +108,7 @@ export default function MapLanguageContent({
     >
       <div
         dir="ltr"
-        className="mb-10 flex w-full items-center justify-end gap-3 border-b border-navy/10 pb-4 text-right font-body text-sm sm:mb-12"
+        className="mb-10 ml-auto flex w-fit items-center justify-end gap-3 border-b border-navy/10 pb-4 text-right font-body text-sm sm:mb-12"
       >
         <button
           type="button"
