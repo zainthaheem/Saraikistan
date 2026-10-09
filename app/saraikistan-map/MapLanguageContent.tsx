@@ -272,10 +272,10 @@ export default function MapLanguageContent({
       </section>
       {/* RELATED SECTIONS */}
       <section className="pb-10 pt-4 sm:pb-12 sm:pt-6">
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
           <a
             href="/region"
-            className="group block border-b border-navy/15 bg-[#E7DCC8] p-6 transition-colors hover:bg-[#E1D3BA] sm:p-8"
+            className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
           >
             <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
               {content.placesEyebrow}
@@ -286,13 +286,14 @@ export default function MapLanguageContent({
             <p className="mt-4 font-body text-base leading-8 text-navy/70">
               {content.placesDescription}
             </p>
-            <span className="mt-6 inline-block font-body text-sm font-semibold text-shawl transition-colors group-hover:text-navy">
-              {content.placesLink} →
+            <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
+              {content.placesLink}
+              <span aria-hidden="true">→</span>
             </span>
           </a>
           <a
             href="/culture"
-            className="group block border-b border-navy/15 bg-[#E7DCC8] p-6 transition-colors hover:bg-[#E1D3BA] sm:p-8"
+            className="group block min-w-0 border-t border-navy/15 pt-6 transition-colors hover:border-mustard sm:pt-8"
           >
             <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
               {content.cultureEyebrow}
@@ -303,8 +304,9 @@ export default function MapLanguageContent({
             <p className="mt-4 font-body text-base leading-8 text-navy/70">
               {content.cultureDescription}
             </p>
-            <span className="mt-6 inline-block font-body text-sm font-semibold text-shawl transition-colors group-hover:text-navy">
-              {content.cultureLink} →
+            <span className="mt-6 inline-flex items-center gap-2 font-body text-sm font-semibold text-shawl transition-colors group-hover:text-mustard">
+              {content.cultureLink}
+              <span aria-hidden="true">→</span>
             </span>
           </a>
         </div>
