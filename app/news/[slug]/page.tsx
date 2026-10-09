@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -103,11 +104,9 @@ export async function generateMetadata({
   return {
     title,
     description,
-
     alternates: {
       canonical: `https://saraikistan.org/news/${params.slug}`,
     },
-
     openGraph: {
       title,
       description,
@@ -125,7 +124,6 @@ export async function generateMetadata({
           ]
         : undefined,
     },
-
     twitter: {
       card: image ? 'summary_large_image' : 'summary',
       title,
@@ -226,12 +224,6 @@ export default async function NewsPostPage({
     },
   }
 
-  /*
-   * The cover image is now displayed using its original aspect ratio.
-   * We no longer force a 1400x550 crop or a fixed-height container.
-   * This prevents important text at the top/bottom of news covers
-   * from being cut off on individual article pages.
-   */
   const coverWidth = post.coverImage?.dimensions?.width || 1600
   const coverHeight = post.coverImage?.dimensions?.height || 900
 
@@ -245,8 +237,6 @@ export default async function NewsPostPage({
 
   return (
     <section className="min-h-screen bg-cream text-navy">
-
-      {/* NEWS ARTICLE STRUCTURED DATA */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -257,7 +247,6 @@ export default async function NewsPostPage({
         }}
       />
 
-      {/* FULL COVER IMAGE — PRESERVE ORIGINAL ASPECT RATIO */}
       {coverImageUrl && (
         <div className="w-full overflow-hidden bg-shawl">
           <img
@@ -273,17 +262,10 @@ export default async function NewsPostPage({
         </div>
       )}
 
-      {/* EDITORIAL CONTENT LAYOUT */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 sm:px-10 sm:pt-10 lg:px-12">
-
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
-
-          {/* MAIN NEWS ARTICLE */}
           <article className="min-w-0">
-
-            {/* ARTICLE HEADER */}
             <div className="border-t border-mustard pt-7">
-
               {post.category && (
                 <p className="font-body text-sm uppercase tracking-[0.12em] text-shawl">
                   {post.category.title}
@@ -294,9 +276,7 @@ export default async function NewsPostPage({
                 {post.title}
               </h1>
 
-              {/* ARTICLE META */}
               <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 font-body text-xs text-navy/50">
-
                 {post.publishedAt && (
                   <span>
                     Published ·{' '}
@@ -308,15 +288,9 @@ export default async function NewsPostPage({
                   </span>
                 )}
 
-                {post.author && (
-                  <span>
-                    By {post.author}
-                  </span>
-                )}
-
+                {post.author && <span>By {post.author}</span>}
               </div>
 
-              {/* NEWS TYPE */}
               {post.newsType && (
                 <div className="mt-4">
                   <span className="inline-block border border-mustard/60 px-3 py-1.5 font-body text-[10px] uppercase tracking-[0.12em] text-shawl">
@@ -324,10 +298,8 @@ export default async function NewsPostPage({
                   </span>
                 </div>
               )}
-
             </div>
 
-            {/* VIDEO */}
             {post.videoUrl && (
               <div className="mt-10 aspect-video w-full overflow-hidden bg-navy">
                 <iframe
@@ -340,20 +312,18 @@ export default async function NewsPostPage({
               </div>
             )}
 
-            {/* BILINGUAL ARTICLE BODY */}
             {(post.body || post.bodyUrdu) && (
               <div className="mt-10 w-full max-w-3xl">
                 <LanguageSwitcher
                   english={post.body}
                   urdu={post.bodyUrdu}
+                  showLabels={false}
                 />
               </div>
             )}
 
-            {/* GALLERY */}
             {post.gallery && post.gallery.length > 0 && (
               <div className="mt-14">
-
                 <div className="mb-6">
                   <p className="font-body text-sm uppercase tracking-[0.12em] text-shawl">
                     Gallery
@@ -365,7 +335,6 @@ export default async function NewsPostPage({
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-
                   {post.gallery.map((img: any, i: number) => (
                     <div
                       key={i}
@@ -388,66 +357,45 @@ export default async function NewsPostPage({
                       />
                     </div>
                   ))}
-
                 </div>
-
               </div>
             )}
 
-            {/* SOURCES */}
             {post.source && (
               <div className="mt-14 border-t border-navy/10 pt-6">
-
                 <h2 className="font-display text-2xl text-navy sm:text-3xl">
                   Sources
                 </h2>
 
                 <div className="mt-4 max-w-3xl border-l-2 border-mustard pl-5">
-
                   <p className="whitespace-pre-line break-words font-body text-sm leading-7 text-navy/65">
                     {post.source}
                   </p>
-
                 </div>
-
               </div>
             )}
 
-            {/* IMAGE CREDITS */}
             {post.imageCredits && (
               <details className="group mt-14 border-t border-navy/10 pt-5">
-
                 <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
-
-                  <span>
-                    Image Credits
-                  </span>
+                  <span>Image Credits</span>
 
                   <span className="flex h-7 w-7 items-center justify-center border border-navy/15 text-lg leading-none transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
                     +
                   </span>
-
                 </summary>
 
                 <div className="mt-5 max-w-3xl border-l-2 border-mustard pl-5">
-
                   <p className="whitespace-pre-line font-body text-sm leading-6 text-navy/60">
                     {post.imageCredits}
                   </p>
-
                 </div>
-
               </details>
             )}
-
           </article>
 
-          {/* EDITORIAL SIDEBAR */}
           <aside className="min-w-0 lg:border-l lg:border-navy/10 lg:pl-8 xl:pl-10">
-
-            {/* SIDEBAR INTRODUCTION */}
             <div className="border-t border-mustard pt-5">
-
               <p className="font-body text-xs uppercase tracking-[0.18em] text-shawl">
                 Saraikistan News
               </p>
@@ -459,15 +407,11 @@ export default async function NewsPostPage({
               <p className="mt-3 font-body text-sm leading-6 text-navy/60">
                 Stay informed about the latest developments, events, and stories from the Saraiki region.
               </p>
-
             </div>
 
-            {/* RELATED NEWS ARTICLES */}
             {relatedNews && relatedNews.length > 0 && (
               <div className="mt-8">
-
                 <div className="mb-5 flex items-center justify-between border-b border-navy/10 pb-3">
-
                   <h3 className="font-display text-xl text-navy">
                     More News
                   </h3>
@@ -478,11 +422,9 @@ export default async function NewsPostPage({
                   >
                     View All →
                   </Link>
-
                 </div>
 
                 <div className="space-y-6">
-
                   {relatedNews.map((item: any) => {
                     const thumbnail = item.coverImage
                       ? urlFor(item.coverImage)
@@ -500,7 +442,6 @@ export default async function NewsPostPage({
                         href={`/news/${item.slug}`}
                         className="group block"
                       >
-
                         {thumbnail && (
                           <div className="mb-3 aspect-[16/10] overflow-hidden bg-shawl">
                             <img
@@ -537,25 +478,19 @@ export default async function NewsPostPage({
                             )}
                           </p>
                         )}
-
                       </Link>
                     )
                   })}
-
                 </div>
-
               </div>
             )}
 
-            {/* EXPLORE SARAIkISTAN */}
             <div className="mt-10 border-t border-navy/10 pt-6">
-
               <h3 className="font-display text-xl text-navy">
                 Explore More
               </h3>
 
               <nav className="mt-4 space-y-0">
-
                 {[
                   { label: 'Stories & Heritage', href: '/blog' },
                   { label: 'Latest News', href: '/news' },
@@ -572,14 +507,10 @@ export default async function NewsPostPage({
                     <span className="text-mustard">→</span>
                   </Link>
                 ))}
-
               </nav>
-
             </div>
 
-            {/* NEWS CONTRIBUTION */}
             <div className="mt-10 border-t border-navy/10 pt-6">
-
               <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
                 Saraikistan
               </p>
@@ -598,15 +529,10 @@ export default async function NewsPostPage({
               >
                 About Saraikistan <span>→</span>
               </Link>
-
             </div>
-
           </aside>
-
         </div>
-
       </div>
-
     </section>
   )
 }
