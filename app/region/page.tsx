@@ -82,12 +82,11 @@ Where Saraiki culture comes from
       </div>
       <figure className="overflow-hidden border border-navy/10 bg-[#F3EBDD]">
         <Image
-          src="/images/saraikistan-cultural-map.webp"
+          src="/images/saraikistan-map.svg"
           alt="Illustrative map of the Saraiki cultural and linguistic region, showing selected districts, cities and adjoining areas of Pakistan."
           width={1536}
           height={1024}
           sizes="(max-width: 767px) calc(100vw - 64px), (max-width: 1279px) calc(100vw - 112px), 1152px"
-          quality={85}
           className="h-auto w-full"
         />
         <figcaption className="border-t border-navy/10 px-4 py-3 font-body text-xs leading-5 text-navy/60 sm:px-5">
