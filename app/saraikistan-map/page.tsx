@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import MapLanguageContent from './MapLanguageContent'
@@ -8,83 +9,73 @@ const fallbackMap = {
   title: 'Saraikistan Map',
   seoTitle: 'Saraikistan Map | Saraiki Cultural Region & Cities',
   seoDescription:
-    'Explore the Saraikistan map, discover the Saraiki cultural region in Pakistan, and learn about its cities and heritage.',
-  intro: '',
-  mainMap: null,
-  regionDescription: '',
-  boundaryDisclaimer: '',
-  additionalImages: [],
+    'Explore the Saraikistan map and discover the Saraiki cultural region, its cities and cultural heritage.',
 }
 
-async function getMapContent() {
+type MapImage = {
+  url?: string
+}
+
+type MapContent = {
+  title?: string
+  titleUr?: string
+  summary?: string
+  summaryUr?: string
+  content?: string
+  contentUr?: string
+  mainImage?: MapImage | null
+  mainImageAlt?: string
+  additionalImages?: MapImage[]
+  seoTitle?: string
+  seoTitleUr?: string
+  seoDescription?: string
+  seoDescriptionUr?: string
+  seoImage?: MapImage | null
+}
+
+async function getMapContent(): Promise<MapContent> {
   try {
     const map = await client.fetch(`
       *[_type == "saraikistanMap" && published == true]
         | order(_updatedAt desc)[0] {
           title,
           titleUr,
-          seoTitle,
-          seoDescription,
-          intro,
-          introUr,
-          "mainMap": mainMap {
-            "url": asset->url,
-            alt,
-            altUr,
-            caption,
-            captionUr
+          summary,
+          summaryUr,
+          content,
+          contentUr,
+          "mainImage": mainImage {
+            "url": asset->url
           },
+          mainImageAlt,
           "additionalImages": additionalImages[] {
-            "url": asset->url,
-            alt,
-            altUr,
-            caption,
-            captionUr
+            "url": asset->url
           },
-          regionDescription,
-          regionDescriptionUr,
-          boundaryDisclaimer,
-          boundaryDisclaimerUr
+          seoTitle,
+          seoTitleUr,
+          seoDescription,
+          seoDescriptionUr,
+          "seoImage": seoImage {
+            "url": asset->url
+          }
         }
     `)
 
-    return map || fallbackMap
+    return map || {}
   } catch {
-    return fallbackMap
+    return {}
   }
 }
 
-type MapImage = {
-  url?: string
-  alt?: string
-  altUr?: string
-  caption?: string
-  captionUr?: string
-}
-
-type MapContent = {
-  title?: string
-  titleUr?: string
-  seoTitle?: string
-  seoDescription?: string
-  intro?: string
-  introUr?: string
-  mainMap?: MapImage | null
-  additionalImages?: MapImage[]
-  regionDescription?: string
-  regionDescriptionUr?: string
-  boundaryDisclaimer?: string
-  boundaryDisclaimerUr?: string
-}
-
 export async function generateMetadata(): Promise<Metadata> {
-  const map = (await getMapContent()) as MapContent
+  const map = await getMapContent()
 
   const title = map.seoTitle || fallbackMap.seoTitle
   const description =
     map.seoDescription || fallbackMap.seoDescription
   const imageUrl =
-    map.mainMap?.url ||
+    map.seoImage?.url ||
+    map.mainImage?.url ||
     'https://saraikistan.org/images/saraikistan-cultural-map.webp'
 
   return {
@@ -102,7 +93,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [
         {
           url: imageUrl,
-          alt: map.mainMap?.alt || 'Saraikistan cultural region map',
+          alt: map.mainImageAlt || 'Saraikistan cultural region map',
         },
       ],
     },
@@ -116,15 +107,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SaraikistanMapPage() {
-  const map = (await getMapContent()) as MapContent
+  const map = await getMapContent()
 
-  const mainMapUrl =
-    map.mainMap?.url ||
+  const mainImageUrl =
+    map.mainImage?.url ||
     '/images/saraikistan-cultural-map.webp'
-
-  const mainMapAlt =
-    map.mainMap?.alt ||
-    'Saraikistan cultural region map'
 
   const additionalImages = (map.additionalImages || [])
     .filter(
@@ -133,10 +120,6 @@ export default async function SaraikistanMapPage() {
     )
     .map((image) => ({
       url: image.url,
-      alt: image.alt,
-      altUr: image.altUr,
-      caption: image.caption,
-      captionUr: image.captionUr,
     }))
 
   return (
@@ -145,17 +128,12 @@ export default async function SaraikistanMapPage() {
         <MapLanguageContent
           title={map.title || fallbackMap.title}
           titleUr={map.titleUr}
-          intro={map.intro || ''}
-          introUr={map.introUr}
-          regionDescription={map.regionDescription || ''}
-          regionDescriptionUr={map.regionDescriptionUr}
-          boundaryDisclaimer={map.boundaryDisclaimer || ''}
-          boundaryDisclaimerUr={map.boundaryDisclaimerUr}
-          mainMapUrl={mainMapUrl}
-          mainMapAlt={mainMapAlt}
-          mainMapAltUr={map.mainMap?.altUr}
-          mainMapCaption={map.mainMap?.caption}
-          mainMapCaptionUr={map.mainMap?.captionUr}
+          summary={map.summary || ''}
+          summaryUr={map.summaryUr}
+          content={map.content || ''}
+          contentUr={map.contentUr}
+          mainImageUrl={mainImageUrl}
+          mainImageAlt={map.mainImageAlt || map.title || fallbackMap.title}
           additionalImages={additionalImages}
         />
       </section>
