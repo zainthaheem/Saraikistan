@@ -30,9 +30,7 @@ description:
 }
 
 async function getPlaces() {
-return client.fetch(
-*[_type == "place"] | order(title asc) { _id, title, slug, "category": category->{title}, coverImage }
-)
+return client.fetch(*[_type == "place"] | order(title asc) { _id, title, slug, "category": category->{title}, coverImage })
 }
 
 export default async function Region() {
