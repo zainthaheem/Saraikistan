@@ -10,11 +10,13 @@ export default function LanguageSwitcher({
   urdu,
   englishLabel = 'Biography',
   urduLabel = 'سوانح',
+  showLabels = true,
 }: {
   english: any
   urdu?: any
   englishLabel?: string
   urduLabel?: string
+  showLabels?: boolean
 }) {
   const [language, setLanguage] = useState<'en' | 'ur'>('en')
   const [activeImage, setActiveImage] = useState<any>(null)
@@ -66,7 +68,7 @@ export default function LanguageSwitcher({
         >
           <img
             src={imageUrl}
-            alt={caption || 'Biography photograph'}
+            alt={caption || 'Article photograph'}
             loading="lazy"
             decoding="async"
             className="mx-auto max-h-[650px] w-full object-contain transition duration-500 group-hover:scale-[1.01]"
@@ -95,7 +97,6 @@ export default function LanguageSwitcher({
   const portableTextComponents = {
     types: {
       image: ({ value }: any) => renderBiographyImage(value),
-
       bioImage: ({ value }: any) =>
         renderBiographyImage(value, value.image),
     },
@@ -148,29 +149,21 @@ export default function LanguageSwitcher({
 
     listItem: {
       bullet: ({ children }: any) => (
-        <li className="pl-1 marker:text-mustard">
-          {children}
-        </li>
+        <li className="pl-1 marker:text-mustard">{children}</li>
       ),
 
       number: ({ children }: any) => (
-        <li className="pl-1">
-          {children}
-        </li>
+        <li className="pl-1">{children}</li>
       ),
     },
 
     marks: {
       strong: ({ children }: any) => (
-        <strong className="font-semibold text-navy">
-          {children}
-        </strong>
+        <strong className="font-semibold text-navy">{children}</strong>
       ),
 
       em: ({ children }: any) => (
-        <em className="text-navy/85">
-          {children}
-        </em>
+        <em className="text-navy/85">{children}</em>
       ),
     },
   }
@@ -212,9 +205,11 @@ export default function LanguageSwitcher({
 
         {language === 'ur' && hasUrdu ? (
           <div dir="rtl" lang="ur">
-            <p className="font-body text-sm tracking-wide text-shawl">
-              {urduLabel}
-            </p>
+            {showLabels && urduLabel && (
+              <p className="font-body text-sm tracking-wide text-shawl">
+                {urduLabel}
+              </p>
+            )}
 
             <div className="mt-5 font-body text-navy/75">
               <div
@@ -273,9 +268,11 @@ export default function LanguageSwitcher({
           </div>
         ) : (
           <div dir="ltr" lang="en">
-            <p className="font-body text-sm tracking-wide text-shawl">
-              {englishLabel}
-            </p>
+            {showLabels && englishLabel && (
+              <p className="font-body text-sm tracking-wide text-shawl">
+                {englishLabel}
+              </p>
+            )}
 
             <div className="mt-5 font-body text-navy/75">
               <PortableText
@@ -312,7 +309,7 @@ export default function LanguageSwitcher({
               src={activeImage.images[activeImage.index].url}
               alt={
                 activeImage.images[activeImage.index].caption ||
-                'Biography photograph'
+                'Article photograph'
               }
               className="max-h-[75vh] max-w-full object-contain"
             />
