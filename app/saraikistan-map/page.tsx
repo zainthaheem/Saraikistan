@@ -1,21 +1,21 @@
 import type { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import MapLanguageContent from './MapLanguageContent'
+
 export const revalidate = 60
+
 const fallbackMap = {
   title: 'Saraikistan Map',
   seoTitle: 'Saraikistan Map | Saraiki Cultural Region & Cities',
   seoDescription:
     'Explore the Saraikistan map, discover the Saraiki cultural region in Pakistan, and learn about its cities and heritage.',
-  intro:
-    'Explore the Saraiki cultural region through our illustrative Saraikistan map. Discover the wider geographical context of Saraiki-speaking communities, important cultural centres and the heritage that connects them.',
+  intro: '',
   mainMap: null,
-  regionContent:
-    'The Saraiki cultural region is associated with the Saraiki language and a rich heritage of folk music, poetry, Sufi traditions, literature and local customs. Its cultural landscape is particularly associated with southern Punjab and extends into adjoining areas where Saraiki-speaking communities live.',
-  boundaryDisclaimer:
-    'This is an illustrative cultural and linguistic map. It does not represent official administrative boundaries.',
+  regionDescription: '',
+  boundaryDisclaimer: '',
   additionalImages: [],
 }
+
 async function getMapContent() {
   try {
     const map = await client.fetch(`
@@ -24,9 +24,7 @@ async function getMapContent() {
           title,
           titleUr,
           seoTitle,
-          seoTitleUr,
           seoDescription,
-          seoDescriptionUr,
           intro,
           introUr,
           "mainMap": mainMap {
@@ -43,21 +41,19 @@ async function getMapContent() {
             caption,
             captionUr
           },
-          regionContent,
-          regionContentUr,
-          placesCardContent,
-          placesCardContentUr,
-          cultureCardContent,
-          cultureCardContentUr,
+          regionDescription,
+          regionDescriptionUr,
           boundaryDisclaimer,
           boundaryDisclaimerUr
         }
     `)
+
     return map || fallbackMap
   } catch {
     return fallbackMap
   }
 }
+
 type MapImage = {
   url?: string
   alt?: string
@@ -65,34 +61,32 @@ type MapImage = {
   caption?: string
   captionUr?: string
 }
+
 type MapContent = {
   title?: string
   titleUr?: string
   seoTitle?: string
-  seoTitleUr?: string
   seoDescription?: string
-  seoDescriptionUr?: string
   intro?: string
   introUr?: string
   mainMap?: MapImage | null
   additionalImages?: MapImage[]
-  regionContent?: string
-  regionContentUr?: string
-  placesCardContent?: string
-  placesCardContentUr?: string
-  cultureCardContent?: string
-  cultureCardContentUr?: string
+  regionDescription?: string
+  regionDescriptionUr?: string
   boundaryDisclaimer?: string
   boundaryDisclaimerUr?: string
 }
+
 export async function generateMetadata(): Promise<Metadata> {
   const map = (await getMapContent()) as MapContent
+
   const title = map.seoTitle || fallbackMap.seoTitle
   const description =
     map.seoDescription || fallbackMap.seoDescription
   const imageUrl =
     map.mainMap?.url ||
     'https://saraikistan.org/images/saraikistan-cultural-map.webp'
+
   return {
     title,
     description,
@@ -120,14 +114,18 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   }
 }
+
 export default async function SaraikistanMapPage() {
   const map = (await getMapContent()) as MapContent
+
   const mainMapUrl =
     map.mainMap?.url ||
     '/images/saraikistan-cultural-map.webp'
+
   const mainMapAlt =
     map.mainMap?.alt ||
-    'Saraikistan map illustrating the Saraiki cultural region and selected cities in Pakistan.'
+    'Saraikistan cultural region map'
+
   const additionalImages = (map.additionalImages || [])
     .filter(
       (image): image is MapImage & { url: string } =>
@@ -140,26 +138,18 @@ export default async function SaraikistanMapPage() {
       caption: image.caption,
       captionUr: image.captionUr,
     }))
+
   return (
     <main className="min-h-screen bg-cream text-navy">
       <section className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
         <MapLanguageContent
           title={map.title || fallbackMap.title}
           titleUr={map.titleUr}
-          intro={map.intro || fallbackMap.intro}
+          intro={map.intro || ''}
           introUr={map.introUr}
-          regionContent={
-            map.regionContent || fallbackMap.regionContent
-          }
-          regionContentUr={map.regionContentUr}
-          placesCardContent={map.placesCardContent}
-          placesCardContentUr={map.placesCardContentUr}
-          cultureCardContent={map.cultureCardContent}
-          cultureCardContentUr={map.cultureCardContentUr}
-          boundaryDisclaimer={
-            map.boundaryDisclaimer ||
-            fallbackMap.boundaryDisclaimer
-          }
+          regionDescription={map.regionDescription || ''}
+          regionDescriptionUr={map.regionDescriptionUr}
+          boundaryDisclaimer={map.boundaryDisclaimer || ''}
           boundaryDisclaimerUr={map.boundaryDisclaimerUr}
           mainMapUrl={mainMapUrl}
           mainMapAlt={mainMapAlt}
