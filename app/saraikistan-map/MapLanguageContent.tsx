@@ -47,7 +47,9 @@ export default function MapLanguageContent({
   const isUrdu = language === 'ur'
 
   const content = {
-    eyebrow: isUrdu ? 'جغرافیہ، زبان اور ورثہ' : 'Geography, Language & Heritage',
+    eyebrow: isUrdu
+      ? 'جغرافیہ، زبان اور ورثہ'
+      : 'Geography, Language & Heritage',
     title: isUrdu ? titleUr || title : title,
     intro: isUrdu ? introUr || intro : intro,
     mapEyebrow: isUrdu ? 'ثقافتی نقشہ' : 'Cultural Atlas',
@@ -106,7 +108,7 @@ export default function MapLanguageContent({
     >
       <div
         dir="ltr"
-        className="mb-10 flex items-center justify-end gap-3 border-b border-navy/10 pb-4 font-body text-sm sm:mb-12"
+        className="mb-10 flex w-full items-center justify-end gap-3 border-b border-navy/10 pb-4 text-right font-body text-sm sm:mb-12"
       >
         <button
           type="button"
@@ -138,7 +140,7 @@ export default function MapLanguageContent({
       </div>
 
       <section className="pb-12 sm:pb-16">
-        <div className="border-b border-mustard pb-8 sm:pb-10">
+        <div className="pb-8 sm:pb-10">
           <p className="font-body text-sm text-shawl">
             {content.eyebrow}
           </p>
@@ -290,7 +292,7 @@ export default function MapLanguageContent({
         </div>
       </section>
 
-      <section className="mx-[-1rem] bg-[#F2EADB] px-4 py-10 sm:mx-0 sm:px-6 sm:py-12 lg:px-8">
+      <section className="pb-10 pt-4 sm:pb-12 sm:pt-6">
         <div className="grid gap-5 sm:grid-cols-2">
           <a
             href="/region"
