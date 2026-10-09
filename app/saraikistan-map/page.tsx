@@ -1,11 +1,8 @@
-
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import MapLanguageContent from './MapLanguageContent'
-
 export const revalidate = 60
-
 const fallbackMap = {
   title: 'Saraikistan Map',
   seoTitle: 'Saraikistan Map | Saraiki Cultural Region & Cities',
@@ -16,11 +13,12 @@ const fallbackMap = {
   mainMap: null,
   regionDescription:
     'The Saraiki cultural region is associated with the Saraiki language and a rich heritage of folk music, poetry, Sufi traditions, literature and local customs. Its cultural landscape is particularly associated with southern Punjab and extends into adjoining areas where Saraiki-speaking communities live.',
+  regionExtra: '',
+  regionClosing: '',
   boundaryDisclaimer:
     'This is an illustrative cultural and linguistic map. It does not represent official administrative boundaries.',
   additionalImages: [],
 }
-
 async function getMapContent() {
   try {
     const map = await client.fetch(`
@@ -29,7 +27,9 @@ async function getMapContent() {
           title,
           titleUr,
           seoTitle,
+          seoTitleUr,
           seoDescription,
+          seoDescriptionUr,
           intro,
           introUr,
           "mainMap": mainMap {
@@ -48,17 +48,31 @@ async function getMapContent() {
           },
           regionDescription,
           regionDescriptionUr,
+          regionExtra,
+          regionExtraUr,
+          regionClosing,
+          regionClosingUr,
           boundaryDisclaimer,
-          boundaryDisclaimerUr
+          boundaryDisclaimerUr,
+          placesCardTitle,
+          placesCardTitleUr,
+          placesCardDescription,
+          placesCardDescriptionUr,
+          placesCardLinkLabel,
+          placesCardLinkLabelUr,
+          cultureCardTitle,
+          cultureCardTitleUr,
+          cultureCardDescription,
+          cultureCardDescriptionUr,
+          cultureCardLinkLabel,
+          cultureCardLinkLabelUr
         }
     `)
-
     return map || fallbackMap
   } catch {
     return fallbackMap
   }
 }
-
 type MapImage = {
   url?: string
   alt?: string
@@ -66,33 +80,46 @@ type MapImage = {
   caption?: string
   captionUr?: string
 }
-
 type MapContent = {
   title?: string
   titleUr?: string
   seoTitle?: string
+  seoTitleUr?: string
   seoDescription?: string
+  seoDescriptionUr?: string
   intro?: string
   introUr?: string
   mainMap?: MapImage | null
   additionalImages?: MapImage[]
   regionDescription?: string
   regionDescriptionUr?: string
+  regionExtra?: string
+  regionExtraUr?: string
+  regionClosing?: string
+  regionClosingUr?: string
   boundaryDisclaimer?: string
   boundaryDisclaimerUr?: string
+  placesCardTitle?: string
+  placesCardTitleUr?: string
+  placesCardDescription?: string
+  placesCardDescriptionUr?: string
+  placesCardLinkLabel?: string
+  placesCardLinkLabelUr?: string
+  cultureCardTitle?: string
+  cultureCardTitleUr?: string
+  cultureCardDescription?: string
+  cultureCardDescriptionUr?: string
+  cultureCardLinkLabel?: string
+  cultureCardLinkLabelUr?: string
 }
-
 export async function generateMetadata(): Promise<Metadata> {
   const map = (await getMapContent()) as MapContent
-
   const title = map.seoTitle || fallbackMap.seoTitle
   const description =
     map.seoDescription || fallbackMap.seoDescription
-
   const imageUrl =
     map.mainMap?.url ||
     'https://saraikistan.org/images/saraikistan-cultural-map.webp'
-
   return {
     title,
     description,
@@ -120,18 +147,14 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   }
 }
-
 export default async function SaraikistanMapPage() {
   const map = (await getMapContent()) as MapContent
-
   const mainMapUrl =
     map.mainMap?.url ||
     '/images/saraikistan-cultural-map.webp'
-
   const mainMapAlt =
     map.mainMap?.alt ||
     'Saraikistan map illustrating the Saraiki cultural region and selected cities in Pakistan.'
-
   const additionalImages = (map.additionalImages || [])
     .filter(
       (image): image is MapImage & { url: string } =>
@@ -144,7 +167,6 @@ export default async function SaraikistanMapPage() {
       caption: image.caption,
       captionUr: image.captionUr,
     }))
-
   return (
     <main className="min-h-screen bg-cream text-navy">
       <section className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
@@ -158,6 +180,10 @@ export default async function SaraikistanMapPage() {
             fallbackMap.regionDescription
           }
           regionDescriptionUr={map.regionDescriptionUr}
+          regionExtra={map.regionExtra}
+          regionExtraUr={map.regionExtraUr}
+          regionClosing={map.regionClosing}
+          regionClosingUr={map.regionClosingUr}
           boundaryDisclaimer={
             map.boundaryDisclaimer ||
             fallbackMap.boundaryDisclaimer
@@ -169,55 +195,19 @@ export default async function SaraikistanMapPage() {
           mainMapCaption={map.mainMap?.caption}
           mainMapCaptionUr={map.mainMap?.captionUr}
           additionalImages={additionalImages}
+          placesCardTitle={map.placesCardTitle}
+          placesCardTitleUr={map.placesCardTitleUr}
+          placesCardDescription={map.placesCardDescription}
+          placesCardDescriptionUr={map.placesCardDescriptionUr}
+          placesCardLinkLabel={map.placesCardLinkLabel}
+          placesCardLinkLabelUr={map.placesCardLinkLabelUr}
+          cultureCardTitle={map.cultureCardTitle}
+          cultureCardTitleUr={map.cultureCardTitleUr}
+          cultureCardDescription={map.cultureCardDescription}
+          cultureCardDescriptionUr={map.cultureCardDescriptionUr}
+          cultureCardLinkLabel={map.cultureCardLinkLabel}
+          cultureCardLinkLabelUr={map.cultureCardLinkLabelUr}
         />
-      </section>
-
-      <section className="border-y border-navy/10 bg-[#F3EBDD]">
-        <div className="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-2 sm:px-10 sm:py-12 lg:px-12">
-          <Link
-            href="/region"
-            className="group border-b border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
-          >
-            <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
-              Discover destinations
-            </p>
-
-            <h2 className="mt-3 font-display text-2xl text-navy sm:text-3xl">
-              Places &amp; Cities
-            </h2>
-
-            <p className="mt-3 font-body text-sm leading-6 text-navy/65">
-              Explore the cities, historic sites, landmarks and
-              cultural places documented on Saraikistan.
-            </p>
-
-            <span className="mt-5 inline-block font-body text-xs font-semibold uppercase tracking-[0.1em] text-shawl transition-colors group-hover:text-mustard">
-              Explore places
-            </span>
-          </Link>
-
-          <Link
-            href="/culture"
-            className="group border-b border-navy/10 bg-cream p-6 transition-colors hover:border-mustard sm:p-8"
-          >
-            <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
-              Discover traditions
-            </p>
-
-            <h2 className="mt-3 font-display text-2xl text-navy sm:text-3xl">
-              Saraiki Culture
-            </h2>
-
-            <p className="mt-3 font-body text-sm leading-6 text-navy/65">
-              Discover Saraiki language, folk music, poetry,
-              traditions and cultural heritage.
-            </p>
-
-            <span className="mt-5 inline-block font-body text-xs font-semibold uppercase tracking-[0.1em] text-shawl transition-colors group-hover:text-mustard">
-              Explore culture
-            </span>
-          </Link>
-        </div>
       </section>
     </main>
   )
