@@ -10,29 +10,27 @@ const fallbackMap = {
   seoTitle: 'Saraikistan Map | Saraiki Cultural Region & Cities',
   seoDescription:
     'Explore the Saraikistan map and discover the Saraiki cultural region, its cities and cultural heritage.',
-  intro:
-    'Explore the Saraiki cultural region through this illustrative Saraikistan map.',
 }
 
 type MapImage = {
   url?: string
   alt?: string
-  altUr?: string
   caption?: string
-  captionUr?: string
 }
 
 type MapContent = {
   title?: string
   titleUr?: string
-  intro?: string
-  introUr?: string
-  regionDescription?: string
-  regionDescriptionUr?: string
-  mainMap?: MapImage | null
+  summary?: string
+  summaryUr?: string
+  content?: string
+  contentUr?: string
+  mainImage?: MapImage | null
+  mainImageAlt?: string
   additionalImages?: MapImage[]
   seoTitle?: string
   seoDescription?: string
+  seoImage?: MapImage | null
 }
 
 async function getMapContent(): Promise<MapContent> {
@@ -42,26 +40,26 @@ async function getMapContent(): Promise<MapContent> {
         | order(_updatedAt desc)[0] {
           title,
           titleUr,
-          seoTitle,
-          seoDescription,
-          intro,
-          introUr,
-          "mainMap": mainMap {
+          summary,
+          summaryUr,
+          content,
+          contentUr,
+          "mainImage": mainImage {
             "url": asset->url,
-            alt,
-            altUr,
-            caption,
-            captionUr
+            "alt": alt,
+            "caption": caption
           },
+          mainImageAlt,
           "additionalImages": additionalImages[] {
             "url": asset->url,
-            alt,
-            altUr,
-            caption,
-            captionUr
+            "alt": alt,
+            "caption": caption
           },
-          regionDescription,
-          regionDescriptionUr
+          seoTitle,
+          seoDescription,
+          "seoImage": seoImage {
+            "url": asset->url
+          }
         }
     `)
 
@@ -77,8 +75,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = map.seoTitle || fallbackMap.seoTitle
   const description =
     map.seoDescription || fallbackMap.seoDescription
+
   const imageUrl =
-    map.mainMap?.url ||
+    map.seoImage?.url ||
+    map.mainImage?.url ||
     'https://saraikistan.org/images/saraikistan-cultural-map.webp'
 
   return {
@@ -96,7 +96,10 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [
         {
           url: imageUrl,
-          alt: map.mainMap?.alt || 'Saraikistan cultural region map',
+          alt:
+            map.mainImageAlt ||
+            map.mainImage?.alt ||
+            'Saraikistan cultural region map',
         },
       ],
     },
@@ -112,8 +115,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SaraikistanMapPage() {
   const map = await getMapContent()
 
-  const mainMapUrl =
-    map.mainMap?.url ||
+  const mainImageUrl =
+    map.mainImage?.url ||
     '/images/saraikistan-cultural-map.webp'
 
   const additionalImages = (map.additionalImages || [])
@@ -124,9 +127,7 @@ export default async function SaraikistanMapPage() {
     .map((image) => ({
       url: image.url,
       alt: image.alt,
-      altUr: image.altUr,
       caption: image.caption,
-      captionUr: image.captionUr,
     }))
 
   return (
@@ -135,17 +136,17 @@ export default async function SaraikistanMapPage() {
         <MapLanguageContent
           title={map.title || fallbackMap.title}
           titleUr={map.titleUr}
-          summary={map.intro || fallbackMap.intro}
-          summaryUr={map.introUr}
-          content={map.regionDescription || ''}
-          contentUr={map.regionDescriptionUr}
-          mainMapUrl={mainMapUrl}
-          mainMapAlt={
-            map.mainMap?.alt || 'Saraikistan cultural region map'
+          summary={map.summary || ''}
+          summaryUr={map.summaryUr}
+          content={map.content || ''}
+          contentUr={map.contentUr}
+          mainImageUrl={mainImageUrl}
+          mainImageAlt={
+            map.mainImageAlt ||
+            map.mainImage?.alt ||
+            map.title ||
+            fallbackMap.title
           }
-          mainMapAltUr={map.mainMap?.altUr}
-          mainMapCaption={map.mainMap?.caption}
-          mainMapCaptionUr={map.mainMap?.captionUr}
           additionalImages={additionalImages}
         />
       </section>
