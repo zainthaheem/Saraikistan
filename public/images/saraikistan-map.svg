@@ -1,0 +1,99 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">Exploring the Saraiki-speaking region</title>
+  <desc id="desc">A decorative regional illustration. The shapes do not represent verified district boundaries.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7F1E6"/>
+      <stop offset="1" stop-color="#E7DCC8"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2F688F"/>
+      <stop offset="1" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <pattern id="weave" width="22" height="22" patternUnits="userSpaceOnUse">
+      <path d="M0 11H22M11 0V22" stroke="#C8923A" stroke-width="1" opacity=".13"/>
+      <path d="M0 0L22 22M22 0L0 22" stroke="#2F688F" stroke-width=".6" opacity=".08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="820" rx="28" fill="url(#paper)"/>
+  <rect x="18" y="18" width="1164" height="784" rx="20" fill="url(#weave)" stroke="#C8923A" stroke-width="2"/>
+
+  <g fill="#0F172A" font-family="Georgia,serif">
+    <text x="70" y="95" font-size="19" letter-spacing="5" fill="#9A6A26">SARAikistan • CULTURE &amp; HERITAGE</text>
+    <text x="68" y="153" font-size="49" font-weight="bold">The Saraiki Region</text>
+    <text x="70" y="190" font-size="20" fill="#42536B">A cultural landscape shaped by language, history and people</text>
+  </g>
+
+  <g transform="translate(110 225)">
+    <path d="M390 16
+      C430 35 452 72 449 110
+      L480 145 458 184 478 225
+      442 265 427 312 390 345
+      360 377 322 363 303 329
+      265 318 245 285 213 277
+      193 244 165 228 171 195
+      145 165 163 134 190 113
+      204 77 237 65 263 43
+      301 24 342 31 390 16Z"
+      fill="url(#blue)" stroke="#C8923A" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M390 16
+      C430 35 452 72 449 110
+      L480 145 458 184 478 225
+      442 265 427 312 390 345
+      360 377 322 363 303 329
+      265 318 245 285 213 277
+      193 244 165 228 171 195
+      145 165 163 134 190 113
+      204 77 237 65 263 43
+      301 24 342 31 390 16Z"
+      fill="none" stroke="#F7F1E6" stroke-width="2" stroke-dasharray="5 9" opacity=".7"/>
+
+    <g fill="#F7F1E6" font-family="Arial,sans-serif" text-anchor="middle">
+      <text x="321" y="140" font-size="27" font-weight="bold">SARAiki</text>
+      <text x="321" y="174" font-size="27" font-weight="bold">CULTURE</text>
+      <text x="321" y="208" font-size="16" letter-spacing="2">LANGUAGE • HERITAGE</text>
+    </g>
+
+    <g fill="#C8923A" stroke="#F7F1E6" stroke-width="3">
+      <circle cx="300" cy="244" r="9"/>
+      <circle cx="350" cy="278" r="9"/>
+      <circle cx="265" cy="298" r="9"/>
+      <circle cx="395" cy="220" r="9"/>
+    </g>
+  </g>
+
+  <g font-family="Arial,sans-serif" fill="#0F172A">
+    <text x="710" y="270" font-size="18" letter-spacing="3" fill="#9A6A26">PLACES IN THE CULTURAL LANDSCAPE</text>
+    <path d="M710 290H1080" stroke="#C8923A" stroke-width="2"/>
+    <g font-size="23" font-weight="bold">
+      <text x="710" y="337">Multan</text>
+      <text x="710" y="388">Dera Ghazi Khan</text>
+      <text x="710" y="439">Bahawalpur</text>
+      <text x="710" y="490">Muzaffargarh</text>
+      <text x="710" y="541">Layyah</text>
+      <text x="710" y="592">Rajanpur</text>
+      <text x="710" y="643">Rahim Yar Khan</text>
+    </g>
+    <g fill="#2F688F" font-size="15">
+      <text x="710" y="361">Language, learning and living heritage</text>
+      <text x="710" y="412">Gateway to the Sulaiman foothills</text>
+      <text x="710" y="463">Historic city of southern Punjab</text>
+      <text x="710" y="514">Part of the central Saraiki-speaking area</text>
+      <text x="710" y="565">A northern part of the wider cultural belt</text>
+      <text x="710" y="616">Connected to the western Saraiki region</text>
+      <text x="710" y="667">A southern centre of Saraiki language and culture</text>
+    </g>
+  </g>
+
+  <path d="M70 715H1130" stroke="#C8923A" stroke-width="2"/>
+  <g font-family="Arial,sans-serif" fill="#42536B" font-size="16">
+    <text x="70" y="752">CULTURAL OVERVIEW • NOT AN OFFICIAL ADMINISTRATIVE MAP</text>
+    <text x="70" y="780">District coverage and language use vary; this illustration does not show surveyed borders.</text>
+  </g>
+  <g transform="translate(1070 748)" stroke="#C8923A" fill="none" stroke-width="2">
+    <path d="M0 0L12 -20 24 0 12 -7Z"/>
+    <circle cx="12" cy="-5" r="25" opacity=".7"/>
+  </g>
+</svg>
