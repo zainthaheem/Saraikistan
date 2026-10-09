@@ -104,22 +104,10 @@ export default function MapLanguageContent({
       lang={isUrdu ? 'ur' : 'en'}
       className={isUrdu ? 'text-right' : 'text-left'}
     >
-      <div className="mb-10 flex items-center justify-end gap-3 border-b border-navy/10 pb-4 font-body text-sm sm:mb-12">
-        <button
-          type="button"
-          onClick={() => setLanguage('ur')}
-          aria-pressed={isUrdu}
-          className={`min-h-10 px-3 py-2 transition ${
-            isUrdu
-              ? 'border-b-2 border-mustard font-semibold text-navy'
-              : 'text-navy/50 hover:text-shawl'
-          }`}
-        >
-          اردو
-        </button>
-
-        <span className="text-navy/20">|</span>
-
+      <div
+        dir="ltr"
+        className="mb-10 flex items-center justify-end gap-3 border-b border-navy/10 pb-4 font-body text-sm sm:mb-12"
+      >
         <button
           type="button"
           onClick={() => setLanguage('en')}
@@ -131,6 +119,21 @@ export default function MapLanguageContent({
           }`}
         >
           English
+        </button>
+
+        <span className="text-navy/20">|</span>
+
+        <button
+          type="button"
+          onClick={() => setLanguage('ur')}
+          aria-pressed={isUrdu}
+          className={`min-h-10 px-3 py-2 transition ${
+            isUrdu
+              ? 'border-b-2 border-mustard font-semibold text-navy'
+              : 'text-navy/50 hover:text-shawl'
+          }`}
+        >
+          اردو
         </button>
       </div>
 
