@@ -1,3 +1,4 @@
+
 import { defineField, defineType } from 'sanity'
 
 export const saraikistanMap = defineType({
@@ -7,10 +8,16 @@ export const saraikistanMap = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Page Title',
+      title: 'Page Title (English)',
       type: 'string',
       initialValue: 'Saraikistan Map',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'titleUr',
+      title: 'Page Title (Urdu)',
+      type: 'string',
+      description: 'اردو میں صفحے کا عنوان لکھیں۔',
     }),
     defineField({
       name: 'slug',
@@ -25,14 +32,21 @@ export const saraikistanMap = defineType({
     }),
     defineField({
       name: 'seoTitle',
-      title: 'SEO Title',
+      title: 'SEO Title (English)',
       type: 'string',
       initialValue: 'Saraikistan Map | Saraiki Cultural Region & Cities',
       validation: (Rule) => Rule.max(60),
     }),
     defineField({
+      name: 'seoTitleUr',
+      title: 'SEO Title (Urdu)',
+      type: 'string',
+      description: 'اردو میں سرچ انجن کے لیے عنوان۔',
+      validation: (Rule) => Rule.max(60),
+    }),
+    defineField({
       name: 'seoDescription',
-      title: 'SEO Description',
+      title: 'SEO Description (English)',
       type: 'text',
       rows: 3,
       initialValue:
@@ -40,12 +54,27 @@ export const saraikistanMap = defineType({
       validation: (Rule) => Rule.max(160),
     }),
     defineField({
+      name: 'seoDescriptionUr',
+      title: 'SEO Description (Urdu)',
+      type: 'text',
+      rows: 3,
+      description: 'اردو میں سرچ انجن کے لیے تفصیل۔',
+      validation: (Rule) => Rule.max(160),
+    }),
+    defineField({
       name: 'intro',
-      title: 'Introduction',
+      title: 'Introduction (English)',
       type: 'text',
       rows: 4,
       initialValue:
         'Explore the Saraiki cultural region through this illustrative Saraikistan map.',
+    }),
+    defineField({
+      name: 'introUr',
+      title: 'Introduction (Urdu)',
+      type: 'text',
+      rows: 4,
+      description: 'اردو میں تعارف لکھیں۔',
     }),
     defineField({
       name: 'mainMap',
@@ -57,14 +86,26 @@ export const saraikistanMap = defineType({
       fields: [
         defineField({
           name: 'alt',
-          title: 'Alternative Text',
+          title: 'Alternative Text (English)',
           type: 'string',
           validation: (Rule) => Rule.required(),
         }),
         defineField({
-          name: 'caption',
-          title: 'Map Caption',
+          name: 'altUr',
+          title: 'Alternative Text (Urdu)',
           type: 'string',
+          description: 'اردو میں تصویر کی وضاحت۔',
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Map Caption (English)',
+          type: 'string',
+        }),
+        defineField({
+          name: 'captionUr',
+          title: 'Map Caption (Urdu)',
+          type: 'string',
+          description: 'اردو میں نقشے کا عنوان یا وضاحت۔',
         }),
       ],
       validation: (Rule) => Rule.required(),
@@ -84,13 +125,23 @@ export const saraikistanMap = defineType({
           fields: [
             defineField({
               name: 'alt',
-              title: 'Alternative Text',
+              title: 'Alternative Text (English)',
               type: 'string',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
+              name: 'altUr',
+              title: 'Alternative Text (Urdu)',
+              type: 'string',
+            }),
+            defineField({
               name: 'caption',
-              title: 'Caption',
+              title: 'Caption (English)',
+              type: 'string',
+            }),
+            defineField({
+              name: 'captionUr',
+              title: 'Caption (Urdu)',
               type: 'string',
             }),
           ],
@@ -99,20 +150,34 @@ export const saraikistanMap = defineType({
     }),
     defineField({
       name: 'regionDescription',
-      title: 'About the Saraiki Cultural Region',
+      title: 'About the Saraiki Cultural Region (English)',
       type: 'text',
       rows: 8,
       initialValue:
         'The Saraiki cultural region is associated with the Saraiki language, folk music, poetry, Sufi traditions and a rich cultural heritage. It is particularly associated with southern Punjab and adjoining areas where Saraiki-speaking communities live. Cultural and linguistic identities vary across localities, and the region has no universally agreed official administrative boundary.',
     }),
     defineField({
+      name: 'regionDescriptionUr',
+      title: 'About the Saraiki Cultural Region (Urdu)',
+      type: 'text',
+      rows: 8,
+      description: 'اردو میں خطے کی ثقافتی اور لسانی وضاحت لکھیں۔',
+    }),
+    defineField({
       name: 'boundaryDisclaimer',
-      title: 'Map Disclaimer',
+      title: 'Map Disclaimer (English)',
       type: 'text',
       rows: 3,
       initialValue:
         'This is an illustrative cultural and linguistic map. It does not represent official administrative boundaries.',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'boundaryDisclaimerUr',
+      title: 'Map Disclaimer (Urdu)',
+      type: 'text',
+      rows: 3,
+      description: 'اردو میں نقشے سے متعلق وضاحت لکھیں۔',
     }),
     defineField({
       name: 'published',
