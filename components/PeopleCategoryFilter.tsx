@@ -22,7 +22,7 @@ type Props = {
   categories: string[]
 }
 
-const CATEGORY_ORDER = [
+const CATEGORY_ORDER: string[] = [
   'Singers',
   'Poets',
   'Writers',
@@ -82,9 +82,36 @@ export default function PeopleCategoryFilter({
   categories,
 }: Props) {
   const [selectedCategory, setSelectedCategory] =
-    useState('All people')
+    useState<string>('All people')
 
-  const visiblePeople = useMemo(() => {
+  const filterCategories = useMemo<string[]>(() => {
+    return Array.from(
+      new Set(
+        categories
+          .map((category) => category.trim())
+          .filter((category) => category.length > 0)
+      )
+    ).sort((a, b) => {
+      const indexA = CATEGORY_ORDER.indexOf(a)
+      const indexB = CATEGORY_ORDER.indexOf(b)
+
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB
+      }
+
+      if (indexA !== -1) {
+        return -1
+      }
+
+      if (indexB !== -1) {
+        return 1
+      }
+
+      return a.localeCompare(b)
+    })
+  }, [categories])
+
+  const visiblePeople = useMemo<Person[]>(() => {
     if (selectedCategory === 'All people') {
       return people
     }
@@ -95,7 +122,7 @@ export default function PeopleCategoryFilter({
     )
   }, [people, selectedCategory])
 
-  const groupedPeople = useMemo(() => {
+  const groupedPeople = useMemo<Record<string, Person[]>>(() => {
     return visiblePeople.reduce<Record<string, Person[]>>(
       (groups, person) => {
         const category = person.category?.title || 'Other'
@@ -105,20 +132,25 @@ export default function PeopleCategoryFilter({
         }
 
         groups[category].push(person)
+
         return groups
       },
       {}
     )
   }, [visiblePeople])
 
-  const orderedCategories = [
-    ...CATEGORY_ORDER.filter(
-      (category) => groupedPeople[category]
-    ),
-    ...Object.keys(groupedPeople)
-      .filter((category) => !CATEGORY_ORDER.includes(category))
-      .sort((a, b) => a.localeCompare(b)),
-  ]
+  const orderedCategories = useMemo<string[]>(() => {
+    const availableCategories = Object.keys(groupedPeople)
+
+    return [
+      ...CATEGORY_ORDER.filter((category) =>
+        availableCategories.includes(category)
+      ),
+      ...availableCategories
+        .filter((category) => !CATEGORY_ORDER.includes(category))
+        .sort((a, b) => a.localeCompare(b)),
+    ]
+  }, [groupedPeople])
 
   return (
     <div>
@@ -136,7 +168,7 @@ export default function PeopleCategoryFilter({
           role="group"
           aria-label="Filter people by category"
         >
-          {['All people', ...categories].map((category) => {
+          {['All people', ...filterCategories].map((category) => {
             const isSelected = selectedCategory === category
 
             return (
