@@ -93,7 +93,6 @@ export default function PhotoGallery({
 
   function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
     const touch = event.touches[0]
-
     if (!touch) return
 
     touchStart.current = {
@@ -111,7 +110,6 @@ export default function PhotoGallery({
     }
 
     const touch = event.changedTouches[0]
-
     if (!touch) return
 
     const deltaX = touch.clientX - start.x
@@ -129,28 +127,12 @@ export default function PhotoGallery({
     }
   }
 
-  const glassControlClass = [
-    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center',
-    'overflow-hidden rounded-full border border-white/45',
-    'bg-[linear-gradient(145deg,rgba(255,255,255,0.30)_0%,rgba(255,255,255,0.10)_42%,rgba(20,24,32,0.38)_100%)]',
-    'text-white backdrop-blur-2xl',
-    'shadow-[inset_0_1px_1px_rgba(255,255,255,0.55),inset_0_-1px_1px_rgba(0,0,0,0.18),0_5px_18px_rgba(0,0,0,0.30)]',
-    'before:pointer-events-none before:absolute before:inset-[1px] before:rounded-full',
-    'before:border before:border-white/15',
-    'before:bg-[linear-gradient(155deg,rgba(255,255,255,0.24)_0%,transparent_45%,rgba(255,255,255,0.03)_100%)]',
-    'before:content-[""]',
-    'after:pointer-events-none after:absolute after:left-[18%] after:right-[18%] after:top-[2px]',
-    'after:h-px after:rounded-full after:bg-white/65 after:content-[""]',
-    'transition-[transform,background-color,border-color,box-shadow] duration-200',
-    'hover:border-white/70 hover:bg-white/20',
-    'active:scale-90 active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.22),0_2px_8px_rgba(0,0,0,0.20)]',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard focus-visible:ring-offset-2 focus-visible:ring-offset-black',
-    'sm:h-14 sm:w-14',
-  ].join(' ')
+  const glassControlClass =
+    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-black/35 text-white backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.65),inset_0_-1px_2px_rgba(0,0,0,0.25),0_4px_16px_rgba(0,0,0,0.35)] before:pointer-events-none before:absolute before:inset-[1px] before:rounded-full before:border before:border-white/15 before:content-[""] after:pointer-events-none after:absolute after:left-[18%] after:right-[18%] after:top-[2px] after:h-px after:rounded-full after:bg-white/70 after:content-[""] transition duration-200 hover:bg-white/20 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard sm:h-14 sm:w-14'
 
   return (
     <>
-      {/* Minimal Editorial Photo Grid */}
+      {/* Gallery Grid */}
       <div className="grid grid-cols-2 items-start gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-4">
         {visibleImages.map((image) => {
           const originalIndex = validImages.indexOf(image)
@@ -211,77 +193,109 @@ export default function PhotoGallery({
       {/* Full-Screen Photo Viewer */}
       {activeImage && activeIndex !== null && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 pt-16 sm:p-8"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/95"
           role="dialog"
           aria-modal="true"
           aria-label={`${personName} photo gallery`}
           onClick={() => setActiveIndex(null)}
         >
-          {/* Liquid Glass Close Button */}
+          {/* Close Button: fixed to the top-right of the viewport */}
           <button
             type="button"
             onClick={() => setActiveIndex(null)}
             aria-label="Close photo viewer"
-            className={`absolute right-4 top-4 z-30 ${glassControlClass} text-3xl sm:right-6 sm:top-6`}
+            className={`absolute right-4 top-4 z-50 ${glassControlClass} text-3xl sm:right-6 sm:top-6`}
           >
             <span className="relative z-10" aria-hidden="true">
               &times;
             </span>
           </button>
 
-          {/* Previous Photo */}
-          {validImages.length > 1 && (
-            <button
-              type="button"
-              aria-label="Previous photo"
-              onClick={(event) => {
-                event.stopPropagation()
-                setActiveIndex(
-                  (activeIndex - 1 + validImages.length) % validImages.length
-                )
-              }}
-              className={`absolute left-2 top-1/2 z-20 -translate-y-1/2 ${glassControlClass} sm:left-6`}
-            >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="relative z-10 h-6 w-6"
-              >
-                <path
-                  d="M15 18L9 12L15 6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          )}
-
-          {/* Image, Swipe Area, Caption and Counter */}
+          {/* Viewer content */}
           <div
-            className="flex max-h-full w-full max-w-6xl flex-col items-center"
+            className="relative flex h-full w-full max-w-6xl flex-col items-center justify-center px-3 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24"
             onClick={(event) => event.stopPropagation()}
           >
-            <div
-              className="flex min-h-0 w-full flex-1 touch-pan-y items-center justify-center"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <img
-                src={getImageUrl(activeImage, 1800)}
-                alt={
-                  activeImage.caption ||
-                  `${personName} - photo ${activeIndex + 1}`
-                }
-                decoding="async"
-                draggable={false}
-                className="max-h-[65vh] max-w-full select-none object-contain sm:max-h-[72vh]"
-              />
+            {/* Photo stage anchors navigation controls */}
+            <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
+              {/* Previous Photo */}
+              {validImages.length > 1 && (
+                <button
+                  type="button"
+                  aria-label="Previous photo"
+                  onClick={() =>
+                    setActiveIndex(
+                      (activeIndex - 1 + validImages.length) %
+                        validImages.length
+                    )
+                  }
+                  className={`absolute left-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:left-3`}
+                >
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="relative z-10 h-6 w-6"
+                  >
+                    <path
+                      d="M15 18L9 12L15 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              )}
+
+              {/* Image */}
+              <div
+                className="flex h-full min-h-0 w-full items-center justify-center touch-pan-y"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                <img
+                  src={getImageUrl(activeImage, 1800)}
+                  alt={
+                    activeImage.caption ||
+                    `${personName} - photo ${activeIndex + 1}`
+                  }
+                  decoding="async"
+                  draggable={false}
+                  className="max-h-full max-w-full select-none object-contain"
+                />
+              </div>
+
+              {/* Next Photo */}
+              {validImages.length > 1 && (
+                <button
+                  type="button"
+                  aria-label="Next photo"
+                  onClick={() =>
+                    setActiveIndex((activeIndex + 1) % validImages.length)
+                  }
+                  className={`absolute right-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:right-3`}
+                >
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="relative z-10 h-6 w-6"
+                  >
+                    <path
+                      d="M9 18L15 12L9 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
 
-            <div className="mt-4 w-full max-w-3xl shrink-0 pb-2 text-center sm:mt-5">
+            {/* Caption, Credit and Counter */}
+            <div className="mt-4 w-full shrink-0 text-center sm:mt-5">
               {activeImage.caption && (
                 <p className="font-body text-base leading-6 text-white sm:text-lg sm:leading-7">
                   {activeImage.caption}
@@ -302,34 +316,6 @@ export default function PhotoGallery({
               </p>
             </div>
           </div>
-
-          {/* Next Photo */}
-          {validImages.length > 1 && (
-            <button
-              type="button"
-              aria-label="Next photo"
-              onClick={(event) => {
-                event.stopPropagation()
-                setActiveIndex((activeIndex + 1) % validImages.length)
-              }}
-              className={`absolute right-2 top-1/2 z-20 -translate-y-1/2 ${glassControlClass} sm:right-6`}
-            >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="relative z-10 h-6 w-6"
-              >
-                <path
-                  d="M9 18L15 12L9 6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          )}
         </div>
       )}
     </>
