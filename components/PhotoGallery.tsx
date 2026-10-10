@@ -1,5 +1,6 @@
 'use client'
 
+import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import type { TouchEvent } from 'react'
 import { urlFor } from '@/sanity/lib/image'
@@ -28,6 +29,7 @@ export default function PhotoGallery({
 }: PhotoGalleryProps) {
   const [showAll, setShowAll] = useState(false)
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const [mounted, setMounted] = useState(false)
   const touchStart = useRef<{ x: number; y: number } | null>(null)
 
   const validImages = images.filter(
@@ -40,6 +42,10 @@ export default function PhotoGallery({
 
   const activeImage =
     activeIndex !== null ? validImages[activeIndex] : null
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (activeIndex === null) return
@@ -127,8 +133,164 @@ export default function PhotoGallery({
   }
 
   const glassControlClass =
-    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/50 bg-white/[0.12] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.65),inset_0_-1px_0_rgba(255,255,255,0.12),0_6px_22px_rgba(0,0,0,0.3)] backdrop-blur-2xl backdrop-saturate-150 transition-transform duration-200 hover:bg-white/20 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 before:pointer-events-none before:absolute before:inset-[1px] before:rounded-full before:border before:border-white/20 before:content-[""] after:pointer-events-none after:absolute after:left-[20%] after:right-[20%] after:top-[2px] after:h-px after:rounded-full after:bg-gradient-to-r after:from-transparent after:via-white/90 after:to-transparent after:content-[""] sm:h-14 sm:w-14'
-      return (
+    'relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/[0.14] text-white shadow-[0_4px_18px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-2xl backdrop-saturate-150 transition-colors duration-200 hover:bg-white/25 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:h-14 sm:w-14'
+
+  const viewer =
+    mounted && activeImage && activeIndex !== null
+      ? createPortal(
+          <div
+            className="fixed inset-0 z-[9999] overflow-hidden bg-black/95"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              height: '100dvh',
+              isolation: 'isolate',
+            }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${personName} photo gallery`}
+            onClick={() => setActiveIndex(null)}
+          >
+            {/* Viewport-anchored close button */}
+            <button
+              type="button"
+              onClick={() => setActiveIndex(null)}
+              aria-label="Close photo viewer"
+              className={`${glassControlClass} fixed right-4 top-4 z-[10002] text-3xl sm:right-6 sm:top-6`}
+              style={{
+                position: 'fixed',
+                top: 'max(16px, env(safe-area-inset-top))',
+                right: 'max(16px, env(safe-area-inset-right))',
+              }}
+            >
+              <span aria-hidden="true" className="relative -mt-0.5">
+                &times;
+              </span>
+            </button>
+
+            {/* Main viewer layout */}
+            <div
+              className="absolute inset-0 flex flex-col px-1 pb-2 pt-20 sm:px-6 sm:pb-6 sm:pt-24"
+              style={{
+                paddingTop: 'max(76px, calc(env(safe-area-inset-top) + 64px))',
+                paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
+              }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              {/* Image stage */}
+              <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <img
+                    src={getImageUrl(activeImage, 2400)}
+                    alt={
+                      activeImage.caption ||
+                      `${personName} - photo ${activeIndex + 1}`
+                    }
+                    decoding="async"
+                    draggable={false}
+                    className="block select-none object-contain"
+                    style={{
+                      width: 'auto',
+                      height: 'auto',
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                    }}
+                  />
+                </div>
+                                {/* Previous button */}
+                {validImages.length > 1 && (
+                  <button
+                    type="button"
+                    aria-label="Previous photo"
+                    onClick={() =>
+                      setActiveIndex(
+                        (activeIndex - 1 + validImages.length) %
+                          validImages.length
+                      )
+                    }
+                    className={`${glassControlClass} absolute left-2 top-1/2 z-20 -translate-y-1/2 sm:left-3`}
+                  >
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        d="M15 18L9 12L15 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Next button */}
+                {validImages.length > 1 && (
+                  <button
+                    type="button"
+                    aria-label="Next photo"
+                    onClick={() =>
+                      setActiveIndex(
+                        (activeIndex + 1) % validImages.length
+                      )
+                    }
+                    className={`${glassControlClass} absolute right-2 top-1/2 z-20 -translate-y-1/2 sm:right-3`}
+                  >
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        d="M9 18L15 12L9 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              {/* Caption, credit and counter */}
+              <div className="w-full shrink-0 pt-3 text-center sm:pt-4">
+                {activeImage.caption && (
+                  <p className="mx-auto max-w-3xl font-body text-sm leading-5 text-white sm:text-lg sm:leading-7">
+                    {activeImage.caption}
+                  </p>
+                )}
+
+                {activeImage.credit && (
+                  <p className="mt-1 font-body text-xs leading-5 text-white/75 sm:mt-2 sm:text-sm">
+                    Photo credit: {activeImage.credit}
+                  </p>
+                )}
+
+                <p
+                  className="mt-2 font-body text-sm font-medium tabular-nums text-white/85 sm:mt-3"
+                  aria-live="polite"
+                >
+                  {activeIndex + 1} / {validImages.length}
+                </p>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )
+      : null
+
+  return (
     <>
       {/* Gallery Grid */}
       <div className="grid grid-cols-2 items-start gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-4">
@@ -188,142 +350,7 @@ export default function PhotoGallery({
         </div>
       )}
 
-      {/* Full-Screen Photo Viewer */}
-      {activeImage && activeIndex !== null && (
-        <div
-          className="fixed inset-0 z-[100] overflow-hidden bg-black/[0.94]"
-          style={{
-            height: '100dvh',
-            width: '100vw',
-            isolation: 'isolate',
-          }}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${personName} photo gallery`}
-          onClick={() => setActiveIndex(null)}
-        >
-          {/* Close Button */}
-          <button
-            type="button"
-            onClick={() => setActiveIndex(null)}
-            aria-label="Close photo viewer"
-            className={`fixed right-4 top-[calc(env(safe-area-inset-top)+16px)] z-[120] ${glassControlClass} text-3xl sm:right-6 sm:top-6`}
-          >
-            <span className="relative z-10 -mt-0.5" aria-hidden="true">
-              &times;
-            </span>
-          </button>
-
-          {/* Photo Stage and Information */}
-          <div
-            className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+72px)] flex flex-col items-center px-2 pb-[calc(env(safe-area-inset-bottom)+12px)] sm:top-20 sm:px-6 sm:pb-6"
-            onClick={(event) => event.stopPropagation()}
-          >
-            {/* Photo Stage */}
-            <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
-              {validImages.length > 1 && (
-                <button
-                  type="button"
-                  aria-label="Previous photo"
-                  onClick={() =>
-                    setActiveIndex(
-                      (activeIndex - 1 + validImages.length) %
-                        validImages.length
-                    )
-                  }
-                  className={`absolute left-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:left-2`}
-                >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="relative z-10 h-6 w-6"
-                  >
-                    <path
-                      d="M15 18L9 12L15 6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              )}
-
-              <div
-                className="flex h-full min-h-0 w-full items-center justify-center touch-pan-y"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-              >
-                <img
-                  src={getImageUrl(activeImage, 1800)}
-                  alt={
-                    activeImage.caption ||
-                    `${personName} - photo ${activeIndex + 1}`
-                  }
-                  decoding="async"
-                  draggable={false}
-                  className="block max-h-full max-w-full select-none object-contain"
-                  style={{
-                    width: 'auto',
-                    height: 'auto',
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                  }}
-                />
-              </div>
-
-              {validImages.length > 1 && (
-                <button
-                  type="button"
-                  aria-label="Next photo"
-                  onClick={() =>
-                    setActiveIndex((activeIndex + 1) % validImages.length)
-                  }
-                  className={`absolute right-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:right-2`}
-                >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="relative z-10 h-6 w-6"
-                  >
-                    <path
-                      d="M9 18L15 12L9 6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              )}
-            </div>
-
-            {/* Caption, Credit and Counter */}
-            <div className="w-full shrink-0 pb-1 pt-3 text-center sm:pt-4">
-              {activeImage.caption && (
-                <p className="mx-auto max-w-3xl font-body text-sm leading-5 text-white sm:text-lg sm:leading-7">
-                  {activeImage.caption}
-                </p>
-              )}
-
-              {activeImage.credit && (
-                <p className="mt-1 font-body text-xs leading-5 text-white/75 sm:mt-2 sm:text-sm">
-                  Photo credit: {activeImage.credit}
-                </p>
-              )}
-
-              <p
-                className="mt-2 font-body text-sm font-medium tabular-nums text-white/85 sm:mt-3"
-                aria-live="polite"
-              >
-                {activeIndex + 1} / {validImages.length}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {viewer}
     </>
   )
 }
