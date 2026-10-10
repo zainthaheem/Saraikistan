@@ -1,9 +1,9 @@
-
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import PhotoGallery from '@/components/PhotoGallery'
 
 export const revalidate = 60
 
@@ -237,6 +237,7 @@ export default async function NewsPostPage({
 
   return (
     <section className="min-h-screen bg-cream text-navy">
+      {/* NEWS ARTICLE STRUCTURED DATA */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -247,6 +248,7 @@ export default async function NewsPostPage({
         }}
       />
 
+      {/* FULL-WIDTH COVER IMAGE */}
       {coverImageUrl && (
         <div className="w-full overflow-hidden bg-shawl">
           <img
@@ -262,9 +264,12 @@ export default async function NewsPostPage({
         </div>
       )}
 
+      {/* EDITORIAL CONTENT LAYOUT */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 sm:px-10 sm:pt-10 lg:px-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
+          {/* MAIN ARTICLE COLUMN */}
           <article className="min-w-0">
+            {/* NEWS HEADER */}
             <div className="border-t border-mustard pt-7">
               {post.category && (
                 <p className="font-body text-sm uppercase tracking-[0.12em] text-shawl">
@@ -300,6 +305,7 @@ export default async function NewsPostPage({
               )}
             </div>
 
+            {/* VIDEO */}
             {post.videoUrl && (
               <div className="mt-10 aspect-video w-full overflow-hidden bg-navy">
                 <iframe
@@ -312,6 +318,7 @@ export default async function NewsPostPage({
               </div>
             )}
 
+            {/* BILINGUAL CONTENT */}
             {(post.body || post.bodyUrdu) && (
               <div className="mt-10 w-full max-w-3xl">
                 <LanguageSwitcher
@@ -322,6 +329,7 @@ export default async function NewsPostPage({
               </div>
             )}
 
+            {/* SHARED PHOTO GALLERY */}
             {post.gallery && post.gallery.length > 0 && (
               <div className="mt-14">
                 <div className="mb-6">
@@ -334,33 +342,14 @@ export default async function NewsPostPage({
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                  {post.gallery.map((img: any, i: number) => (
-                    <div
-                      key={i}
-                      className="aspect-square overflow-hidden bg-shawl"
-                    >
-                      <img
-                        src={urlFor(img)
-                          .width(500)
-                          .height(500)
-                          .fit('crop')
-                          .quality(65)
-                          .format('webp')
-                          .url()}
-                        alt={`${post.title} — photo ${i + 1}`}
-                        width={500}
-                        height={500}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition duration-500 hover:scale-105"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <PhotoGallery
+                  images={post.gallery}
+                  personName={post.title}
+                />
               </div>
             )}
 
+            {/* SOURCES */}
             {post.source && (
               <div className="mt-14 border-t border-navy/10 pt-6">
                 <h2 className="font-display text-2xl text-navy sm:text-3xl">
@@ -375,6 +364,7 @@ export default async function NewsPostPage({
               </div>
             )}
 
+            {/* IMAGE CREDITS */}
             {post.imageCredits && (
               <details className="group mt-14 border-t border-navy/10 pt-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between font-body text-xs uppercase tracking-[0.12em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
@@ -394,7 +384,9 @@ export default async function NewsPostPage({
             )}
           </article>
 
+          {/* EDITORIAL SIDEBAR */}
           <aside className="min-w-0 lg:border-l lg:border-navy/10 lg:pl-8 xl:pl-10">
+            {/* SIDEBAR HEADING */}
             <div className="border-t border-mustard pt-5">
               <p className="font-body text-xs uppercase tracking-[0.18em] text-shawl">
                 Saraikistan News
@@ -409,6 +401,7 @@ export default async function NewsPostPage({
               </p>
             </div>
 
+            {/* RELATED NEWS */}
             {relatedNews && relatedNews.length > 0 && (
               <div className="mt-8">
                 <div className="mb-5 flex items-center justify-between border-b border-navy/10 pb-3">
@@ -485,6 +478,7 @@ export default async function NewsPostPage({
               </div>
             )}
 
+            {/* EXPLORE MORE */}
             <div className="mt-10 border-t border-navy/10 pt-6">
               <h3 className="font-display text-xl text-navy">
                 Explore More
@@ -510,6 +504,7 @@ export default async function NewsPostPage({
               </nav>
             </div>
 
+            {/* ABOUT SARAIKISTAN */}
             <div className="mt-10 border-t border-navy/10 pt-6">
               <p className="font-body text-xs uppercase tracking-[0.15em] text-shawl">
                 Saraikistan
