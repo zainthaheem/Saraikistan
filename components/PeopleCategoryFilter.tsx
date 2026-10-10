@@ -22,57 +22,54 @@ type Props = {
   categories: string[]
 }
 
+const CATEGORY_ORDER = [
+  'Singers',
+  'Poets',
+  'Writers',
+  'Scholars',
+  'Leaders',
+]
+
 function PersonCard({ person }: { person: Person }) {
-  const imageBuilder = person.profileImage
+  const imageUrl = person.profileImage
     ? urlFor(person.profileImage)
+        .width(224)
         .height(224)
         .fit('crop')
-        .quality(70)
+        .quality(75)
         .format('webp')
+        .url()
     : null
-
-  const imageUrl = imageBuilder ? imageBuilder.width(160).url() : null
-
-  const imageSrcSet = imageBuilder
-    ? [
-        `${imageBuilder.width(96).url()} 96w`,
-        `${imageBuilder.width(128).url()} 128w`,
-        `${imageBuilder.width(160).url()} 160w`,
-        `${imageBuilder.width(224).url()} 224w`,
-      ].join(', ')
-    : undefined
 
   return (
     <Link
       href={`/celebrities/${person.slug.current}`}
-      className="group flex min-w-0 items-center gap-5 border-b border-navy/10 py-6 transition duration-300 hover:bg-navy/[0.02] sm:gap-6 sm:py-8"
+      className="group flex min-w-0 items-center gap-5 border-b border-navy/10 py-6 transition-colors hover:bg-navy/[0.02] sm:gap-6 sm:py-8"
     >
       <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full bg-shawl sm:h-28 sm:w-28">
         {imageUrl ? (
           <img
             src={imageUrl}
-            srcSet={imageSrcSet}
-            sizes="(max-width: 639px) 96px, 112px"
             alt={person.name}
-            width={160}
-            height={160}
+            width={224}
+            height={224}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center font-display text-sm text-cream/50">
+          <div className="flex h-full w-full items-center justify-center px-2 text-center font-body text-xs text-cream">
             Saraikistan
           </div>
         )}
       </div>
 
       <div className="min-w-0">
-        <h3 className="break-words font-display text-2xl leading-tight text-navy transition group-hover:text-shawl sm:text-3xl">
+        <h3 className="break-words font-display text-2xl leading-tight text-navy transition-colors group-hover:text-shawl sm:text-3xl">
           {person.name}
         </h3>
 
-        <span className="mt-4 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
+        <span className="mt-4 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition-colors group-hover:text-mustard">
           View profile &rarr;
         </span>
       </div>
@@ -84,7 +81,8 @@ export default function PeopleCategoryFilter({
   people,
   categories,
 }: Props) {
-  const [selectedCategory, setSelectedCategory] = useState('All people')
+  const [selectedCategory, setSelectedCategory] =
+    useState('All people')
 
   const visiblePeople = useMemo(() => {
     if (selectedCategory === 'All people') {
@@ -107,26 +105,19 @@ export default function PeopleCategoryFilter({
         }
 
         groups[category].push(person)
-
         return groups
       },
       {}
     )
   }, [visiblePeople])
 
-  const categoryOrder = [
-    'Singers',
-    'Poets',
-    'Writers',
-    'Scholars',
-    'Leaders',
-  ]
-
   const orderedCategories = [
-    ...categoryOrder.filter((category) => groupedPeople[category]),
+    ...CATEGORY_ORDER.filter(
+      (category) => groupedPeople[category]
+    ),
     ...Object.keys(groupedPeople)
-      .filter((category) => !categoryOrder.includes(category))
-      .sort(),
+      .filter((category) => !CATEGORY_ORDER.includes(category))
+      .sort((a, b) => a.localeCompare(b)),
   ]
 
   return (
@@ -166,12 +157,15 @@ export default function PeopleCategoryFilter({
           })}
         </div>
 
-        <p className="mt-4 font-body text-sm text-navy/55" aria-live="polite">
+        <p
+          className="mt-4 font-body text-sm text-navy/55"
+          aria-live="polite"
+        >
           Showing {visiblePeople.length}{' '}
           {visiblePeople.length === 1 ? 'person' : 'people'}
-          {selectedCategory !== 'All people'
-            ? ` in ${selectedCategory}`
-            : ' across all categories'}
+          {selectedCategory === 'All people'
+            ? ' across all categories'
+            : ` in ${selectedCategory}`}
         </p>
       </div>
 
@@ -182,8 +176,7 @@ export default function PeopleCategoryFilter({
           </h3>
 
           <p className="mt-3 font-body text-base leading-7 text-navy/60">
-            Try another category or select All people to browse the complete
-            collection.
+            Try another category or browse the complete collection.
           </p>
 
           <button
@@ -198,7 +191,7 @@ export default function PeopleCategoryFilter({
         <div className="mt-10 space-y-14">
           {orderedCategories.map((category) => {
             const categoryPeople = groupedPeople[category]
-            const visibleCategoryPeople = categoryPeople.slice(0, 5)
+            const firstPeople = categoryPeople.slice(0, 5)
             const remainingPeople = categoryPeople.slice(5)
 
             return (
@@ -214,14 +207,17 @@ export default function PeopleCategoryFilter({
                 </div>
 
                 <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
-                  {visibleCategoryPeople.map((person) => (
-                    <PersonCard key={person._id} person={person} />
+                  {firstPeople.map((person) => (
+                    <PersonCard
+                      key={person._id}
+                      person={person}
+                    />
                   ))}
                 </div>
 
                 {remainingPeople.length > 0 && (
                   <details className="group mt-2">
-                    <summary className="flex cursor-pointer list-none items-center justify-center border-b border-navy/10 py-6 font-body text-xs uppercase tracking-[0.14em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
+                    <summary className="flex cursor-pointer list-none items-center justify-center border-b border-navy/10 py-6 font-body text-xs uppercase tracking-[0.14em] text-shawl transition-colors hover:text-mustard [&::-webkit-details-marker]:hidden">
                       <span>
                         View all {category} ({categoryPeople.length})
                       </span>
@@ -233,7 +229,10 @@ export default function PeopleCategoryFilter({
 
                     <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
                       {remainingPeople.map((person) => (
-                        <PersonCard key={person._id} person={person} />
+                        <PersonCard
+                          key={person._id}
+                          person={person}
+                        />
                       ))}
                     </div>
                   </details>
