@@ -340,7 +340,6 @@ export default async function PersonPage({
         }}
       />
 
-      {/* Cover image: unchanged desktop presentation */}
       {coverImage && (
         <div className="w-full overflow-hidden bg-navy">
           <img
@@ -365,7 +364,7 @@ export default async function PersonPage({
       <div className="mx-auto max-w-7xl px-5 pb-16 pt-4 sm:px-10 sm:pb-20 sm:pt-8 lg:px-12">
         <nav
           aria-label="Breadcrumb"
-          className="mb-5 border-b border-navy/10 pb-3 sm:mb-8 sm:pb-4"
+          className="mb-4 border-b border-navy/10 pb-3 sm:mb-8 sm:pb-4"
         >
           <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-body text-xs text-navy/55 sm:text-sm">
             <li>
@@ -392,10 +391,10 @@ export default async function PersonPage({
           </ol>
         </nav>
 
-        <div className="grid grid-cols-1 gap-9 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
+        <div className="grid grid-cols-1 gap-7 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
           <article className="min-w-0">
-            <header className="border-t border-mustard pt-5 sm:pt-7">
-              <div className="flex items-center gap-4 sm:gap-6">
+            <header className="border-t border-mustard pt-4 sm:pt-7">
+              <div className="flex items-center gap-3 sm:gap-6">
                 {profileImage && (
                   <div className="shrink-0">
                     <img
@@ -405,32 +404,37 @@ export default async function PersonPage({
                       height={240}
                       loading="lazy"
                       decoding="async"
-                      className="h-24 w-24 rounded-full border-4 border-cream object-cover shadow-sm sm:h-32 sm:w-32"
+                      className="h-[76px] w-[76px] rounded-full border-4 border-cream object-cover shadow-sm sm:h-32 sm:w-32"
                     />
                   </div>
                 )}
 
                 <div className="min-w-0 flex-1">
                   {person.category?.title && (
-                    <p className="font-body text-[10px] uppercase tracking-[0.16em] text-shawl sm:text-sm sm:tracking-[0.18em]">
+                    <p className="font-body text-[10px] uppercase tracking-[0.15em] text-shawl sm:text-sm sm:tracking-[0.18em]">
                       {person.category.title}
                     </p>
                   )}
 
-                  <h1 className="mt-2 break-words font-display text-3xl leading-[1.08] text-navy sm:mt-3 sm:text-5xl lg:text-[3.5rem]">
+                  <h1 className="mt-1.5 break-words font-display text-[1.7rem] leading-[1.08] text-navy sm:mt-3 sm:text-5xl lg:text-[3.5rem]">
                     {person.name}
                   </h1>
 
-                  <p className="mt-2 font-body text-sm leading-6 text-navy/60 sm:mt-4 sm:max-w-3xl sm:text-base sm:leading-7">
+                  <p className="mt-4 hidden max-w-3xl font-body text-base leading-7 text-navy/60 sm:block">
                     Explore the life, work, and cultural contributions of{' '}
                     {person.name} and his place in Saraiki heritage.
                   </p>
                 </div>
               </div>
+
+              <p className="mt-3 font-body text-sm leading-6 text-navy/65 sm:hidden">
+                Explore the life, work, and cultural contributions of{' '}
+                {person.name} and his place in Saraiki heritage.
+              </p>
             </header>
 
             {socialLinks.length > 0 && (
-              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-navy/10 pb-5 sm:mt-7 sm:gap-x-6 sm:pb-6">
+              <div className="mt-4 grid grid-cols-4 gap-2 border-b border-navy/10 pb-4 sm:mt-7 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-3 sm:pb-6">
                 {socialLinks.map((link: any, i: number) => {
                   const platform = String(link.platform || 'Official Link')
                   const label = `${person.name} on ${platform}`
@@ -443,13 +447,10 @@ export default async function PersonPage({
                       rel="noopener noreferrer"
                       aria-label={label}
                       title={platform}
-                      className="inline-flex items-center gap-2 text-shawl transition hover:text-mustard"
+                      className="flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-sm text-shawl transition hover:text-mustard sm:min-h-0 sm:flex-row sm:justify-start sm:gap-2"
                     >
                       <SocialIcon platform={platform} />
-                      <span className="font-body text-xs sm:hidden">
-                        {platform}
-                      </span>
-                      <span className="sr-only sm:not-sr-only sm:hidden">
+                      <span className="max-w-full truncate font-body text-[10px] leading-tight sm:hidden">
                         {platform}
                       </span>
                     </a>
@@ -461,7 +462,7 @@ export default async function PersonPage({
             {(person.bio || person.bioUrdu) && (
               <section
                 aria-label={`${person.name} biography`}
-                className="mt-6 w-full sm:mt-8"
+                className="mt-4 w-full sm:mt-8"
               >
                 <LanguageSwitcher
                   english={person.bio}
