@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -71,7 +70,12 @@ function SocialIcon({ platform }: { platform: string }) {
 
   if (name.includes('facebook')) {
     return (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-5 w-5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className="h-5 w-5"
+      >
         <path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4Z" />
       </svg>
     )
@@ -79,7 +83,12 @@ function SocialIcon({ platform }: { platform: string }) {
 
   if (name.includes('youtube')) {
     return (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-5 w-5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className="h-5 w-5"
+      >
         <path d="M23 7.1a3 3 0 0 0-2.1-2.2C19 4.4 12 4.4 12 4.4s-7 0-8.9.5A3 3 0 0 0 1 7.1a31 31 0 0 0-.5 4.9 31 31 0 0 0 .5 4.9 3 3 0 0 0 2.1 2.2c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.2 31 31 0 0 0 .5-4.9 31 31 0 0 0-.5-4.9ZM9.5 15.5v-7l6 3.5-6 3.5Z" />
       </svg>
     )
@@ -87,24 +96,49 @@ function SocialIcon({ platform }: { platform: string }) {
 
   if (name.includes('instagram')) {
     return (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className="h-5 w-5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        aria-hidden="true"
+        className="h-5 w-5"
+      >
         <rect x="3" y="3" width="18" height="18" rx="5" />
         <circle cx="12" cy="12" r="4" />
-        <circle cx="17.5" cy="6.8" r="1" fill="currentColor" stroke="none" />
+        <circle
+          cx="17.5"
+          cy="6.8"
+          r="1"
+          fill="currentColor"
+          stroke="none"
+        />
       </svg>
     )
   }
 
   if (name.includes('tiktok') || name.includes('tik tok')) {
     return (
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-5 w-5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className="h-5 w-5"
+      >
         <path d="M19.6 7.1a5.5 5.5 0 0 1-3.4-1.2v8.2a5.7 5.7 0 1 1-5-5.6v3.2a2.6 2.6 0 1 0 1.8 2.5V2h3.2a5.5 5.5 0 0 0 3.4 3.1v2Z" />
       </svg>
     )
   }
 
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true" className="h-5 w-5">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      aria-hidden="true"
+      className="h-5 w-5"
+    >
       <path d="M10 13a5 5 0 0 0 7.1 0l2-2a5 5 0 0 0-7.1-7.1l-1.2 1.2" />
       <path d="M14 11a5 5 0 0 0-7.1 0l-2 2A5 5 0 0 0 12 20.1l1.2-1.2" />
     </svg>
@@ -362,35 +396,6 @@ export default async function PersonPage({
       )}
 
       <div className="mx-auto max-w-7xl px-5 pb-16 pt-4 sm:px-10 sm:pb-20 sm:pt-8 lg:px-12">
-        <nav
-          aria-label="Breadcrumb"
-          className="mb-4 border-b border-navy/10 pb-3 sm:mb-8 sm:pb-4"
-        >
-          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-body text-xs text-navy/55 sm:text-sm">
-            <li>
-              <Link href="/" className="transition hover:text-shawl">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true" className="text-mustard">/</li>
-            <li>
-              <Link
-                href="/celebrities"
-                className="transition hover:text-shawl"
-              >
-                People
-              </Link>
-            </li>
-            <li aria-hidden="true" className="text-mustard">/</li>
-            <li
-              aria-current="page"
-              className="max-w-[220px] truncate text-navy/70 sm:max-w-none"
-            >
-              {person.name}
-            </li>
-          </ol>
-        </nav>
-
         <div className="grid grid-cols-1 gap-7 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
           <article className="min-w-0">
             <header className="border-t border-mustard pt-4 sm:pt-7">
@@ -404,7 +409,7 @@ export default async function PersonPage({
                       height={240}
                       loading="lazy"
                       decoding="async"
-                      className="h-[76px] w-[76px] rounded-full border-4 border-cream object-cover shadow-sm sm:h-32 sm:w-32"
+                      className="h-[95px] w-[95px] rounded-full border-4 border-cream object-cover shadow-sm sm:h-32 sm:w-32"
                     />
                   </div>
                 )}
@@ -472,7 +477,10 @@ export default async function PersonPage({
             )}
 
             {person.gallery && person.gallery.length > 0 && (
-              <section className="mt-10 sm:mt-14" aria-labelledby="gallery-heading">
+              <section
+                className="mt-10 sm:mt-14"
+                aria-labelledby="gallery-heading"
+              >
                 <div className="mb-5 border-t border-navy/10 pt-5 sm:mb-6 sm:pt-6">
                   <p className="font-body text-xs uppercase tracking-[0.18em] text-shawl sm:text-sm">
                     Photo Archive
@@ -600,7 +608,10 @@ export default async function PersonPage({
               <h3 className="font-display text-xl text-navy">
                 Explore More
               </h3>
-              <nav className="mt-4 space-y-0" aria-label="Explore Saraikistan">
+              <nav
+                className="mt-4 space-y-0"
+                aria-label="Explore Saraikistan"
+              >
                 {[
                   { label: 'Stories & Heritage', href: '/blog' },
                   { label: 'Latest News', href: '/news' },
