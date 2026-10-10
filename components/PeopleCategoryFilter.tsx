@@ -83,6 +83,7 @@ export default function PeopleCategoryFilter({
 }: Props) {
   const [selectedCategory, setSelectedCategory] =
     useState<string>('All people')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const filterCategories = useMemo<string[]>(() => {
     return Array.from(
@@ -99,28 +100,28 @@ export default function PeopleCategoryFilter({
         return indexA - indexB
       }
 
-      if (indexA !== -1) {
-        return -1
-      }
-
-      if (indexB !== -1) {
-        return 1
-      }
+      if (indexA !== -1) return -1
+      if (indexB !== -1) return 1
 
       return a.localeCompare(b)
     })
   }, [categories])
 
   const visiblePeople = useMemo<Person[]>(() => {
-    if (selectedCategory === 'All people') {
-      return people
-    }
+    const query = searchQuery.trim().toLocaleLowerCase()
 
-    return people.filter(
-      (person) =>
+    return people.filter((person) => {
+      const matchesCategory =
+        selectedCategory === 'All people' ||
         (person.category?.title || 'Other') === selectedCategory
-    )
-  }, [people, selectedCategory])
+
+      const matchesSearch =
+        query.length === 0 ||
+        person.name.toLocaleLowerCase().includes(query)
+
+      return matchesCategory && matchesSearch
+    })
+  }, [people, selectedCategory, searchQuery])
 
   const groupedPeople = useMemo<Record<string, Person[]>>(() => {
     return visiblePeople.reduce<Record<string, Person[]>>(
@@ -132,7 +133,6 @@ export default function PeopleCategoryFilter({
         }
 
         groups[category].push(person)
-
         return groups
       },
       {}
@@ -152,75 +152,148 @@ export default function PeopleCategoryFilter({
     ]
   }, [groupedPeople])
 
+  function resetFilters() {
+    setSearchQuery('')
+    setSelectedCategory('All people')
+  }
+
   return (
     <div>
-      <div className="border-t border-mustard pt-7 sm:pt-9">
-        <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-          Browse the archive
-        </p>
+      <div className="border-t border-mustard pt-6 sm:pt-8">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
+              Saraikistan · People archive
+            </p>
 
-        <h2 className="mt-2 font-display text-2xl text-navy sm:text-3xl">
-          Filter by category
-        </h2>
+            <h2 className="mt-2 font-display text-2xl text-navy sm:text-3xl">
+              Find a person
+            </h2>
+          </div>
 
-        <div
-          className="mt-5 flex flex-wrap gap-2"
-          role="group"
+          <p className="font-body text-xs text-navy/55">
+            {visiblePeople.length}{' '}
+            {visiblePeople.length === 1 ? 'profile' : 'profiles'}
+          </p>
+        </div>
+
+        <div className="mt-5">
+          <label
+            htmlFor="people-archive-search"
+            className="sr-only"
+          >
+            Search people by name
+          </label>
+
+          <div className="flex items-center gap-3 border-b border-navy/25 py-3 transition-colors focus-within:border-mustard">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              className="h-5 w-5 shrink-0 text-shawl"
+            >
+              <circle cx="10.8" cy="10.8" r="6.8" />
+              <path d="m16 16 4.2 4.2" />
+            </svg>
+
+            <input
+              id="people-archive-search"
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search by name..."
+              autoComplete="off"
+              className="min-w-0 flex-1 bg-transparent font-body text-sm text-navy outline-none placeholder:text-navy/45"
+            />
+
+            {searchQuery.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                aria-label="Clear search"
+                className="shrink-0 font-body text-xs text-shawl transition-colors hover:text-navy"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        <nav
           aria-label="Filter people by category"
+          className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 sm:gap-x-7"
         >
-          {['All people', ...filterCategories].map((category) => {
+          <button
+            type="button"
+            onClick={() => setSelectedCategory('All people')}
+            aria-pressed={selectedCategory === 'All people'}
+            className={`relative pb-2 font-body text-sm transition-colors ${
+              selectedCategory === 'All people'
+                ? 'font-semibold text-navy after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-mustard'
+                : 'text-navy/60 hover:text-navy'
+            }`}
+          >
+            All people
+          </button>
+
+          {filterCategories.map((category) => {
             const isSelected = selectedCategory === category
 
             return (
               <button
                 key={category}
                 type="button"
-                aria-pressed={isSelected}
                 onClick={() => setSelectedCategory(category)}
-                className={`border px-4 py-3 font-body text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shawl ${
+                aria-pressed={isSelected}
+                className={`relative pb-2 font-body text-sm transition-colors ${
                   isSelected
-                    ? 'border-navy bg-navy text-cream'
-                    : 'border-navy/20 bg-transparent text-navy hover:border-mustard hover:bg-navy/[0.03]'
+                    ? 'font-semibold text-navy after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-mustard'
+                    : 'text-navy/60 hover:text-navy'
                 }`}
               >
                 {category}
               </button>
             )
           })}
-        </div>
+        </nav>
 
-        <p
-          className="mt-4 font-body text-sm text-navy/55"
-          aria-live="polite"
-        >
-          Showing {visiblePeople.length}{' '}
-          {visiblePeople.length === 1 ? 'person' : 'people'}
-          {selectedCategory === 'All people'
-            ? ' across all categories'
-            : ` in ${selectedCategory}`}
-        </p>
+        {(searchQuery.trim().length > 0 ||
+          selectedCategory !== 'All people') && (
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="font-body text-xs text-shawl transition-colors hover:text-navy"
+            >
+              Clear all filters &rarr;
+            </button>
+          </div>
+        )}
       </div>
 
       {visiblePeople.length === 0 ? (
         <div className="mt-8 border-t border-navy/10 py-10">
           <h3 className="font-display text-2xl text-navy">
-            No people in this category yet
+            No people found
           </h3>
 
-          <p className="mt-3 font-body text-base leading-7 text-navy/60">
-            Try another category or browse the complete collection.
+          <p className="mt-3 font-body text-sm leading-6 text-navy/60">
+            Try a different name or category to find the person you
+            are looking for.
           </p>
 
           <button
             type="button"
-            onClick={() => setSelectedCategory('All people')}
-            className="mt-5 border-b border-mustard pb-1 font-body text-sm text-shawl hover:text-navy"
+            onClick={resetFilters}
+            className="mt-5 border-b border-mustard pb-1 font-body text-sm text-shawl transition-colors hover:text-navy"
           >
-            Show all people &rarr;
+            Reset search and filters &rarr;
           </button>
         </div>
       ) : (
-        <div className="mt-10 space-y-14">
+        <div className="mt-8 space-y-12 sm:mt-10 sm:space-y-14">
           {orderedCategories.map((category) => {
             const categoryPeople = groupedPeople[category]
             const firstPeople = categoryPeople.slice(0, 5)
@@ -228,14 +301,10 @@ export default function PeopleCategoryFilter({
 
             return (
               <section key={category}>
-                <div className="mb-4 border-b border-navy/10 pb-4">
+                <div className="mb-3 border-b border-navy/10 pb-3">
                   <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-                    Category
-                  </p>
-
-                  <h3 className="mt-1 font-display text-3xl text-navy sm:text-4xl">
                     {category}
-                  </h3>
+                  </p>
                 </div>
 
                 <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
@@ -249,7 +318,7 @@ export default function PeopleCategoryFilter({
 
                 {remainingPeople.length > 0 && (
                   <details className="group mt-2">
-                    <summary className="flex cursor-pointer list-none items-center justify-center border-b border-navy/10 py-6 font-body text-xs uppercase tracking-[0.14em] text-shawl transition-colors hover:text-mustard [&::-webkit-details-marker]:hidden">
+                    <summary className="flex cursor-pointer list-none items-center justify-center border-b border-navy/10 py-5 font-body text-xs uppercase tracking-[0.12em] text-shawl transition-colors hover:text-mustard [&::-webkit-details-marker]:hidden">
                       <span>
                         View all {category} ({categoryPeople.length})
                       </span>
