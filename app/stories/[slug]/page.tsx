@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import PhotoGallery from '@/components/PhotoGallery'
 
 export const revalidate = 60
 
@@ -233,10 +234,8 @@ export default async function StoryPage({
       {/* EDITORIAL CONTENT LAYOUT */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-8 sm:px-10 sm:pt-10 lg:px-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-16">
-
           {/* MAIN ARTICLE COLUMN */}
           <article className="min-w-0">
-
             {/* STORY HEADER */}
             <div className="border-t border-mustard pt-7">
               {story.category && (
@@ -288,7 +287,7 @@ export default async function StoryPage({
               </div>
             )}
 
-            {/* GALLERY */}
+            {/* SHARED PHOTO GALLERY */}
             {story.gallery && story.gallery.length > 0 && (
               <div className="mt-14">
                 <div className="mb-6">
@@ -301,30 +300,10 @@ export default async function StoryPage({
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                  {story.gallery.map((img: any, i: number) => (
-                    <div
-                      key={i}
-                      className="aspect-square overflow-hidden bg-shawl"
-                    >
-                      <img
-                        src={urlFor(img)
-                          .width(500)
-                          .height(500)
-                          .fit('crop')
-                          .quality(65)
-                          .format('webp')
-                          .url()}
-                        alt={`${story.title} — photo ${i + 1}`}
-                        width={500}
-                        height={500}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition duration-500 hover:scale-105"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <PhotoGallery
+                  images={story.gallery}
+                  personName={story.title}
+                />
               </div>
             )}
 
@@ -350,7 +329,6 @@ export default async function StoryPage({
 
           {/* EDITORIAL SIDEBAR */}
           <aside className="min-w-0 lg:border-l lg:border-navy/10 lg:pl-8 xl:pl-10">
-
             {/* SIDEBAR HEADING */}
             <div className="border-t border-mustard pt-5">
               <p className="font-body text-xs uppercase tracking-[0.18em] text-shawl">
