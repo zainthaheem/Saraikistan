@@ -37,76 +37,15 @@ function cleanQuery(query: string) {
 function isMapSearch(query: string) {
   const normalized = query.toLowerCase().replace(/[-\s]+/g, ' ').trim()
 
-  return (
-    normalized === 'map' ||
-    normalized === 'maps' ||
-    normalized === 'saraikistan map' ||
-    normalized === 'saraikistan maps' ||
-    normalized === 'map of saraikistan' ||
-    normalized === 'cultural map' ||
-    normalized === 'region map'
-  )
-}
-
-async function searchContent(query: string): Promise<SearchResult[]> {
-  const safeQuery = cleanQuery(query)
-
-  if (!safeQuery) return []
-
-  if (isMapSearch(safeQuery)) {
-    return [mapResult]
-  }
-
-  const searchPattern = `${safeQuery}*`
-
-  const documents = await client.fetch(
-    `
-      *[
-        _type in ["person", "place", "culture", "newsPost", "story"] &&
-        (
-          (_type == "person" &&
-            (
-              name match $searchPattern ||
-              pt::text(body) match $searchPattern
-            )
-          ) ||
-          (_type != "person" &&
-            (
-              title match $searchPattern ||
-              summary match $searchPattern ||
-              pt::text(body) match $searchPattern
-            )
-          )
-        )
-      ] {
-        _id,
-        _type,
-        name,
-        title,
-        slug,
-        "category": category->{title},
-        coverImage,
-        profileImage
-      }
-    `,
-    { searchPattern }
-  )
-
-  return documents
-    .filter((item: any) => item.slug?.current)
-    .map((item: any) => ({
-      ...item,
-      href:
-        item._type === 'person'
-          ? `/celebrities/${item.slug.current}`
-          : item._type === 'place'
-            ? `/region/${item.slug.current}`
-            : item._type === 'culture'
-              ? `/culture/${item.slug.current}`
-              : item._type === 'newsPost'
-                ? `/news/${item.slug.current}`
-                : `/blog/${item.slug.current}`,
-    }))
+  return [
+    'map',
+    'maps',
+    'saraikistan map',
+    'saraikistan maps',
+    'map of saraikistan',
+    'cultural map',
+    'region map',
+  ].includes(normalized)
 }
 
 function getTypeLabel(type: string) {
@@ -128,6 +67,136 @@ function getResultImage(item: SearchResult) {
   if (!image) return null
 
   return urlFor(image).width(480).height(360).fit('crop').url()
+}
+
+async function searchContent(query: string): Promise<SearchResult[]> {
+  const safeQuery = cleanQuery(query)
+
+  if (!safeQuery) return []
+
+  if (isMapSearch(safeQuery)) {
+    return [mapResult]
+  }
+
+  const terms = Array.from(
+    new Set(safeQuery.split(/\s+/).filter(Boolean))
+  ).slice(0, 6)
+
+  const patterns = terms.map((term) => `*${term}*`)
+
+  while (patterns.length < 6) {
+    patterns.push('')
+  }
+
+  const documents = await client.fetch(
+    `
+      *[
+        _type in ["person", "place", "culture", "newsPost", "story"] &&
+        (
+          (
+            _type == "person" &&
+            (
+              name match $pattern0 ||
+              name match $pattern1 ||
+              name match $pattern2 ||
+              name match $pattern3 ||
+              name match $pattern4 ||
+              name match $pattern5 ||
+              pt::text(body) match $pattern0 ||
+              pt::text(body) match $pattern1 ||
+              pt::text(body) match $pattern2 ||
+              pt::text(body) match $pattern3 ||
+              pt::text(body) match $pattern4 ||
+              pt::text(body) match $pattern5
+            )
+          ) ||
+          (
+            _type != "person" &&
+            (
+              title match $pattern0 ||
+              title match $pattern1 ||
+              title match $pattern2 ||
+              title match $pattern3 ||
+              title match $pattern4 ||
+              title match $pattern5 ||
+              summary match $pattern0 ||
+              summary match $pattern1 ||
+              summary match $pattern2 ||
+              summary match $pattern3 ||
+              summary match $pattern4 ||
+              summary match $pattern5 ||
+              pt::text(body) match $pattern0 ||
+              pt::text(body) match $pattern1 ||
+              pt::text(body) match $pattern2 ||
+              pt::text(body) match $pattern3 ||
+              pt::text(body) match $pattern4 ||
+              pt::text(body) match $pattern5
+            )
+          )
+        )
+      ] {
+        _id,
+        _type,
+        name,
+        title,
+        slug,
+        "category": category->{title},
+        coverImage,
+        profileImage,
+        "searchText": select(
+          _type == "person" => name + " " + pt::text(body),
+          title + " " + coalesce(summary, "") + " " + pt::text(body)
+        )
+      }
+    `,
+    {
+      pattern0: patterns[0],
+      pattern1: patterns[1],
+      pattern2: patterns[2],
+      pattern3: patterns[3],
+      pattern4: patterns[4],
+      pattern5: patterns[5],
+    }
+  )
+
+  const queryTerms = terms.map((term) => term.toLowerCase())
+
+  return documents
+    .filter((item: any) => item.slug?.current)
+    .map((item: any) => {
+      const href =
+        item._type === 'person'
+          ? `/celebrities/${item.slug.current}`
+          : item._type === 'place'
+            ? `/region/${item.slug.current}`
+            : item._type === 'culture'
+              ? `/culture/${item.slug.current}`
+              : item._type === 'newsPost'
+                ? `/news/${item.slug.current}`
+                : `/blog/${item.slug.current}`
+
+      const searchableText = String(item.searchText || '').toLowerCase()
+      const matchedTerms = queryTerms.filter((term) =>
+        searchableText.includes(term)
+      ).length
+
+      return {
+        ...item,
+        href,
+        matchedTerms,
+      }
+    })
+    .sort((a: any, b: any) => {
+      if (b.matchedTerms !== a.matchedTerms) {
+        return b.matchedTerms - a.matchedTerms
+      }
+
+      const aTitle = a.title || a.name || ''
+      const bTitle = b.title || b.name || ''
+
+      return aTitle.localeCompare(bTitle)
+    })
+    .map(({ matchedTerms, searchText, ...item }: any) => item)
 }
 
 export default async function SearchPage({
@@ -185,7 +254,7 @@ export default async function SearchPage({
                   type="search"
                   name="q"
                   defaultValue={query}
-                  placeholder="Try Saraikistan Map, a person or a place..."
+                  placeholder="Try a name, place or cultural topic..."
                   aria-label="Search Saraikistan"
                   maxLength={100}
                   className="min-h-14 w-full rounded-sm border border-navy/20 bg-cream py-4 pl-12 pr-4 font-body text-base text-navy outline-none transition placeholder:text-navy/40 focus:border-shawl focus:ring-1 focus:ring-shawl"
@@ -201,7 +270,8 @@ export default async function SearchPage({
             </div>
 
             <p className="mt-3 font-body text-xs leading-5 text-navy/50">
-              Search by name, location, cultural topic, story or headline.
+              Search names, biography text, locations, cultural topics,
+              stories and headlines.
             </p>
           </form>
         </div>
@@ -305,7 +375,8 @@ export default async function SearchPage({
 
                 <p className="mt-3 max-w-xl font-body text-base leading-7 text-navy/60">
                   Try a shorter search or a different spelling. You can search
-                  for people, places, cultural traditions, stories and news.
+                  for people, biography text, places, cultural traditions,
+                  stories and news.
                 </p>
 
                 <Link
