@@ -1,8 +1,7 @@
 
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
-import { urlFor } from '@/sanity/lib/image'
+import PeopleCategoryFilter from '@/components/PeopleCategoryFilter'
 
 export const revalidate = 60
 
@@ -32,7 +31,7 @@ export const metadata: Metadata = {
 
 async function getPeople() {
   return client.fetch(
-    `*[_type == "person"] | order(name asc) {
+    `*[_type == "person" && defined(slug.current)] | order(name asc) {
       _id,
       name,
       slug,
@@ -42,91 +41,8 @@ async function getPeople() {
   )
 }
 
-function PersonCard({
-  person,
-  priority = false,
-}: {
-  person: any
-  priority?: boolean
-}) {
-  const imageBuilder = person.profileImage
-    ? urlFor(person.profileImage)
-        .height(224)
-        .fit('crop')
-        .quality(70)
-        .format('webp')
-    : null
-
-  // Generate each responsive image URL only once.
-  const imageUrl = imageBuilder
-    ? imageBuilder.width(160).url()
-    : null
-
-  const imageSrcSet = imageBuilder
-    ? [
-        `${imageBuilder.width(96).url()} 96w`,
-        `${imageBuilder.width(128).url()} 128w`,
-        `${imageBuilder.width(160).url()} 160w`,
-        `${imageBuilder.width(224).url()} 224w`,
-      ].join(', ')
-    : undefined
-
-  return (
-    <Link
-      href={`/celebrities/${person.slug.current}`}
-      className="group flex items-center gap-6 border-b border-navy/10 py-8 transition duration-300 hover:bg-navy/[0.02]"
-    >
-      <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full bg-shawl sm:h-28 sm:w-28">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            srcSet={imageSrcSet}
-            sizes="(max-width: 639px) 96px, 112px"
-            alt={person.name}
-            width={160}
-            height={160}
-            loading={priority ? 'eager' : 'lazy'}
-            fetchPriority={priority ? 'high' : 'auto'}
-            decoding="async"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center font-display text-sm text-cream/50">
-            Saraikistan
-          </div>
-        )}
-      </div>
-
-      <div className="min-w-0">
-        <h3 className="font-display text-2xl leading-tight text-navy transition group-hover:text-shawl sm:text-3xl">
-          {person.name}
-        </h3>
-
-        <span className="mt-4 inline-block font-body text-xs uppercase tracking-[0.12em] text-shawl transition group-hover:text-mustard">
-          View profile →
-        </span>
-      </div>
-    </Link>
-  )
-}
-
 export default async function Celebrities() {
   const people = await getPeople()
-
-  const groupedPeople = people.reduce(
-    (groups: any, person: any) => {
-      const category = person.category?.title || 'Other'
-
-      if (!groups[category]) {
-        groups[category] = []
-      }
-
-      groups[category].push(person)
-
-      return groups
-    },
-    {}
-  )
 
   const categoryOrder = [
     'Singers',
@@ -136,20 +52,24 @@ export default async function Celebrities() {
     'Leaders',
   ]
 
-  const orderedCategories = [
-    ...categoryOrder.filter(
-      (category) => groupedPeople[category]
-    ),
-    ...Object.keys(groupedPeople)
-      .filter(
-        (category) => !categoryOrder.includes(category)
-      )
-      .sort(),
-  ]
+  const categories = Array.from(
+    new Set(
+      people.map((person: any) => person.category?.title || 'Other')
+    )
+  ).sort((a, b) => {
+    const indexA = categoryOrder.indexOf(a)
+    const indexB = categoryOrder.indexOf(b)
+
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB
+    if (indexA !== -1) return -1
+    if (indexB !== -1) return 1
+
+    return a.localeCompare(b)
+  })
 
   return (
-    <section className="min-h-screen bg-cream text-navy">
-      <div className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
+    <main className="min-h-screen bg-cream text-navy">
+      <header className="mx-auto max-w-7xl px-6 pb-10 pt-6 sm:px-10 sm:pb-12 sm:pt-8 lg:px-12">
         <p className="font-body text-sm text-shawl">
           Notable Saraikis
         </p>
@@ -162,7 +82,7 @@ export default async function Celebrities() {
           Singers, poets, writers, scholars, and other notable people who
           represent Saraiki culture and its living heritage.
         </p>
-      </div>
+      </header>
 
       <div className="mx-auto max-w-7xl px-6 pb-20 sm:px-10 lg:px-12">
         {people.length === 0 ? (
@@ -172,64 +92,12 @@ export default async function Celebrities() {
             </p>
           </div>
         ) : (
-          <div className="space-y-16 border-t border-mustard pt-10">
-            {orderedCategories.map((category, categoryIndex) => {
-              const categoryPeople = groupedPeople[category]
-              const visiblePeople = categoryPeople.slice(0, 5)
-              const remainingPeople = categoryPeople.slice(5)
-
-              return (
-                <section key={category}>
-                  <div className="mb-6 border-b border-navy/10 pb-4">
-                    <p className="font-body text-xs uppercase tracking-[0.16em] text-shawl">
-                      Category
-                    </p>
-
-                    <h2 className="mt-1 font-display text-3xl text-navy sm:text-4xl">
-                      {category}
-                    </h2>
-                  </div>
-
-                  <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
-                    {visiblePeople.map((person: any, personIndex: number) => (
-                      <PersonCard
-                        key={person._id}
-                        person={person}
-                        priority={
-                          categoryIndex === 0 && personIndex === 0
-                        }
-                      />
-                    ))}
-                  </div>
-
-                  {remainingPeople.length > 0 && (
-                    <details className="group mt-2">
-                      <summary className="flex cursor-pointer list-none items-center justify-center border-b border-navy/10 py-6 font-body text-xs uppercase tracking-[0.14em] text-shawl transition hover:text-mustard [&::-webkit-details-marker]:hidden">
-                        <span>
-                          View all {category} ({categoryPeople.length})
-                        </span>
-
-                        <span className="ml-3 flex h-7 w-7 items-center justify-center border border-navy/15 text-lg leading-none transition group-open:rotate-45 group-open:border-mustard group-open:text-mustard">
-                          +
-                        </span>
-                      </summary>
-
-                      <div className="grid gap-0 sm:grid-cols-2 sm:gap-x-10">
-                        {remainingPeople.map((person: any) => (
-                          <PersonCard
-                            key={person._id}
-                            person={person}
-                          />
-                        ))}
-                      </div>
-                    </details>
-                  )}
-                </section>
-              )
-            })}
-          </div>
+          <PeopleCategoryFilter
+            people={people}
+            categories={categories}
+          />
         )}
       </div>
-    </section>
+    </main>
   )
 }
