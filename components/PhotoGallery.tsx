@@ -87,7 +87,7 @@ export default function PhotoGallery({
   }
 
   function getImageUrl(image: GalleryImage, width = 1200) {
-    return urlFor(image).width(width).auto('format').quality(80).url()
+    return urlFor(image).width(width).auto('format').quality(75).url()
   }
 
   function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
@@ -126,13 +126,13 @@ export default function PhotoGallery({
     }
   }
 
-  // No positioning utilities here: each button controls its own position.
+  // Lightweight Liquid Glass: one border, one highlight, moderate blur.
   const glassControlClass =
-    'isolate flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/45 bg-white/[0.16] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_4px_14px_rgba(0,0,0,0.22)] backdrop-blur-md transition-colors duration-150 hover:bg-white/25 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:h-14 sm:w-14'
+    'flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/[0.16] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_3px_12px_rgba(0,0,0,0.25)] backdrop-blur-md transition-colors duration-150 hover:bg-white/25 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:h-14 sm:w-14'
 
   return (
     <>
-      {/* Gallery Grid */}
+      {/* Existing Gallery Grid */}
       <div className="grid grid-cols-2 items-start gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-4">
         {visibleImages.map((image) => {
           const originalIndex = validImages.indexOf(image)
@@ -210,11 +210,11 @@ export default function PhotoGallery({
             type="button"
             onClick={() => setActiveIndex(null)}
             aria-label="Close photo viewer"
-            className={`${glassControlClass} fixed right-4 top-4 z-[10002] text-3xl sm:right-6 sm:top-6`}
+            className={`${glassControlClass} fixed right-4 top-4 z-[10002] text-3xl`}
             style={{
               position: 'fixed',
-              top: 'max(16px, env(safe-area-inset-top))',
-              right: 'max(16px, env(safe-area-inset-right))',
+              top: 'max(12px, env(safe-area-inset-top))',
+              right: 'max(12px, env(safe-area-inset-right))',
             }}
           >
             <span aria-hidden="true" className="-mt-0.5">
@@ -222,11 +222,11 @@ export default function PhotoGallery({
             </span>
           </button>
 
-          {/* Photo Stage and Information */}
+          {/* Viewer Layout */}
           <div
-            className="absolute inset-0 flex flex-col px-1 pb-2 pt-20 sm:px-6 sm:pb-6 sm:pt-24"
+            className="absolute inset-0 flex flex-col px-2 pb-2 sm:px-6 sm:pb-6"
             style={{
-              paddingTop: 'max(76px, calc(env(safe-area-inset-top) + 64px))',
+              paddingTop: 'max(72px, calc(env(safe-area-inset-top) + 60px))',
               paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
             }}
             onClick={(event) => event.stopPropagation()}
@@ -239,12 +239,14 @@ export default function PhotoGallery({
                 onTouchEnd={handleTouchEnd}
               >
                 <img
-                  src={getImageUrl(activeImage, 1800)}
+                  key={activeIndex}
+                  src={getImageUrl(activeImage, 1600)}
                   alt={
                     activeImage.caption ||
                     `${personName} - photo ${activeIndex + 1}`
                   }
                   decoding="async"
+                  fetchPriority="high"
                   draggable={false}
                   className="block select-none object-contain"
                   style={{
@@ -256,7 +258,7 @@ export default function PhotoGallery({
                 />
               </div>
 
-              {/* Previous Button: fixed to the stage's left center */}
+              {/* Previous: always anchored to the left-center */}
               {validImages.length > 1 && (
                 <button
                   type="button"
@@ -267,13 +269,7 @@ export default function PhotoGallery({
                         validImages.length
                     )
                   }
-                  className={`${glassControlClass} z-20`}
-                  style={{
-                    position: 'absolute',
-                    left: 'max(8px, env(safe-area-inset-left))',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                  }}
+                  className={`${glassControlClass} absolute left-2 top-1/2 z-20 -translate-y-1/2 sm:left-4`}
                 >
                   <svg
                     aria-hidden="true"
@@ -292,7 +288,7 @@ export default function PhotoGallery({
                 </button>
               )}
 
-              {/* Next Button: fixed to the stage's right center */}
+              {/* Next: always anchored to the right-center */}
               {validImages.length > 1 && (
                 <button
                   type="button"
@@ -302,13 +298,7 @@ export default function PhotoGallery({
                       (activeIndex + 1) % validImages.length
                     )
                   }
-                  className={`${glassControlClass} z-20`}
-                  style={{
-                    position: 'absolute',
-                    right: 'max(8px, env(safe-area-inset-right))',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                  }}
+                  className={`${glassControlClass} absolute right-2 top-1/2 z-20 -translate-y-1/2 sm:right-4`}
                 >
                   <svg
                     aria-hidden="true"
