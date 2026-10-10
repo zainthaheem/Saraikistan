@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
@@ -128,9 +127,8 @@ export default function PhotoGallery({
   }
 
   const glassControlClass =
-    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-black/35 text-white backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.65),inset_0_-1px_2px_rgba(0,0,0,0.25),0_4px_16px_rgba(0,0,0,0.35)] before:pointer-events-none before:absolute before:inset-[1px] before:rounded-full before:border before:border-white/15 before:content-[""] after:pointer-events-none after:absolute after:left-[18%] after:right-[18%] after:top-[2px] after:h-px after:rounded-full after:bg-white/70 after:content-[""] transition duration-200 hover:bg-white/20 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard sm:h-14 sm:w-14'
-
-  return (
+    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/50 bg-white/[0.12] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.65),inset_0_-1px_0_rgba(255,255,255,0.12),0_6px_22px_rgba(0,0,0,0.3)] backdrop-blur-2xl backdrop-saturate-150 transition-transform duration-200 hover:bg-white/20 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 before:pointer-events-none before:absolute before:inset-[1px] before:rounded-full before:border before:border-white/20 before:content-[""] after:pointer-events-none after:absolute after:left-[20%] after:right-[20%] after:top-[2px] after:h-px after:rounded-full after:bg-gradient-to-r after:from-transparent after:via-white/90 after:to-transparent after:content-[""] sm:h-14 sm:w-14'
+      return (
     <>
       {/* Gallery Grid */}
       <div className="grid grid-cols-2 items-start gap-x-3 gap-y-6 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-4">
@@ -193,32 +191,36 @@ export default function PhotoGallery({
       {/* Full-Screen Photo Viewer */}
       {activeImage && activeIndex !== null && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/95"
+          className="fixed inset-0 z-[100] overflow-hidden bg-black/[0.94]"
+          style={{
+            height: '100dvh',
+            width: '100vw',
+            isolation: 'isolate',
+          }}
           role="dialog"
           aria-modal="true"
           aria-label={`${personName} photo gallery`}
           onClick={() => setActiveIndex(null)}
         >
-          {/* Close Button: fixed to the top-right of the viewport */}
+          {/* Close Button */}
           <button
             type="button"
             onClick={() => setActiveIndex(null)}
             aria-label="Close photo viewer"
-            className={`absolute right-4 top-4 z-50 ${glassControlClass} text-3xl sm:right-6 sm:top-6`}
+            className={`fixed right-4 top-[calc(env(safe-area-inset-top)+16px)] z-[120] ${glassControlClass} text-3xl sm:right-6 sm:top-6`}
           >
-            <span className="relative z-10" aria-hidden="true">
+            <span className="relative z-10 -mt-0.5" aria-hidden="true">
               &times;
             </span>
           </button>
 
-          {/* Viewer content */}
+          {/* Photo Stage and Information */}
           <div
-            className="relative flex h-full w-full max-w-6xl flex-col items-center justify-center px-3 pb-8 pt-20 sm:px-8 sm:pb-10 sm:pt-24"
+            className="absolute inset-x-0 bottom-0 top-[calc(env(safe-area-inset-top)+72px)] flex flex-col items-center px-2 pb-[calc(env(safe-area-inset-bottom)+12px)] sm:top-20 sm:px-6 sm:pb-6"
             onClick={(event) => event.stopPropagation()}
           >
-            {/* Photo stage anchors navigation controls */}
+            {/* Photo Stage */}
             <div className="relative flex min-h-0 w-full flex-1 items-center justify-center">
-              {/* Previous Photo */}
               {validImages.length > 1 && (
                 <button
                   type="button"
@@ -229,7 +231,7 @@ export default function PhotoGallery({
                         validImages.length
                     )
                   }
-                  className={`absolute left-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:left-3`}
+                  className={`absolute left-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:left-2`}
                 >
                   <svg
                     aria-hidden="true"
@@ -248,7 +250,6 @@ export default function PhotoGallery({
                 </button>
               )}
 
-              {/* Image */}
               <div
                 className="flex h-full min-h-0 w-full items-center justify-center touch-pan-y"
                 onTouchStart={handleTouchStart}
@@ -262,11 +263,16 @@ export default function PhotoGallery({
                   }
                   decoding="async"
                   draggable={false}
-                  className="max-h-full max-w-full select-none object-contain"
+                  className="block max-h-full max-w-full select-none object-contain"
+                  style={{
+                    width: 'auto',
+                    height: 'auto',
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                  }}
                 />
               </div>
 
-              {/* Next Photo */}
               {validImages.length > 1 && (
                 <button
                   type="button"
@@ -274,7 +280,7 @@ export default function PhotoGallery({
                   onClick={() =>
                     setActiveIndex((activeIndex + 1) % validImages.length)
                   }
-                  className={`absolute right-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:right-3`}
+                  className={`absolute right-1 top-1/2 z-30 -translate-y-1/2 ${glassControlClass} sm:right-2`}
                 >
                   <svg
                     aria-hidden="true"
@@ -295,21 +301,21 @@ export default function PhotoGallery({
             </div>
 
             {/* Caption, Credit and Counter */}
-            <div className="mt-4 w-full shrink-0 text-center sm:mt-5">
+            <div className="w-full shrink-0 pb-1 pt-3 text-center sm:pt-4">
               {activeImage.caption && (
-                <p className="font-body text-base leading-6 text-white sm:text-lg sm:leading-7">
+                <p className="mx-auto max-w-3xl font-body text-sm leading-5 text-white sm:text-lg sm:leading-7">
                   {activeImage.caption}
                 </p>
               )}
 
               {activeImage.credit && (
-                <p className="mt-2 font-body text-sm leading-5 text-white/75">
+                <p className="mt-1 font-body text-xs leading-5 text-white/75 sm:mt-2 sm:text-sm">
                   Photo credit: {activeImage.credit}
                 </p>
               )}
 
               <p
-                className="mt-3 font-body text-sm font-medium tabular-nums text-white/80"
+                className="mt-2 font-body text-sm font-medium tabular-nums text-white/85 sm:mt-3"
                 aria-live="polite"
               >
                 {activeIndex + 1} / {validImages.length}
