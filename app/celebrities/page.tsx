@@ -29,8 +29,20 @@ export const metadata: Metadata = {
   },
 }
 
-async function getPeople() {
-  return client.fetch(
+type Person = {
+  _id: string
+  name: string
+  slug: {
+    current: string
+  }
+  category?: {
+    title?: string
+  } | null
+  profileImage?: any
+}
+
+async function getPeople(): Promise<Person[]> {
+  return client.fetch<Person[]>(
     `*[_type == "person" && defined(slug.current)] | order(name asc) {
       _id,
       name,
@@ -44,7 +56,7 @@ async function getPeople() {
 export default async function Celebrities() {
   const people = await getPeople()
 
-  const categoryOrder = [
+  const categoryOrder: string[] = [
     'Singers',
     'Poets',
     'Writers',
@@ -52,17 +64,27 @@ export default async function Celebrities() {
     'Leaders',
   ]
 
-  const categories = Array.from(
-    new Set(
-      people.map((person: any) => person.category?.title || 'Other')
+  const categories: string[] = Array.from(
+    new Set<string>(
+      people.map(
+        (person) => person.category?.title || 'Other'
+      )
     )
   ).sort((a, b) => {
     const indexA = categoryOrder.indexOf(a)
     const indexB = categoryOrder.indexOf(b)
 
-    if (indexA !== -1 && indexB !== -1) return indexA - indexB
-    if (indexA !== -1) return -1
-    if (indexB !== -1) return 1
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB
+    }
+
+    if (indexA !== -1) {
+      return -1
+    }
+
+    if (indexB !== -1) {
+      return 1
+    }
 
     return a.localeCompare(b)
   })
