@@ -129,8 +129,24 @@ export default function PhotoGallery({
     }
   }
 
-  const glassControlClass =
-    'flex h-12 w-12 items-center justify-center rounded-full border border-white/50 bg-black/40 text-white shadow-lg backdrop-blur-xl transition duration-200 hover:bg-white/25 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-14 sm:w-14'
+  const glassControlClass = [
+    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center',
+    'overflow-hidden rounded-full border border-white/45',
+    'bg-[linear-gradient(145deg,rgba(255,255,255,0.30)_0%,rgba(255,255,255,0.10)_42%,rgba(20,24,32,0.38)_100%)]',
+    'text-white backdrop-blur-2xl',
+    'shadow-[inset_0_1px_1px_rgba(255,255,255,0.55),inset_0_-1px_1px_rgba(0,0,0,0.18),0_5px_18px_rgba(0,0,0,0.30)]',
+    'before:pointer-events-none before:absolute before:inset-[1px] before:rounded-full',
+    'before:border before:border-white/15',
+    'before:bg-[linear-gradient(155deg,rgba(255,255,255,0.24)_0%,transparent_45%,rgba(255,255,255,0.03)_100%)]',
+    'before:content-[""]',
+    'after:pointer-events-none after:absolute after:left-[18%] after:right-[18%] after:top-[2px]',
+    'after:h-px after:rounded-full after:bg-white/65 after:content-[""]',
+    'transition-[transform,background-color,border-color,box-shadow] duration-200',
+    'hover:border-white/70 hover:bg-white/20',
+    'active:scale-90 active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.22),0_2px_8px_rgba(0,0,0,0.20)]',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+    'sm:h-14 sm:w-14',
+  ].join(' ')
 
   return (
     <>
@@ -208,7 +224,9 @@ export default function PhotoGallery({
             aria-label="Close photo viewer"
             className={`absolute right-4 top-4 z-30 ${glassControlClass} text-3xl sm:right-6 sm:top-6`}
           >
-            <span aria-hidden="true">&times;</span>
+            <span className="relative z-10" aria-hidden="true">
+              &times;
+            </span>
           </button>
 
           {/* Previous Photo */}
@@ -228,7 +246,7 @@ export default function PhotoGallery({
                 aria-hidden="true"
                 viewBox="0 0 24 24"
                 fill="none"
-                className="h-6 w-6"
+                className="relative z-10 h-6 w-6"
               >
                 <path
                   d="M15 18L9 12L15 6"
@@ -300,7 +318,7 @@ export default function PhotoGallery({
                 aria-hidden="true"
                 viewBox="0 0 24 24"
                 fill="none"
-                className="h-6 w-6"
+                className="relative z-10 h-6 w-6"
               >
                 <path
                   d="M9 18L15 12L9 6"
