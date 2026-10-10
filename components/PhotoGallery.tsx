@@ -127,7 +127,7 @@ export default function PhotoGallery({
   }
 
   const glassControlClass =
-    'relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/[0.14] text-white shadow-[0_4px_18px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-2xl backdrop-saturate-150 transition-colors duration-200 hover:bg-white/25 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:h-14 sm:w-14'
+    'relative isolate flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/45 bg-white/[0.16] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_4px_14px_rgba(0,0,0,0.22)] backdrop-blur-md transition-colors duration-150 hover:bg-white/25 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 sm:h-14 sm:w-14'
 
   return (
     <>
