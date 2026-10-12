@@ -1,4 +1,3 @@
-
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
@@ -430,7 +429,7 @@ export default async function Home() {
             </div>
 
             <Link
-              href="/blog"
+              href="/stories"
               className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
             >
               View all →
@@ -445,7 +444,7 @@ export default async function Home() {
 
               <Link
                 key={story._id}
-                href={`/blog/${story.slug.current}`}
+                href={`/stories/${story.slug.current}`}
                 className="group flex min-w-0 flex-col overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
 
