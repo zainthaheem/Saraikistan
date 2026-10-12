@@ -15,7 +15,10 @@ async function getStory(slug: string) {
       _updatedAt,
       "category": category->{title},
       publishedAt,
-      coverImage,
+      coverImage {
+        ...,
+        "dimensions": asset->metadata.dimensions
+      },
       imageCredits,
       gallery,
       videoUrl,
@@ -155,13 +158,41 @@ export default async function StoryPage({
         .url()
     : undefined
 
+  const coverWidth =
+    story.coverImage?.dimensions?.width || 1600
+
+  const coverHeight =
+    story.coverImage?.dimensions?.height || 900
+
   const coverImage = story.coverImage
     ? urlFor(story.coverImage)
-        .width(1400)
-        .height(550)
-        .fit('crop')
-        .quality(72)
-        .format('webp')
+        .width(2400)
+        .auto('format')
+        .quality(82)
+        .url()
+    : undefined
+
+  const coverImage640 = story.coverImage
+    ? urlFor(story.coverImage)
+        .width(640)
+        .auto('format')
+        .quality(78)
+        .url()
+    : undefined
+
+  const coverImage1024 = story.coverImage
+    ? urlFor(story.coverImage)
+        .width(1024)
+        .auto('format')
+        .quality(80)
+        .url()
+    : undefined
+
+  const coverImage1600 = story.coverImage
+    ? urlFor(story.coverImage)
+        .width(1600)
+        .auto('format')
+        .quality(82)
         .url()
     : undefined
 
@@ -220,18 +251,24 @@ export default async function StoryPage({
         }}
       />
 
-      {/* FULL-WIDTH COVER IMAGE */}
+      {/* FULL-WIDTH COVER IMAGE - PRESERVE ORIGINAL PROPORTIONS */}
       {coverImage && (
-        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
+        <div className="w-full overflow-hidden bg-navy">
           <img
             src={coverImage}
+            srcSet={
+              coverImage640 && coverImage1024 && coverImage1600
+                ? `${coverImage640} 640w, ${coverImage1024} 1024w, ${coverImage1600} 1600w, ${coverImage} 2400w`
+                : undefined
+            }
+            sizes="100vw"
             alt={story.title}
-            width={1400}
-            height={550}
+            width={coverWidth}
+            height={coverHeight}
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="h-full w-full object-cover"
+            className="block h-auto w-full"
           />
         </div>
       )}
