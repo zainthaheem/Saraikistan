@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { client } from '@/sanity/lib/client'
@@ -11,6 +12,7 @@ async function getStory(slug: string) {
   return client.fetch(
     `*[_type == "story" && slug.current == $slug][0] {
       title,
+      _updatedAt,
       "category": category->{title},
       publishedAt,
       coverImage,
@@ -178,6 +180,9 @@ export default async function StoryPage({
     },
     ...(story.publishedAt
       ? { datePublished: story.publishedAt }
+      : {}),
+    ...(story._updatedAt
+      ? { dateModified: story._updatedAt }
       : {}),
     ...(articleImage ? { image: articleImage } : {}),
     ...(story.category?.title
