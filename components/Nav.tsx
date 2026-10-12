@@ -1,3 +1,4 @@
+
 'use client'
 
 import Link from 'next/link'
@@ -10,7 +11,7 @@ const links = [
   { href: '/region', label: 'Places' },
   { href: '/saraikistan-map', label: 'Map' },
   { href: '/celebrities', label: 'People' },
-  { href: '/blog', label: 'Stories' },
+  { href: '/stories', label: 'Stories' },
   { href: '/news', label: 'News' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
