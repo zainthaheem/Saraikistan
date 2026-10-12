@@ -12,7 +12,10 @@ async function getCultureItem(slug: string) {
     `*[_type == "culture" && slug.current == $slug][0] {
       title,
       "category": category->{title},
-      coverImage,
+      coverImage {
+        ...,
+        "dimensions": asset->metadata.dimensions
+      },
       gallery,
       videoUrl,
       body,
@@ -184,12 +187,23 @@ export default async function CulturePage({
 
   const coverImageUrl = item.coverImage
     ? urlFor(item.coverImage)
-        .width(1800)
-        .height(700)
-        .fit('crop')
-        .quality(75)
-        .format('webp')
+        .width(2400)
+        .auto('format')
+        .quality(82)
         .url()
+    : undefined
+
+  const coverImageSrcSet = item.coverImage
+    ? [800, 1200, 1800, 2400]
+        .map(
+          (width) =>
+            `${urlFor(item.coverImage)
+              .width(width)
+              .auto('format')
+              .quality(82)
+              .url()} ${width}w`
+        )
+        .join(', ')
     : undefined
 
   return (
@@ -202,18 +216,20 @@ export default async function CulturePage({
         }}
       />
 
-      {/* FULL-WIDTH COVER IMAGE */}
+      {/* FULL-WIDTH COVER IMAGE - PRESERVE ORIGINAL PROPORTIONS */}
       {coverImageUrl && (
-        <div className="h-56 w-full overflow-hidden bg-shawl sm:h-72 lg:h-96">
+        <div className="w-full bg-shawl">
           <img
             src={coverImageUrl}
+            srcSet={coverImageSrcSet}
+            sizes="100vw"
             alt={`${item.title} - Saraikistan`}
-            width={1800}
-            height={700}
+            width={item.coverImage?.dimensions?.width || 2400}
+            height={item.coverImage?.dimensions?.height || 1600}
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="h-full w-full object-cover"
+            className="block h-auto w-full"
           />
         </div>
       )}
