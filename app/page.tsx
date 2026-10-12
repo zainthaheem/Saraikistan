@@ -410,97 +410,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* STORIES */}
-      {featuredStories?.length > 0 && (
-        <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
-
-          <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
-
-            <div>
-              <p className="font-body text-xs text-shawl sm:text-sm">
-                Long-form
-              </p>
-
-              <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
-                Stories
-              </h2>
-
-              <div className="mt-3 h-[2px] w-12 bg-mustard" />
-            </div>
-
-            <Link
-              href="/stories"
-              className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
-            >
-              View all →
-            </Link>
-
-          </div>
-
-          {/* Four cards: 2 columns on mobile, 4 on desktop */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-
-            {featuredStories.map((story: any) => (
-
-              <Link
-                key={story._id}
-                href={`/stories/${story.slug.current}`}
-                className="group flex min-w-0 flex-col overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-              >
-
-                {/* Compact image */}
-                <div className="aspect-[16/9] overflow-hidden bg-shawl">
-
-                  {story.coverImage ? (
-                    <ResponsiveImage
-                      source={story.coverImage}
-                      alt={story.title}
-                      ratio={9 / 16}
-                      widths={[240, 320, 480, 640]}
-                      sizes="(min-width: 1280px) 280px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center font-display text-xs text-cream/40 sm:text-sm">
-                      Saraikistan
-                    </div>
-                  )}
-
-                </div>
-
-                <div className="flex flex-1 flex-col border-t-2 border-mustard p-3 sm:p-4">
-
-                  {story.publishedAt && (
-                    <p className="font-body text-[8px] uppercase tracking-[0.08em] text-navy/45 sm:text-[10px] sm:tracking-[0.12em]">
-                      {formatDate(story.publishedAt)}
-                    </p>
-                  )}
-
-                  <h3 className="mt-1.5 line-clamp-3 font-display text-sm leading-snug transition group-hover:text-shawl sm:mt-2 sm:text-lg sm:leading-tight lg:text-xl">
-                    {story.title}
-                  </h3>
-
-                  {story.summary && (
-                    <p className="mt-2 line-clamp-3 font-body text-[10px] leading-4 text-navy/60 sm:text-xs sm:leading-5">
-                      {story.summary}
-                    </p>
-                  )}
-
-                  <span className="mt-auto pt-3 font-body text-[9px] uppercase tracking-[0.08em] text-shawl transition group-hover:text-mustard sm:pt-4 sm:text-[10px] sm:tracking-[0.12em]">
-                    Read story →
-                  </span>
-
-                </div>
-
-              </Link>
-
-            ))}
-
-          </div>
-
-        </section>
-      )}
-
       {/* LATEST NEWS */}
       {latestNews?.length > 0 && (
         <section className="border-t border-navy/10">
@@ -530,7 +439,6 @@ export default async function Home() {
 
             </div>
 
-            {/* Four cards: 2 columns on mobile, 4 on desktop */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
 
               {latestNews.map((item: any) => (
@@ -541,7 +449,6 @@ export default async function Home() {
                   className="group flex min-w-0 flex-col overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
 
-                  {/* Compact image */}
                   <div className="aspect-[16/9] overflow-hidden bg-shawl">
 
                     {item.coverImage ? (
@@ -602,6 +509,95 @@ export default async function Home() {
               ))}
 
             </div>
+
+          </div>
+
+        </section>
+      )}
+
+      {/* STORIES */}
+      {featuredStories?.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
+
+          <div className="mb-5 flex flex-col justify-between gap-3 sm:mb-6 sm:flex-row sm:items-end">
+
+            <div>
+              <p className="font-body text-xs text-shawl sm:text-sm">
+                Long-form
+              </p>
+
+              <h2 className="mt-1.5 font-display text-2xl leading-tight sm:text-4xl">
+                Stories
+              </h2>
+
+              <div className="mt-3 h-[2px] w-12 bg-mustard" />
+            </div>
+
+            <Link
+              href="/stories"
+              className="font-body text-[11px] uppercase tracking-[0.12em] text-navy/55 transition hover:text-mustard sm:text-xs"
+            >
+              View all →
+            </Link>
+
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+
+            {featuredStories.map((story: any) => (
+
+              <Link
+                key={story._id}
+                href={`/stories/${story.slug.current}`}
+                className="group flex min-w-0 flex-col overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+
+                <div className="aspect-[16/9] overflow-hidden bg-shawl">
+
+                  {story.coverImage ? (
+                    <ResponsiveImage
+                      source={story.coverImage}
+                      alt={story.title}
+                      ratio={9 / 16}
+                      widths={[240, 320, 480, 640]}
+                      sizes="(min-width: 1280px) 280px, (min-width: 1024px) 22vw, (min-width: 640px) 45vw, calc(50vw - 27px)"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center font-display text-xs text-cream/40 sm:text-sm">
+                      Saraikistan
+                    </div>
+                  )}
+
+                </div>
+
+                <div className="flex flex-1 flex-col border-t-2 border-mustard p-3 sm:p-4">
+
+                  {story.publishedAt && (
+                    <p className="font-body text-[8px] uppercase tracking-[0.08em] text-navy/45 sm:text-[10px] sm:tracking-[0.12em]">
+                      {formatDate(story.publishedAt)}
+                    </p>
+                  )}
+
+                  <h3 className="mt-1.5 line-clamp-3 font-display text-sm leading-snug transition group-hover:text-shawl sm:mt-2 sm:text-lg sm:leading-tight lg:text-xl">
+                    {story.title}
+                  </h3>
+
+                  {story.summary && (
+                    <p className="mt-2 line-clamp-3 font-body text-[10px] leading-4 text-navy/60 sm:text-xs sm:leading-5">
+                      {story.summary}
+                    </p>
+                  )}
+
+                  <span className="mt-auto pt-3 font-body text-[9px] uppercase tracking-[0.08em] text-shawl transition group-hover:text-mustard sm:pt-4 sm:text-[10px] sm:tracking-[0.12em]">
+                    Read story →
+                  </span>
+
+                </div>
+
+              </Link>
+
+            ))}
 
           </div>
 
