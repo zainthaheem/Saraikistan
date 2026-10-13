@@ -66,8 +66,7 @@ function formatNewsType(type: string) {
   return labels[type] || type
 }
 
-// Responsive Sanity image helper.
-// All candidates use the same 16:10 crop as the design.
+// Responsive Sanity images that preserve the original image proportions.
 function getNewsImage(
   image: any,
   quality: number,
@@ -78,10 +77,8 @@ function getNewsImage(
   const makeUrl = (width: number) =>
     urlFor(image)
       .width(width)
-      .height(Math.round((width * 10) / 16))
-      .fit('crop')
+      .auto('format')
       .quality(quality)
-      .format('webp')
       .url()
 
   const largestWidth = widths[widths.length - 1]
@@ -94,7 +91,6 @@ function getNewsImage(
     src: makeUrl(largestWidth),
     srcSet,
     width: largestWidth,
-    height: Math.round((largestWidth * 10) / 16),
   }
 }
 
@@ -163,7 +159,7 @@ export default async function News() {
             >
               <div className="grid lg:grid-cols-2">
                 {/* IMAGE */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-shawl lg:aspect-auto lg:min-h-[430px]">
+                <div className="relative overflow-hidden bg-shawl">
                   {featuredImage ? (
                     <img
                       src={featuredImage.src}
@@ -171,19 +167,18 @@ export default async function News() {
                       sizes="(min-width: 1280px) 576px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
                       alt={featured.title}
                       width={featuredImage.width}
-                      height={featuredImage.height}
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                      className="block h-auto w-full transition duration-700 group-hover:scale-[1.02]"
                     />
                   ) : (
-                    <div className="flex h-full min-h-[300px] items-center justify-center bg-shawl font-display text-cream/40">
+                    <div className="flex min-h-[300px] items-center justify-center bg-shawl font-display text-cream/40">
                       Saraikistan
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent lg:bg-gradient-to-r" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent lg:bg-gradient-to-r" />
                 </div>
 
                 {/* FEATURED CONTENT */}
@@ -278,7 +273,7 @@ export default async function News() {
                         className="group block overflow-hidden border border-navy/10 bg-cream transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                       >
                         {/* IMAGE */}
-                        <div className="aspect-[16/10] overflow-hidden bg-shawl">
+                        <div className="overflow-hidden bg-shawl">
                           {image ? (
                             <img
                               src={image.src}
@@ -286,13 +281,12 @@ export default async function News() {
                               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, calc(100vw - 48px)"
                               alt={item.title}
                               width={image.width}
-                              height={image.height}
                               loading="lazy"
                               decoding="async"
-                              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                              className="block h-auto w-full transition duration-500 group-hover:scale-[1.02]"
                             />
                           ) : (
-                            <div className="flex h-full items-center justify-center font-display text-cream/40">
+                            <div className="flex min-h-[180px] items-center justify-center font-display text-cream/40">
                               Saraikistan
                             </div>
                           )}
