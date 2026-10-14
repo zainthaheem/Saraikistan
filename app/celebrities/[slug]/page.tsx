@@ -613,7 +613,7 @@ export default async function PersonPage({
                 aria-label="Explore Saraikistan"
               >
                 {[
-                  { label: 'Stories & Heritage', href: '/blog' },
+                  { label: 'Stories & Heritage', href: '/stories' },
                   { label: 'Latest News', href: '/news' },
                   { label: 'People of Saraikistan', href: '/celebrities' },
                   { label: 'Places & Destinations', href: '/region' },
