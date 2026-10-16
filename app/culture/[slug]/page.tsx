@@ -391,7 +391,7 @@ export default async function CulturePage({
 
               <nav className="mt-4 space-y-0">
                 {[
-                  { label: 'Stories & Heritage', href: '/blog' },
+                  { label: 'Stories & Heritage', href: '/stories' },
                   { label: 'Latest News', href: '/news' },
                   { label: 'People of Saraikistan', href: '/celebrities' },
                   { label: 'Places & Destinations', href: '/region' },
