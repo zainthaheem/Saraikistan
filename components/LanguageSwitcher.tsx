@@ -46,6 +46,7 @@ export default function LanguageSwitcher({
 
     const caption = value.caption || ''
     const credit = value.credit || ''
+    const alt = value.alt || caption || 'Article photograph'
 
     return (
       <figure className="my-8 sm:my-10">
@@ -58,6 +59,7 @@ export default function LanguageSwitcher({
                   url: fullImageUrl,
                   caption,
                   credit,
+                  alt,
                 },
               ],
               index: 0,
@@ -68,7 +70,7 @@ export default function LanguageSwitcher({
         >
           <img
             src={imageUrl}
-            alt={caption || 'Article photograph'}
+            alt={alt}
             loading="lazy"
             decoding="async"
             className="mx-auto max-h-[650px] w-full object-contain transition duration-500 group-hover:scale-[1.01]"
@@ -165,6 +167,42 @@ export default function LanguageSwitcher({
       em: ({ children }: any) => (
         <em className="text-navy/85">{children}</em>
       ),
+
+      code: ({ children }: any) => (
+        <code className="rounded bg-navy/5 px-1.5 py-0.5 font-mono text-[0.9em] text-navy">
+          {children}
+        </code>
+      ),
+
+      link: ({ children, value }: any) => {
+        const href =
+          typeof value?.href === 'string' ? value.href.trim() : ''
+
+        const isSafeHref =
+          /^(https?:\/\/|mailto:|tel:|\/|#)/i.test(href) &&
+          !/^\/\//.test(href)
+
+        if (!href || !isSafeHref) {
+          return <>{children}</>
+        }
+
+        const isExternal = /^https?:\/\//i.test(href)
+
+        return (
+          <a
+            href={href}
+            className="font-medium text-shawl underline decoration-mustard/70 underline-offset-4 transition hover:text-mustard"
+            {...(isExternal
+              ? {
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                }
+              : {})}
+          >
+            {children}
+          </a>
+        )
+      },
     },
   }
 
@@ -308,6 +346,7 @@ export default function LanguageSwitcher({
             <img
               src={activeImage.images[activeImage.index].url}
               alt={
+                activeImage.images[activeImage.index].alt ||
                 activeImage.images[activeImage.index].caption ||
                 'Article photograph'
               }
