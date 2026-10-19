@@ -1,3 +1,4 @@
+
 'use client'
 
 import type {ClipboardEvent} from 'react'
@@ -41,17 +42,25 @@ function parseInline(text: string) {
       const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
 
       if (match) {
-        value = match[1]
+        const label = match[1]
+        const href = match[2].trim()
+        const isSafeHref =
+          /^(https?:\/\/|mailto:|tel:|\/|#)/i.test(href) &&
+          !/^\/\//.test(href)
 
-        const key = createKey()
+        if (isSafeHref) {
+          value = label
 
-        markDefs.push({
-          _key: key,
-          _type: 'link',
-          href: match[2],
-        })
+          const key = createKey()
 
-        marks.push(key)
+          markDefs.push({
+            _key: key,
+            _type: 'link',
+            href,
+          })
+
+          marks.push(key)
+        }
       }
     }
 
@@ -231,7 +240,8 @@ export default function MarkdownPortableTextInput(props: any) {
       /^\s*\d+[.)]\s/m.test(text) ||
       /\*\*[\s\S]+?\*\*/.test(text) ||
       /(^|\n)>\s/m.test(text) ||
-      /```/.test(text)
+      /```/.test(text) ||
+      /\[[^\]]+\]\([^)]+\)/.test(text)
 
     if (!hasMarkdown) return
 
